@@ -67,7 +67,7 @@ Step up until the cheek with the Ø17 hole first appears.
 ## H. Holes and pockets
 
 - [ ] There's no support in the index holes or screw holes.
-- [ ] Each screw counterbore of the left half is bridged at about 5.5 mm.
+- [ ] Each screw counterbore of the left half is bridged at about 9 mm.
 - [ ] The hex nut pockets at the top of the right half's lap tongues are
       open, with no support or top skin in them.
 

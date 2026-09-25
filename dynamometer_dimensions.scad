@@ -309,7 +309,9 @@ frame_split_lower_t = frame_split_lap_z - frame_z_min;
 frame_split_left_len = frame_split_x_max - frame_left_post_outer_x;
 frame_split_right_len = frame_palm_post_outer_x - frame_split_x_min;
 // ISO 4762 M5 socket-head screws from the top face into DIN 985 nyloc nuts
-// held in hex pockets in the lower face; both stay recessed.
+// held in hex pockets in the lower face; both stay recessed. The counterbore
+// depth follows from the screw length so the tip ends just inside the lower
+// face, where it picks up a nut held at the pocket mouth and draws it in.
 frame_split_bolt_d = is_undef(frame_split_bolt_d) ? 5 : frame_split_bolt_d;
 frame_split_bolt_l = is_undef(frame_split_bolt_l) ? 35 : frame_split_bolt_l;
 frame_split_bolt_pitch = is_undef(frame_split_bolt_pitch) ? 24 : frame_split_bolt_pitch;
@@ -317,7 +319,8 @@ frame_split_bolt_hole_d = frame_split_bolt_d + 0.5;
 frame_split_bolt_head_d = 1.7 * frame_split_bolt_d;
 frame_split_bolt_head_h = frame_split_bolt_d;
 frame_split_bolt_cbore_d = frame_split_bolt_head_d + 1;
-frame_split_bolt_cbore_depth = frame_split_bolt_head_h + 0.5;
+frame_split_bolt_tip_recess =
+    is_undef(frame_split_bolt_tip_recess) ? 1 : frame_split_bolt_tip_recess;
 frame_split_nut_af = 1.6 * frame_split_bolt_d;
 frame_split_nut_h = frame_split_bolt_d;
 frame_split_nut_pocket_af = frame_split_nut_af + 0.4;
@@ -327,11 +330,15 @@ frame_split_bolt_x = [frame_split_x - frame_split_bolt_pitch / 2,
     frame_split_x + frame_split_bolt_pitch / 2];
 frame_split_bolt_y = [wrist_mount_y_bottom, wrist_mount_y_top];
 frame_split_bolt_count = len(frame_split_bolt_x) * len(frame_split_bolt_y);
-frame_split_bolt_head_z = frame_z_max - frame_split_bolt_cbore_depth;
-frame_split_bolt_tip_z = frame_split_bolt_head_z - frame_split_bolt_l;
+frame_split_bolt_tip_z = frame_z_min + frame_split_bolt_tip_recess;
+frame_split_bolt_head_z = frame_split_bolt_tip_z + frame_split_bolt_l;
+frame_split_bolt_cbore_depth = frame_z_max - frame_split_bolt_head_z;
 frame_split_nut_top_z =
     frame_split_bolt_tip_z + frame_split_bolt_protrusion + frame_split_nut_h;
 frame_split_nut_pocket_depth = frame_split_nut_top_z - frame_z_min;
+// Thread overlap with the nut held at the pocket mouth, before tightening.
+frame_split_nut_start_engagement =
+    frame_z_min + frame_split_nut_h - frame_split_bolt_tip_z;
 frame_split_bolt_end_dist = (frame_split_lap_len - frame_split_bolt_pitch) / 2;
 frame_split_bolt_side_wall_y = (frame_rail_t
     - max(frame_split_bolt_cbore_d, frame_split_nut_pocket_af)) / 2;
@@ -570,8 +577,10 @@ assert(frame_split_bolt_end_dist >= 2 * frame_split_bolt_hole_d &&
     frame_split_bolt_side_wall_y >= 2.5 &&
     frame_split_bolt_bearing_l >= 2 * frame_split_bolt_d &&
     frame_split_nut_pocket_depth >= frame_split_nut_h &&
-    frame_split_bolt_tip_z >= frame_z_min + 1,
-    "Frame lap bolts need edge distance, rail walls, bearing length and recessed nuts and tips.");
+    frame_split_bolt_cbore_depth >= frame_split_bolt_head_h + 0.5 &&
+    frame_split_bolt_tip_recess >= 0.5 &&
+    frame_split_nut_start_engagement >= frame_split_nut_h / 2,
+    "Frame lap bolts need edge distance, rail walls, bearing length, recessed heads and nuts, and a screw that reaches a nut at the pocket mouth.");
 assert(frame_split_bolt_design_shear_mpa <= allowable_frame_bolt_shear_mpa &&
     frame_split_bolt_design_bearing_mpa <= allowable_printed_bearing_mpa &&
     frame_split_shoulder_bearing_mpa <= allowable_printed_bearing_mpa &&

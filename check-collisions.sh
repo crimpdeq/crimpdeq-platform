@@ -212,6 +212,8 @@ invalid_parameters=(
     'frame_split_lap_len=36'
     'frame_split_bolt_d=6'
     'frame_split_bolt_l=40'
+    'frame_split_bolt_tip_recess=0'
+    'frame_split_bolt_tip_recess=4'
     'frame_split_bolt_pitch=12'
     'allowable_frame_bolt_shear_mpa=30'
 )

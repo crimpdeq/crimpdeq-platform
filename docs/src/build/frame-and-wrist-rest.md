@@ -38,14 +38,16 @@ in the bottom face.
 3. Lower the left half's upper tongues onto the right half's lower tongues.
    Both lap shoulders should close with no gap, and the rail tops should
    line up.
-4. Push an M5 nyloc nut into each hex pocket from below, nylon ring facing
-   down, and hold it there with a finger or a piece of tape.
-5. Insert an M5 × 35 screw from the top into each hole and tighten it with a
-   4 mm hex key until the head seats and the lap faces are closed. Don't
-   over-tighten: the head bears on printed plastic.
-6. Check that all four feet touch the table without rocking and that the
+4. Push an M5 nyloc nut into the mouth of each hex pocket from below, nylon
+   ring facing down, and hold it there with a finger or a piece of tape.
+5. Insert an M5 × 35 screw from the top into each hole. Its tip reaches the
+   held nut; turn it with a 4 mm hex key until it catches the thread.
+6. Tighten each screw until its head seats and the lap faces are closed. The
+   screw draws the nut up into its pocket. Don't over-tighten: the head bears
+   on printed plastic.
+7. Check that all four feet touch the table without rocking and that the
    rails are straight.
-7. Slide the wrist rest along its full travel once to make sure it runs
+8. Slide the wrist rest along its full travel once to make sure it runs
    freely.
 
 To take the frame apart again, remove the four screws and lift the left half
