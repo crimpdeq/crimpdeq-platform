@@ -1,0 +1,53 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+    workflow_dispatch:
+
+jobs:
+    geometry:
+        name: Collision and connectivity checks
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Install OpenSCAD (CLI)
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y openscad
+            - name: Run collision checks
+              run: CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash check-collisions.sh
+
+    real-case:
+        name: Clearance against crimpdeq-case
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Checkout crimpdeq-case
+              uses: actions/checkout@v6
+              with:
+                  repository: crimpdeq/crimpdeq-case
+                  path: crimpdeq-case
+            - name: Install OpenSCAD (CLI)
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y openscad
+            - name: Run real-case check
+              run: CRIMPDEQ_CASE_DIR="$GITHUB_WORKSPACE/crimpdeq-case/case" bash check-real-case.sh
+
+    book:
+        name: Build book
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Install mdBook
+              uses: jontze/action-mdbook@v4
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+            - name: Build book
+              run: mdbook build docs

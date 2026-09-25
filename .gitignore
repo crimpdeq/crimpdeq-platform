@@ -1,3 +1,4 @@
 exports/
 docs/book/
 docs/src/images/.*.log
+__pycache__/

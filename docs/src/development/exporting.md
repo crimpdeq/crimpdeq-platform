@@ -24,9 +24,11 @@ openscad -D 'part="frame"' -o /tmp/dynamometer_frame.stl dynamometer_assembly.sc
 | `fit_bolt_set` | Printed M8 bolt, nut, and washer stand-ins, fit prototype only |
 | `fit_quick_pin_pair` | Printed ball-lock pin stand-ins, fit prototype only |
 
-The [fit prototype](../fit-prototype/what-to-print.md) chapter lists the
-command that exports every part it needs into `exports/`, which is ignored by
-Git.
+`export-parts.sh` exports every part in the table (or only the parts given as
+arguments) as `crimpdeq-platform-<part>.stl` into `exports/`, which is ignored
+by Git. `EXPORT_DIR`, `EXPORT_JOBS`, and `OPENSCAD_RENDER_FN` override the
+output directory, parallel jobs, and tessellation. The release workflow runs
+the same script and attaches the files to each GitHub release.
 
 ## Preview options
 

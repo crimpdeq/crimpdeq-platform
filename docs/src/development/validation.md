@@ -34,5 +34,11 @@ one, or at the path in `CRIMPDEQ_CASE_DIR`:
 CRIMPDEQ_CASE_DIR=../crimpdeq-case/case bash check-real-case.sh
 ```
 
+## Continuous integration
+
+`.github/workflows/ci.yml` runs `check-collisions.sh`, runs `check-real-case.sh`
+against the `main` branch of crimpdeq-case, and builds this book on every
+push to `main` and every pull request.
+
 Digital checks do not validate strength, fit on printed parts, comfort, or
 calibration; those still require physical testing.

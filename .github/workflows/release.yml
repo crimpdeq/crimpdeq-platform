@@ -1,0 +1,63 @@
+name: Release Crimpdeq Platform
+
+on:
+    release:
+        types: [created]
+
+permissions:
+    contents: write
+
+jobs:
+    parts:
+        name: Build platform release files
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+
+            - name: Install OpenSCAD (CLI)
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y openscad
+
+            - name: Build STL files
+              run: EXPORT_DIR=artifacts bash export-parts.sh
+
+            - name: Upload platform release files
+              uses: actions/upload-artifact@v6
+              with:
+                  name: release-platform-files
+                  path: artifacts/*.stl
+                  if-no-files-found: error
+                  compression-level: 0
+
+    publish:
+        name: Upload files to GitHub release
+        runs-on: ubuntu-latest
+        needs:
+            - parts
+
+        steps:
+            - name: Download platform release files
+              uses: actions/download-artifact@v6
+              with:
+                  name: release-platform-files
+                  path: release-assets/platform
+
+            - name: Verify release assets exist
+              run: |
+                  for part in frame grip wrist_rest pin_spacer_pair \
+                      frame_left frame_right frame_split_pegs frame_split_braces \
+                      fit_bolt_set fit_quick_pin_pair; do
+                      test -f "release-assets/platform/crimpdeq-platform-${part}.stl"
+                  done
+
+            - name: Upload release assets
+              uses: svenstaro/upload-release-action@v2
+              with:
+                  repo_token: ${{ secrets.GITHUB_TOKEN }}
+                  tag: ${{ github.ref }}
+                  file: release-assets/*/*
+                  file_glob: true
+                  overwrite: true

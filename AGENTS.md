@@ -46,6 +46,9 @@
   `check-collisions.sh`.
 - `check-real-case.sh`: optional clearance check against the sibling
   `crimpdeq-case` source.
+- `export-parts.sh`: exports every printable part; used by the release
+  workflow.
+- `.github/workflows/`: CI checks and release STL publication.
 - `docs/`: mdBook documentation; `docs/illustrations/` renders the images in
   `docs/src/images/` from the model.
 - `README.md`: short prose overview; keep details, lists, and figures that
