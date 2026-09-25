@@ -9,8 +9,11 @@ CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash check-collisions.sh
 The runner renders every probe in `collision_check.scad`. The probes check
 that the frame, grip, wrist rest, case reference, and pin hardware do not
 collide at any wrist position, and that intentional contacts are present: the
-load-cell eye interfaces, foot and brace contact with the tabletop, and the
-finger-pocket floor datum. They also cover USB and switch access, the finger
+load-cell eye interfaces, foot contact with the tabletop, and the
+finger-pocket floor datum. For the two-piece frame, they check that the halves
+rebuild the frame without overlapping, that every lap screw clamps both
+halves, that the screws and nuts stay recessed and clear of the moving parts,
+and that the wrist rest slides onto the right half from its lap end. They also cover USB and switch access, the finger
 entry path, pin withdrawal beside the saddle, hardware clearance to the
 tabletop, and the solid, unobstructed palm and heel contact surfaces. Contact
 probes use a 0.01 mm intentional overlap to avoid exporting zero-volume mating

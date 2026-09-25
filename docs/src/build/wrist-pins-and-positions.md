@@ -2,27 +2,27 @@
 
 ## Fit the wrist pins
 
-![Wrist pin through the upper arm, rail and lower arm, held by a paperclip](../images/wrist_pin.png)
+![Ball-lock wrist pin through the upper arm, rail and lower arm](../images/wrist_pin.png)
 
 1. Line up the wrist rest's arm holes with one index hole on each rail. Start
    with the middle (5th) hole.
-2. Push each pin down from the top through the upper arm, the rail and the
-   lower arm, until the head rests on the upper arm.
-3. Push a paperclip or 2 mm split pin through the cross-hole just below the
-   lower arm, and bend its ends so it can't slide out.
-4. Optional: tie a cord from the hole in the pin head to the Ø3.5 mm hole next
-   to it on the wrist pad.
-
-> [!NOTE]
-> The printed pins don't lock. The paperclip only stops them lifting out.
+2. Press the pin's button and push the pin down from the top through the
+   upper arm, the rail and the lower arm, until the head rests on the upper
+   arm. Release the button.
+3. Check that both locking balls stand out fully below the lower arm, then
+   tug the pin to confirm that it is locked.
+4. Tie each pin's lanyard to the Ø3.5 mm anchor hole next to it on the wrist
+   pad.
 
 ## Change position
 
-1. Take out both paperclips and pull out both pins.
-2. Slide the wrist rest to the new index hole on both rails.
-3. Put the pins back in and refit the paperclips.
+1. Fully unload the device.
+2. Press each pin's release button and pull both pins by hand.
+3. Slide the wrist rest to the new index hole on both rails.
+4. Reinsert both pins and tug-test them.
 
-Always use the same index hole on both rails.
+Always use the same index hole on both rails, and never load the device
+unless both pins are fully locked.
 
 ## The nine positions
 

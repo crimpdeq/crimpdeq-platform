@@ -12,13 +12,9 @@ ITEMS = [
     ("Finger grip", [(0.20, 0.45, 0.78)]),
     ("Wrist rest", [(0.95, 0.55, 0.15)]),
     ("Crimpdeq case (see-through)", [(0.12, 0.20, 0.32)]),
-    ("Printed spacers", [(0.92, 0.76, 0.20)]),
-    ("Printed bolts, nuts, washers", [(0.82, 0.82, 0.86)]),
-    ("Printed wrist pins", [(0.45, 0.80, 0.45)]),
-    ("Frame pegs", [(0.20, 0.75, 0.70)]),
-    ("Seam braces", [(0.52, 0.42, 0.76)]),
-    ("Paperclip retainer", [(0.72, 0.42, 0.18)]),
-    ("Glue faces", [(0.85, 0.20, 0.80)]),
+    ("Steel sleeves, aluminium collars", [(0.92, 0.76, 0.20)]),
+    ("Bolts, nuts, washers", [(0.82, 0.82, 0.86)]),
+    ("Ball-lock wrist pins", [(0.45, 0.80, 0.45)]),
     ("Movement arrows", [(0.90, 0.10, 0.10)]),
 ]
 FONTS = [
