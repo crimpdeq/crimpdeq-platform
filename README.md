@@ -48,3 +48,11 @@ Validate the geometry after any change to the model:
 ```bash
 CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash check-collisions.sh
 ```
+
+## License
+
+This repository is source-available under the
+[Crimpdeq Non-Commercial Hardware License](LICENSE). You may study, modify,
+and build the design for personal, educational, and research use, and share
+modified versions non-commercially. Commercial manufacture or sale of printed
+parts, kits, or assembled devices requires prior written permission.
