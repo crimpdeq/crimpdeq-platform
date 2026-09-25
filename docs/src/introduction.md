@@ -9,11 +9,6 @@ finger and hand dynamometer. The closed Crimpdeq enclosure and its
 anchored to the frame; the other is pulled by a four-finger hangboard pocket
 while the palm pushes against an adjustable wrist rest.
 
-> [!CAUTION]
-> This is an **unqualified prototype**, not a certified dynamometer or a
-> device for suspending a person. Physical fit, comfort, and guarded load
-> validation are still pending. Never load the 50 kg sensor above its rating.
-
 ## How this book is organised
 
 [Design](design/index.md) explains the mechanism and the structural
@@ -24,15 +19,6 @@ version](loaded-version/index.md) describes the steel hardware, machined
 inserts, and printing requirements for a future load-bearing build.
 [Development](development/index.md) covers previewing, exporting, and
 validating the model.
-
-## Credits
-
-The frame concept, with opposing finger and palm supports on indexed rails,
-is inspired by the CC0
-[Fingers of Fury hand dynamometer](https://makerworld.com/en/models/3148865-hand-dynamometer).
-It is rebuilt natively in OpenSCAD rather than edited from the original model.
-The palm bolster shape follows the GoGor LITE pad. The Crimpdeq v2 case and
-load cell come from the [Crimpdeq project](https://github.com/crimpdeq).
 
 All illustrations are rendered from the project's OpenSCAD model, so they
 match the exported parts.

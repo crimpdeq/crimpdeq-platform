@@ -10,18 +10,10 @@ four-finger hangboard pocket while the palm pushes against a rounded wrist rest.
 The wrist rest locks into one of nine hand openings with tool-free
 ball-lock pins, and the enclosure itself never carries load.
 
-The mechanism is inspired by the CC0
-[Fingers of Fury hand dynamometer](https://makerworld.com/en/models/3148865-hand-dynamometer),
-rebuilt natively in OpenSCAD. The project is standalone: it carries its own
+The project is standalone: it carries its own
 simplified reference of the Crimpdeq case interface and does not need the
 [crimpdeq-case](https://github.com/crimpdeq/crimpdeq-case) repository to preview,
 export, or validate the model.
-
-> [!CAUTION]
-> This is an **unqualified prototype**, not a certified dynamometer or a device
-> for suspending a person. The current build is an unloaded fit prototype for
-> checking fit and comfort. Physical fit, comfort, and guarded load validation
-> are still pending, and the sensor must never be loaded above its 50 kg rating.
 
 ## Documentation
 
