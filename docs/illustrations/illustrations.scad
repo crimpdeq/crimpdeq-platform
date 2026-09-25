@@ -12,8 +12,8 @@ render_fn = is_undef(render_fn) ? 48 : render_fn;
 $fn = render_fn;
 view = is_undef(view) ? "overview" : view;
 
-c_frame = [0.30, 0.32, 0.36];
-c_frame_b = [0.42, 0.44, 0.48];
+c_frame = [0.40, 0.42, 0.46];
+c_frame_b = [0.52, 0.54, 0.58];
 c_grip = [0.20, 0.45, 0.78];
 c_rest = [0.95, 0.55, 0.15];
 c_case = [0.12, 0.20, 0.32, 0.55];
@@ -25,6 +25,9 @@ c_clip = [0.72, 0.42, 0.18];
 c_arrow = [0.90, 0.10, 0.10];
 c_glue = [0.85, 0.20, 0.80];
 c_plate = [0.66, 0.67, 0.70];
+// Mid-grey text and translucent ghosts read on both light and dark pages.
+c_text = [0.46, 0.47, 0.52];
+c_ghost = [0.60, 0.62, 0.66, 0.30];
 
 // Wrist-rest offset that keeps it at the far (palm-post) end of its travel.
 rest_far = wrist_adjust_range;
@@ -46,9 +49,9 @@ module arrow(from, to, d = 3) {
             }
 }
 
-module case_model() {
-    color(c_case) crimpdeq_case_reference();
-    color([0.75, 0.75, 0.78]) loadcell_reference();
+module case_model(ghost = false) {
+    color(ghost ? c_ghost : c_case) crimpdeq_case_reference();
+    if (!ghost) color([0.75, 0.75, 0.78]) loadcell_reference();
 }
 
 module spacer_at(x_pos, dz = 0) {
@@ -137,8 +140,8 @@ module rest(x_offset = 0) {
     color(c_rest) adjustable_wrist_rest(x_offset);
 }
 
-module grip(dx = 0, dz = 0) {
-    color(c_grip) translate([dx, 0, dz]) moving_finger_grip();
+module grip(dx = 0, dz = 0, c = c_grip) {
+    color(c) translate([dx, 0, dz]) moving_finger_grip();
 }
 
 module full_assembly(x_offset = 0) {
@@ -155,7 +158,7 @@ module full_assembly(x_offset = 0) {
 
 module build_plate(label) {
     color(c_plate) translate([0, 0, -1.2]) cube([256, 256, 1]);
-    color([0.25, 0.25, 0.28])
+    color(c_text)
         translate([6, -14, -1])
             linear_extrude(0.5) text(label, size = 9);
 }
@@ -205,7 +208,7 @@ module sec(c, y0, x0, x1, dz = 0, layer = 0) {
 
 module label(p, t, anchor, size = 4.2) {
     // Text at p with a thin leader line to anchor.
-    color([0.15, 0.15, 0.18]) translate([0, 0, 3]) {
+    color(c_text) translate([0, 0, 3]) {
         translate(p) linear_extrude(0.5)
             text(t, size = size, valign = "center", font = "Liberation Sans");
         v = anchor - (p - [1.5, 0]);
@@ -287,7 +290,7 @@ if (view == "overview") {
     rest(frame_split_x - wrist_arm_x_min - 30);
     arrow([frame_split_x - 10, 0, wrist_rest_z_max + 18],
           [frame_split_x + 55, 0, wrist_rest_z_max + 18], 4);
-    %translate([-90, 0, 0]) frame_half("left");
+    color(c_ghost) translate([-90, 0, 0]) frame_half("left");
 } else if (view == "glue") {
     frame_halves(24);
     translate([-12, 0, 0]) split_pegs();
@@ -310,7 +313,7 @@ if (view == "overview") {
     arrow([60, 0, 140], [60, 0, 110], 4);
     arrow([60, 0, 50], [60, 0, 42], 4);
     arrow([40, -70, 12], [0, -70, 12], 4);
-    %translate([60, 0, 0]) case_model();
+    translate([60, 0, 0]) case_model(ghost = true);
 } else if (view == "grip_in") {
     frame_glued();
     rest(rest_far);
@@ -318,7 +321,7 @@ if (view == "overview") {
     grip(40, 60);
     arrow([106, 0, 150], [106, 0, 115], 4);
     arrow([120, -70, 12], [85, -70, 12], 4);
-    %grip(40, 0);
+    grip(40, 0, c_ghost);
 } else if (view == "bolt_stack") {
     joint_body_sections(sec_x0, sec_x1);
     for (x_pos = [dyno_eye_x_left, dyno_eye_x_right])
@@ -327,7 +330,7 @@ if (view == "overview") {
         flat_arrow([x_pos + 24, 150], [x_pos + 24, 50]);
         flat_arrow([x_pos + 24, -75], [x_pos + 24, -25]);
     }
-    color([0.15, 0.15, 0.18]) translate([0, 0, 3]) linear_extrude(0.5) {
+    color(c_text) translate([0, 0, 3]) linear_extrude(0.5) {
         translate([dyno_eye_x_right + 30, 160]) text("Bolt + washer", size = 8, font = "Liberation Sans");
         translate([dyno_eye_x_right + 30, 70]) text("Spacer", size = 8, font = "Liberation Sans");
         translate([dyno_eye_x_right + 30, -40]) text("Washer", size = 8, font = "Liberation Sans");
@@ -340,7 +343,7 @@ if (view == "overview") {
     for (x_pos = [dyno_eye_x_left, dyno_eye_x_right])
         joint_hardware_sections(x_pos);
     joint_labels(dyno_eye_x_right, sec_x1 + 12);
-    color([0.15, 0.15, 0.18]) translate([0, 0, 3]) linear_extrude(0.5) {
+    color(c_text) translate([0, 0, 3]) linear_extrude(0.5) {
         translate([sec_x0, -35]) text("Fixed clevis (frame)", size = 4.5, font = "Liberation Sans");
         translate([dyno_eye_x_left + 12, 52]) text("Crimpdeq case", size = 4.5, font = "Liberation Sans");
     }
@@ -361,7 +364,7 @@ if (view == "overview") {
     label([lx, -15], "Lower wrist arm", [px + 11, (wrist_plate_z_min_1 + wrist_plate_z_max_1) / 2]);
     label([lx, -28], "Paperclip in cross-hole", [px + 0.8, wrist_rest_z_max - fit_pin_retainer_z]);
     flat_arrow([px - 40, 75], [px - 40, 45]);
-    color([0.15, 0.15, 0.18]) translate([px - 75, 80, 3]) linear_extrude(0.5)
+    color(c_text) translate([px - 75, 80, 3]) linear_extrude(0.5)
         text("Insert from the top", size = 4.2, font = "Liberation Sans");
 } else if (view == "position_min") {
     full_assembly(-wrist_adjust_range);

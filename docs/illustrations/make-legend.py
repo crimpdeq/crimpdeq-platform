@@ -8,7 +8,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 ITEMS = [
-    ("Frame (left / right half)", [(0.30, 0.32, 0.36), (0.42, 0.44, 0.48)]),
+    ("Frame (left / right half)", [(0.40, 0.42, 0.46), (0.52, 0.54, 0.58)]),
     ("Finger grip", [(0.20, 0.45, 0.78)]),
     ("Wrist rest", [(0.95, 0.55, 0.15)]),
     ("Crimpdeq case (see-through)", [(0.12, 0.20, 0.32)]),
@@ -40,7 +40,7 @@ def main():
     font = load_font(26)
     cols, row_h, col_w, pad = 2, 52, 560, 30
     rows = (len(ITEMS) + cols - 1) // cols
-    img = Image.new("RGB", (cols * col_w + pad, rows * row_h + 2 * pad), (248, 248, 248))
+    img = Image.new("RGBA", (cols * col_w + pad, rows * row_h + 2 * pad), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
     for i, (label, colours) in enumerate(ITEMS):
         x = pad + (i // rows) * col_w
@@ -51,7 +51,8 @@ def main():
                 fill=tuple(int(v * 255) for v in colour), outline=(90, 90, 90),
             )
         text_x = x + 34 + 22 * (len(colours) - 1) + 16
-        draw.text((text_x, y + 8), label, fill=(30, 30, 30), font=font)
+        # Mid-grey text, matching c_text, reads on light and dark pages.
+        draw.text((text_x, y + 8), label, fill=(117, 120, 133), font=font)
     out = Path(__file__).resolve().parent.parent / "src" / "images" / "legend.png"
     img.save(out)
     print(f"wrote {out}")
