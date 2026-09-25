@@ -26,6 +26,9 @@
   tethered Ø6 mm push-button ball-lock pins; adjustment must remain tool-free.
 - Size each steel wrist pin for at least 1 kN double-shear capacity, and verify
   both travel extremes after geometry changes.
+- Keep each frame half within the 240 mm printable length of a 256 mm bed
+  (Bambu Lab A1), joined only by the bolted rail lap joints, so the wrist rest
+  can slide onto the right half before the frame is closed.
 - Do not use the enclosure shell, lid, or enclosure screws as load-bearing
   members.
 - Preserve switch and USB access through the +Y frame service tunnel.

@@ -34,9 +34,11 @@ checks=(
     "service_path empty"
     "frame_split_complete empty"
     "frame_split_overlap empty"
-    "frame_split_peg_wall empty"
-    "frame_split_brace_frame empty"
-    "frame_split_brace_clear empty"
+    "frame_split_bore_wall empty"
+    "frame_split_hardware_frame empty"
+    "frame_split_hardware_recessed empty"
+    "frame_split_hardware_clear empty"
+    "wrist_slide_on empty"
     "left_eye_alignment nonempty"
     "right_eye_alignment nonempty"
     "wrist_frame_center empty"
@@ -62,11 +64,9 @@ for index in {0..8}; do
 done
 for index in {0..3}; do
     checks+=("foot_contact_${index} nonempty")
-    checks+=("frame_split_brace_contact_${index} nonempty")
 done
-for index in {0..1}; do
-    checks+=("frame_split_brace_sole_${index} nonempty")
-    checks+=("frame_split_brace_grip_support_${index} nonempty")
+for index in {0..7}; do
+    checks+=("frame_split_clamp_${index} nonempty")
 done
 
 current_job_count() {
@@ -81,7 +81,7 @@ check_mode() {
     local status_file="$tmp_dir/${mode}.status"
     local error_file="$tmp_dir/${mode}.error"
     local result log_text exit_code=0 scad_mode="$mode" test_position=0
-    if [[ "$mode" =~ ^(wrist_position|foot_contact|frame_split_brace_contact|frame_split_brace_sole|frame_split_brace_grip_support)_([0-8])$ ]]; then
+    if [[ "$mode" =~ ^(wrist_position|foot_contact|frame_split_clamp)_([0-8])$ ]]; then
         scad_mode="${BASH_REMATCH[1]}"
         test_position="${BASH_REMATCH[2]}"
     fi
@@ -156,18 +156,11 @@ fi
 
 echo "Collision checks passed."
 
-frame_stl="$tmp_dir/dynamometer_frame.stl"
-grip_stl="$tmp_dir/dynamometer_grip.stl"
-wrist_stl="$tmp_dir/dynamometer_wrist_rest.stl"
-spacer_stl="$tmp_dir/dynamometer_pin_spacer.stl"
-frame_left_stl="$tmp_dir/dynamometer_frame_left.stl"
-frame_right_stl="$tmp_dir/dynamometer_frame_right.stl"
-brace_bottom_stl="$tmp_dir/dynamometer_frame_split_brace_bottom.stl"
-brace_top_stl="$tmp_dir/dynamometer_frame_split_brace_top.stl"
-
-for part in frame grip wrist_rest pin_spacer frame_left frame_right \
-    frame_split_brace_bottom frame_split_brace_top; do
+parts=(frame_left frame_right grip wrist_rest)
+stls=()
+for part in "${parts[@]}"; do
     log_file="$tmp_dir/export_${part}.log"
+    stls+=("$tmp_dir/dynamometer_${part}.stl")
     if ! openscad -D "render_fn=${render_fn}" -D "part=\"${part}\"" \
         -o "$tmp_dir/dynamometer_${part}.stl" "$project_root/dynamometer_assembly.scad" \
         >"$log_file" 2>&1 || grep -Eq 'ERROR:|WARNING:' "$log_file"; then
@@ -177,9 +170,7 @@ for part in frame grip wrist_rest pin_spacer frame_left frame_right \
     fi
 done
 
-python3 "$project_root/check-stl-components.py" \
-    "$frame_stl" "$grip_stl" "$wrist_stl" "$spacer_stl" \
-    "$frame_left_stl" "$frame_right_stl" "$brace_bottom_stl" "$brace_top_stl"
+python3 "$project_root/check-stl-components.py" "${stls[@]}"
 
 echo "STL connectivity checks passed."
 
@@ -216,21 +207,17 @@ invalid_parameters=(
     'wrist_post_channel_clearance=1'
     'wrist_post_channel_y_margin=1'
     'support_foot_clearance=4'
-    'frame_split_x=5'
-    'frame_split_x=150'
-    'frame_split_peg_clearance=0.1'
-    'frame_split_brace_half_len=14'
-    'frame_split_brace_half_len=22'
-    'frame_split_brace_glue_gap=0.5'
-    'frame_split_brace_post_t=6'
-    'frame_split_brace_grip_gap=0'
-    'fit_bolt_d=8.2'
-    'fit_bolt_thread_clearance=0.1'
-    'fit_pin_retainer_d=3'
+    'frame_split_x=30'
+    'frame_split_x=80'
+    'frame_split_lap_len=36'
+    'frame_split_bolt_d=6'
+    'frame_split_bolt_l=40'
+    'frame_split_bolt_pitch=12'
+    'allowable_frame_bolt_shear_mpa=30'
 )
 for parameter in "${invalid_parameters[@]}"; do
     log_file="$tmp_dir/invalid.log"
-    openscad -D "render_fn=${render_fn}" -D 'part="frame"' -D "$parameter" \
+    openscad -D "render_fn=${render_fn}" -D 'part="frame_left"' -D "$parameter" \
         -o "$tmp_dir/invalid.csg" "$project_root/dynamometer_assembly.scad" \
         >"$log_file" 2>&1 || true
     if ! grep -q 'ERROR: Assertion' "$log_file"; then

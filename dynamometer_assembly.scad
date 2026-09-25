@@ -3,17 +3,10 @@
 //
 // Examples:
 //   openscad dynamometer_assembly.scad
-//   openscad -D 'part="frame"' -o /tmp/dyno-frame.stl dynamometer_assembly.scad
-//   openscad -D 'part="grip"' -o /tmp/dyno-grip.stl dynamometer_assembly.scad
-//   openscad -D 'part="wrist_rest"' -o /tmp/dyno-wrist-rest.stl dynamometer_assembly.scad
-//   A1/P1/X1 fit prototype only (256 mm bed, glued pegged frame):
 //   openscad -D 'part="frame_left"' -o /tmp/dyno-frame-left.stl dynamometer_assembly.scad
 //   openscad -D 'part="frame_right"' -o /tmp/dyno-frame-right.stl dynamometer_assembly.scad
-//   openscad -D 'part="frame_split_pegs"' -o /tmp/dyno-frame-pegs.stl dynamometer_assembly.scad
-//   openscad -D 'part="frame_split_braces"' -o /tmp/dyno-frame-braces.stl dynamometer_assembly.scad
-//   Printed M8 and ball-lock pin stand-ins, unloaded fit prototype only:
-//   openscad -D 'part="fit_bolt_set"' -o /tmp/dyno-fit-bolts.stl dynamometer_assembly.scad
-//   openscad -D 'part="fit_quick_pin_pair"' -o /tmp/dyno-fit-pins.stl dynamometer_assembly.scad
+//   openscad -D 'part="grip"' -o /tmp/dyno-grip.stl dynamometer_assembly.scad
+//   openscad -D 'part="wrist_rest"' -o /tmp/dyno-wrist-rest.stl dynamometer_assembly.scad
 //
 
 use <dynamometer_parts.scad>
@@ -29,7 +22,6 @@ show_case = is_undef(show_case) ? true : show_case;
 show_internals = is_undef(show_internals) ? true : show_internals;
 show_hardware = is_undef(show_hardware) ? true : show_hardware;
 show_wrist_rest = is_undef(show_wrist_rest) ? true : show_wrist_rest;
-show_split_braces = is_undef(show_split_braces) ? false : show_split_braces;
 wrist_position = is_undef(wrist_position) ? 0 : wrist_position; // -1 to +1
 
 right_preview_offset = pose == "rated" ? rated_preview_deflection : 0;
@@ -59,11 +51,6 @@ module dynamometer_complete() {
         translate([-exploded_xy, 0, 0])
             fixed_frame();
 
-    if (show_split_braces)
-        color([0.2, 0.2, 0.22])
-            translate([-exploded_xy, 0, 0])
-                frame_split_braces();
-
     color([0.32, 0.34, 0.38])
         translate([right_preview_offset + exploded_xy, 0, 0])
             moving_finger_grip();
@@ -88,41 +75,23 @@ module dynamometer_complete() {
                 right_x_offset = right_preview_offset,
                 exploded_z = exploded_pin_z
             );
-            wrist_rest_hardware_model(x_offset = wrist_x_offset);
+            translate([-exploded_xy, 0, 0]) {
+                wrist_rest_hardware_model(x_offset = wrist_x_offset);
+                frame_split_hardware_model();
+            }
         }
 }
 
 if (part == "assembly") {
     dynamometer_complete();
-} else if (part == "frame") {
-    fixed_frame_print_layout();
 } else if (part == "frame_left") {
     fixed_frame_half_print_layout("left");
 } else if (part == "frame_right") {
     fixed_frame_half_print_layout("right");
-} else if (part == "frame_split_pegs") {
-    frame_split_peg_print_layout();
-} else if (part == "frame_split_braces") {
-    frame_split_braces_print_layout();
-} else if (part == "frame_split_brace_bottom") {
-    frame_split_brace_print_layout("bottom");
-} else if (part == "frame_split_brace_top") {
-    frame_split_brace_print_layout("top");
 } else if (part == "grip") {
     moving_finger_grip_print_layout();
 } else if (part == "wrist_rest") {
     wrist_rest_print_layout();
-} else if (part == "pin_spacer") {
-    pin_spacer_print_layout();
-} else if (part == "pin_spacer_pair") {
-    translate([-bushing_od * 0.75, 0, 0])
-        pin_spacer_print_layout();
-    translate([bushing_od * 0.75, 0, 0])
-        pin_spacer_print_layout();
-} else if (part == "fit_bolt_set") {
-    fit_bolt_set_print_layout();
-} else if (part == "fit_quick_pin_pair") {
-    fit_quick_pin_pair_print_layout();
 } else {
     assert(false, str("Unknown part: ", part));
 }
