@@ -8,7 +8,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 ITEMS = [
-    ("Frame (left / right half)", [(0.40, 0.42, 0.46), (0.52, 0.54, 0.58)]),
+    ("Frame (left / right half)", [(0.40, 0.42, 0.46), (0.58, 0.60, 0.64)]),
     ("Finger grip", [(0.20, 0.45, 0.78)]),
     ("Wrist rest", [(0.95, 0.55, 0.15)]),
     ("Crimpdeq case (see-through)", [(0.12, 0.20, 0.32)]),
@@ -16,6 +16,7 @@ ITEMS = [
     ("Printed bolts, nuts, washers", [(0.82, 0.82, 0.86)]),
     ("Printed wrist pins", [(0.45, 0.80, 0.45)]),
     ("Frame pegs", [(0.20, 0.75, 0.70)]),
+    ("Seam braces", [(0.52, 0.42, 0.76)]),
     ("Paperclip retainer", [(0.72, 0.42, 0.18)]),
     ("Glue faces", [(0.85, 0.20, 0.80)]),
     ("Movement arrows", [(0.90, 0.10, 0.10)]),

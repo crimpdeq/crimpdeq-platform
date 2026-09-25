@@ -10,7 +10,9 @@ two supports:
 - a **wrist rest** (orange) with a palm bolster and heel deck, which slides
   along the frame rails and locks into one of nine positions
 
-The **frame** (grey) holds the left load-cell eye in a fixed clevis. The
+The **frame** (grey) holds the left load-cell eye in a fixed clevis. It is
+printed as two halves, dark and light grey in the pictures, glued together
+and reinforced by two **seam braces** (violet) under the rail joints. The
 USB port and switch stay reachable through a window in the side rail.
 
 ![Assembled fit prototype](../images/overview.png)

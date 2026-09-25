@@ -44,6 +44,8 @@
 
 ## Glue the seam braces
 
+![Fitting the seam braces from below across both rail joints](../images/glue_braces.png)
+
 Each rail gets one brace across its joint. The brace wraps the rail from
 below like a U: a splint on the outer face, a slab under the rail and a post
 on the inner face, all on a leg that stands on the table next to the feet.

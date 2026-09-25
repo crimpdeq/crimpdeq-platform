@@ -19,6 +19,7 @@ declare -A cameras=(
     [dry_fit]="60,0,35"
     [slide_rest]="58,0,32"
     [glue]="58,0,28"
+    [glue_braces]="100,0,30"
     [case_in]="58,0,25"
     [grip_in]="58,0,25"
     [bolt_stack]="0,0,0"

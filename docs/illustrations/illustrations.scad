@@ -13,7 +13,7 @@ $fn = render_fn;
 view = is_undef(view) ? "overview" : view;
 
 c_frame = [0.40, 0.42, 0.46];
-c_frame_b = [0.52, 0.54, 0.58];
+c_frame_b = [0.58, 0.60, 0.64];
 c_grip = [0.20, 0.45, 0.78];
 c_rest = [0.95, 0.55, 0.15];
 c_case = [0.12, 0.20, 0.32, 0.55];
@@ -21,6 +21,7 @@ c_insert = [0.92, 0.76, 0.20];
 c_bolt = [0.82, 0.82, 0.86];
 c_pin = [0.45, 0.80, 0.45];
 c_peg = [0.20, 0.75, 0.70];
+c_brace = [0.52, 0.42, 0.76];
 c_clip = [0.72, 0.42, 0.18];
 c_arrow = [0.90, 0.10, 0.10];
 c_glue = [0.85, 0.20, 0.80];
@@ -97,7 +98,8 @@ module paperclip(p) {
 module frame_half(side) {
     x0 = frame_left_post_outer_x - 5;
     x1 = frame_palm_post_outer_x + 5;
-    difference() {
+    // OpenCSG previews this intersection with the wrong colours; render it.
+    render() difference() {
         intersection() {
             fixed_frame();
             translate([side == "left" ? x0 : frame_split_x, frame_outer_y_min - 5,
@@ -120,7 +122,12 @@ module frame_half_print_layout(side) {
 }
 
 module frame_glued() {
-    color(c_frame) fixed_frame();
+    frame_halves();
+    braces();
+}
+
+module braces(dz = 0) {
+    color(c_brace) translate([0, 0, dz]) frame_split_braces();
 }
 
 module frame_halves(gap = 0) {
@@ -181,7 +188,7 @@ module plate_2() {
             translate([35 + x_pos * 12.3, 45, 0]) pin_spacer_print_layout();
     }
     color(c_peg) translate([135, 55, 0]) frame_split_peg_print_layout();
-    color(c_frame_b) translate([90, 75, 0]) rotate([0, 0, 90]) frame_split_braces_print_layout();
+    color(c_brace) translate([90, 75, 0]) rotate([0, 0, 90]) frame_split_braces_print_layout();
     color(c_bolt) translate([175, 30, 0]) fit_bolt_set_print_layout();
     color(c_pin) translate([35, 105, 0]) fit_quick_pin_pair_print_layout();
 }
@@ -304,6 +311,14 @@ if (view == "overview") {
     for (s = [-1, 1])
         arrow([frame_split_x + s * 70, 0, frame_z_max + 20],
               [frame_split_x + s * 30, 0, frame_z_max + 20], 4);
+} else if (view == "glue_braces") {
+    frame_halves();
+    rest(rest_far);
+    braces(-45);
+    for (y_pos = [(frame_outer_y_min + frame_inner_y_min) / 2,
+                  (frame_inner_y_max + frame_outer_y_max) / 2])
+        arrow([frame_split_x + 32, y_pos, support_foot_bottom_z - 45],
+              [frame_split_x + 32, y_pos, support_foot_bottom_z - 10], 4);
 } else if (view == "case_in") {
     frame_glued();
     rest(rest_far);
