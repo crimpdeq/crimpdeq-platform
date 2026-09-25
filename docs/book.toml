@@ -1,0 +1,8 @@
+[book]
+title = "Crimpdeq Hand Dynamometer"
+description = "Design, printing, assembly, and validation of the Crimpdeq hand dynamometer platform."
+authors = ["Sergio Gasquez"]
+language = "en"
+
+[output.html]
+preferred-dark-theme = "ayu"
