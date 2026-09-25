@@ -2,32 +2,29 @@
 
 ## Files
 
-The STL files are not committed. Export them into `exports/` from the
-repository root (this takes a few minutes):
+Download the STL files from the latest
+[release](https://github.com/crimpdeq/crimpdeq-platform/releases), or export
+them into `exports/` from the repository root (this takes a few minutes):
 
 ```bash
-mkdir -p exports
-for part in frame_left frame_right wrist_rest grip frame_split_pegs \
-    frame_split_braces pin_spacer_pair fit_bolt_set fit_quick_pin_pair; do
-  openscad -D "part=\"$part\"" \
-    -o "exports/crimpdeq-dyno-$part.stl" dynamometer_assembly.scad
-done
+bash export-parts.sh
 ```
 
-Re-export after pulling design changes; parts from different versions may not
-fit together.
+Use files from a single release or export; parts from different versions may
+not fit together. You only need the files listed below; the release also
+contains the one-piece `frame` for the future loaded version.
 
 | File | Contents | Plate |
 |---|---|---|
-| `crimpdeq-dyno-frame_left.stl` | Left frame half (fixed clevis, USB window) | 1 |
-| `crimpdeq-dyno-frame_right.stl` | Right frame half (index holes, palm post) | 1 |
-| `crimpdeq-dyno-wrist_rest.stl` | Wrist rest with palm bolster | 2 |
-| `crimpdeq-dyno-grip.stl` | Finger grip | 2 |
-| `crimpdeq-dyno-frame_split_pegs.stl` | 4 alignment pegs | 2 |
-| `crimpdeq-dyno-frame_split_braces.stl` | 2 seam braces with legs and grip pads, one per rail | 2 |
-| `crimpdeq-dyno-pin_spacer_pair.stl` | 2 printed spacers (stand-ins for steel sleeves) | 2 |
-| `crimpdeq-dyno-fit_bolt_set.stl` | 2 bolts, 2 nuts, 4 washers | 2 |
-| `crimpdeq-dyno-fit_quick_pin_pair.stl` | 2 wrist pins | 2 |
+| `crimpdeq-platform-frame_left.stl` | Left frame half (fixed clevis, USB window) | 1 |
+| `crimpdeq-platform-frame_right.stl` | Right frame half (index holes, palm post) | 1 |
+| `crimpdeq-platform-wrist_rest.stl` | Wrist rest with palm bolster | 2 |
+| `crimpdeq-platform-grip.stl` | Finger grip | 2 |
+| `crimpdeq-platform-frame_split_pegs.stl` | 4 alignment pegs | 2 |
+| `crimpdeq-platform-frame_split_braces.stl` | 2 seam braces with legs and grip pads, one per rail | 2 |
+| `crimpdeq-platform-pin_spacer_pair.stl` | 2 printed spacers (stand-ins for steel sleeves) | 2 |
+| `crimpdeq-platform-fit_bolt_set.stl` | 2 bolts, 2 nuts, 4 washers | 2 |
+| `crimpdeq-platform-fit_quick_pin_pair.stl` | 2 wrist pins | 2 |
 
 > [!NOTE]
 > The frame comes as two halves because the full frame is 297.6 mm long and

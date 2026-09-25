@@ -16,20 +16,11 @@ M2.5 case screws. The case screws carry no load.
 ## Needed later, only for a loaded version
 
 > [!WARNING]
-> These parts are **not** needed for the fit prototype. They are listed so you
-> don't buy the wrong parts later.
+> These parts are **not** needed for the fit prototype.
 
-| Qty | Part | Spec |
-|---|---|---|
-| 2 | M8 × 60 bolt | Steel |
-| 4 | M8 washer | 1.6 mm thick (DIN 125) |
-| 2 | M8 nyloc nut | |
-| 2 | Push-button ball-lock pin | Ø6 mm, **60 mm grip**, head ≤ Ø18 × 8 mm, rated ≥ 1 kN double shear |
-| 2 | Machined steel sleeve | Ø12.4 OD, Ø8.4 bore, 45 mm long, yield ≥ 240 MPa |
-| 4 | Machined 6061-T6 collar half | Ø16.4 body, Ø12.7 bore, 1.9 mm body; Ø17.6 × 0.5 mm flange |
-
-The sleeve and collar sizes are nominal fit-model values, not a toleranced
-drawing. Order them only after the printed replicas fit your real load cell.
+The steel bolts, rated ball-lock pins, and machined sleeves and collars are
+listed in [Hardware and inserts](../loaded-version/hardware.md). Order the
+machined inserts only after the printed replicas fit your real load cell.
 
 A loaded version also needs a one-piece frame and a design change; see
 [Known limits](fit-trial-and-feedback.md#known-limits).

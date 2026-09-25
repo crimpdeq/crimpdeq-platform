@@ -1,8 +1,8 @@
-# Crimpdeq Hand Dynamometer
+# Crimpdeq Platform
 
 ![Assembled fit prototype](images/overview.png)
 
-The Crimpdeq hand dynamometer is a parametric OpenSCAD platform that turns the
+Crimpdeq Platform is a parametric OpenSCAD design that turns the
 [Crimpdeq](https://github.com/crimpdeq) v2 force sensor into an isometric
 finger and hand dynamometer. The closed Crimpdeq enclosure and its
 80 × 40 × 4 mm, 50 kg load cell sit in a printed frame. One load-cell eye is

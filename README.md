@@ -1,4 +1,4 @@
-# Crimpdeq Hand Dynamometer
+# Crimpdeq Platform
 
 ![Assembled fit prototype](docs/src/images/overview.png)
 
@@ -36,11 +36,13 @@ mdbook serve docs
 
 ## Quick start
 
-Open the assembly preview, or export a part by name:
+Ready-to-print STL files are attached to each
+[release](https://github.com/crimpdeq/crimpdeq-platform/releases). To preview
+the model or export the parts yourself:
 
 ```bash
 openscad dynamometer_assembly.scad
-openscad -D 'part="grip"' -o /tmp/dynamometer_grip.stl dynamometer_assembly.scad
+bash export-parts.sh
 ```
 
 Validate the geometry after any change to the model:

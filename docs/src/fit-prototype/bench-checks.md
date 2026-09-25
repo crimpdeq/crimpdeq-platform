@@ -21,7 +21,7 @@ Check that the small parts fit each other before assembling anything.
    ```bash
    openscad -D render_fn=96 -D 'part="fit_bolt_set"' \
      -D fit_bolt_thread_clearance=0.45 \
-     -o exports/crimpdeq-dyno-fit_bolt_set.stl dynamometer_assembly.scad
+     -o exports/crimpdeq-platform-fit_bolt_set.stl dynamometer_assembly.scad
    ```
 
 ## Bolts and spacers
