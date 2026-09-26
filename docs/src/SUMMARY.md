@@ -12,6 +12,7 @@
   - [Frame and wrist rest](build/frame-and-wrist-rest.md)
   - [Case, grip and load-cell joints](build/case-grip-and-bolts.md)
   - [Wrist pins and hand positions](build/wrist-pins-and-positions.md)
+  - [Stoppers and phone](build/stoppers-and-phone.md)
   - [Checks, feedback and limits](build/checks-and-limits.md)
 - [Development](development/index.md)
   - [Previewing and exporting](development/exporting.md)

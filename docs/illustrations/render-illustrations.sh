@@ -11,30 +11,41 @@ mkdir -p "$out"
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
+all_views="overview plate1 plate2 plate3 slide_rest join_frame frame_joint case_in
+grip_in bolt_stack bolt_done wrist_pin position_min position_max stoppers phone"
+
 # view -> "rx,ry,rz" (auto-framed) or "tx,ty,tz,rx,ry,rz,distance"
-declare -A cameras=(
-    [overview]="62,0,28"
-    [plate1]="0,0,0"
-    [plate2]="0,0,0"
-    [slide_rest]="58,0,32"
-    [join_frame]="58,0,28"
-    [frame_joint]="0,0,0"
-    [case_in]="58,0,25"
-    [grip_in]="58,0,25"
-    [bolt_stack]="0,0,0"
-    [bolt_done]="0,0,0"
-    [wrist_pin]="0,0,0"
-    [position_min]="0,0,0"
-    [position_max]="0,0,0"
-)
+camera() {
+    case "$1" in
+        overview) echo "62,0,28" ;;
+        slide_rest) echo "58,0,32" ;;
+        join_frame) echo "58,0,28" ;;
+        case_in | grip_in) echo "58,0,25" ;;
+        stoppers) echo "50,0,20" ;;
+        phone) echo "68,0,62" ;;
+        plate1 | plate2 | plate3 | frame_joint | bolt_stack | bolt_done | wrist_pin | \
+            position_min | position_max) echo "0,0,0" ;;
+        *) echo "Unknown view: $1" >&2; return 1 ;;
+    esac
+}
+
+# macOS ships bash 3.2, which lacks `wait -n` (bash 4.3+); poll instead.
+wait_for_any_job() {
+    if (( BASH_VERSINFO[0] > 4 || (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 3) )); then
+        wait -n
+    else
+        sleep 0.2
+    fi
+}
 
 views=("$@")
 if [ "${#views[@]}" -eq 0 ]; then
-    views=("${!cameras[@]}")
+    read -r -a views <<<"$(echo $all_views)"
 fi
 
 render() {
-    local view="$1" cam="${cameras[$1]}" framing scheme tag
+    local view="$1" cam framing scheme tag
+    cam="$(camera "$view")" || return 1
     # Three values: rotation with auto-framing. Seven: explicit gimbal camera.
     if [ "$(tr -cd , <<<"$cam" | wc -c)" -eq 2 ]; then
         framing=(--viewall --autocenter --camera="0,0,0,${cam},500")
@@ -59,13 +70,14 @@ render() {
     magick "$tmp/${view}.png" -trim +repage -bordercolor none -border 40 "$out/${view}.png"
     echo "rendered ${view}.png"
 }
-export -f render
-export here out size tmp
-
 status=0
+pids=()
 for view in "${views[@]}"; do
     render "$view" &
-    while [ "$(jobs -rp | wc -l)" -ge "$jobs" ]; do wait -n || status=1; done
+    pids+=("$!")
+    while [ "$(jobs -rp | wc -l)" -ge "$jobs" ]; do wait_for_any_job || true; done
 done
-while [ "$(jobs -rp | wc -l)" -gt 0 ]; do wait -n || status=1; done
+for pid in "${pids[@]}"; do
+    wait "$pid" || status=1
+done
 exit "$status"

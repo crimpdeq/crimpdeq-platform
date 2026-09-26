@@ -18,8 +18,10 @@
 3. Line up the arms: the upper arms go **over** the rails, the lower arms
    **under** them.
 4. Slide the rest along the rails, away from the lap end, until it's past the
-   middle of the index-hole row.
-5. Check that it slides freely over the whole row of index holes.
+   middle of the index-hole row. The upright palm face passes between the
+   two grip-guide ledges on the rail inner faces.
+5. Check that it slides freely over the whole row of index holes and that
+   the heel deck passes over the palm post.
 
 ## Bolt the halves together
 

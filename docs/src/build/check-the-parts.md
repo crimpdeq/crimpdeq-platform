@@ -7,6 +7,8 @@ Check that the printed parts fit the hardware before assembling anything.
 - Remove supports and brims. Trim any elephant's foot (the flared first layer)
   on the frame halves with a knife.
 - Sand the right half's lap faces flat where their support was.
+- Sand the tops of the right half's grip-guide ledges smooth and flat where
+  their support was.
 - Sand support scars on the palm bolster, heel deck and finger pocket smooth.
 
 ## Frame joint
@@ -30,5 +32,12 @@ Check that the printed parts fit the hardware before assembling anything.
 
 - [ ] Each ball-lock pin passes through an index hole in the right frame half
       and a wrist-arm hole with no force.
+
+## Stoppers
+
+- [ ] Each stopper drops flat onto the floor of the finger pocket without
+      force, and doesn't rattle sideways.
+- [ ] All three stack in the well at the left end of the frame half, just
+      below its top face.
 
 Sand tight holes lightly; don't enlarge them past a sliding fit.

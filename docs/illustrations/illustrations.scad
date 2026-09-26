@@ -20,6 +20,8 @@ c_case = [0.12, 0.20, 0.32, 0.55];
 c_insert = [0.92, 0.76, 0.20];
 c_bolt = [0.82, 0.82, 0.86];
 c_pin = [0.45, 0.80, 0.45];
+c_stopper = [0.20, 0.62, 0.58];
+c_phone = [0.10, 0.10, 0.12, 0.75];
 c_arrow = [0.90, 0.10, 0.10];
 c_plate = [0.66, 0.67, 0.70];
 // Mid-grey text and translucent ghosts read on both light and dark pages.
@@ -137,10 +139,15 @@ module grip(dx = 0, dz = 0, c = c_grip) {
     color(c) translate([dx, 0, dz]) moving_finger_grip();
 }
 
+module stored_stoppers() {
+    color(c_stopper) stored_pocket_stoppers();
+}
+
 module full_assembly(x_offset = 0) {
     frame_bolted();
     rest(x_offset);
     grip();
+    stored_stoppers();
     case_model();
     inserts_at(dyno_eye_x_left);
     inserts_at(dyno_eye_x_right);
@@ -156,19 +163,22 @@ module build_plate(label) {
             linear_extrude(0.5) text(label, size = 9);
 }
 
-module plate_1() {
-    build_plate("Plate 1: frame halves");
-    for (i = [0, 1])
-        translate([128 + (i == 0 ? -1 : 1) * (110.6 / 2 + 7.5), 128, 0])
-            rotate([0, 0, 90])
-                color(i == 0 ? c_frame : c_frame_b)
-                    frame_half_print_layout(i == 0 ? "left" : "right");
+module frame_plate(side, label) {
+    build_plate(label);
+    translate([128, 128, 0])
+        rotate([0, 0, 90])
+            color(side == "left" ? c_frame : c_frame_b)
+                frame_half_print_layout(side);
 }
 
-module plate_2() {
-    build_plate("Plate 2: wrist rest and grip");
-    translate([60 - 177.8, 150 - 0.6, 0]) color(c_rest) wrist_rest_print_layout();
-    translate([180 - 48.15, 150, 0]) color(c_grip) moving_finger_grip_print_layout();
+module plate_3() {
+    // Wrist rest on the left; grip and stoppers stacked on the right.
+    build_plate("Plate 3: wrist rest, grip and stoppers");
+    translate([15 - wrist_arm_x_min, 128 - frame_center_y, 0])
+        color(c_rest) wrist_rest_print_layout();
+    translate([115 - moving_clevis_x_min, 190 - frame_center_y, 0])
+        color(c_grip) moving_finger_grip_print_layout();
+    translate([150, 70, 0]) color(c_stopper) pocket_stoppers_print_layout();
 }
 
 // ---- Flat labelled cross-sections (x right, z up) ----
@@ -266,9 +276,33 @@ module joint_labels(x_pos, lx, stack = false) {
 if (view == "overview") {
     full_assembly(0);
 } else if (view == "plate1") {
-    plate_1();
+    frame_plate("left", "Plate 1: left frame half");
 } else if (view == "plate2") {
-    plate_2();
+    frame_plate("right", "Plate 2: right frame half");
+} else if (view == "plate3") {
+    plate_3();
+} else if (view == "stoppers") {
+    // One stopper lowered into the pocket, the other two in the well.
+    frame_bolted();
+    rest(rest_far);
+    grip();
+    case_model();
+    color(c_stopper) {
+        for (i = [0 : stopper_count - 2])
+            translate([
+                (stopper_well_x_min + stopper_well_x_max) / 2
+                    - (stopper_x_min + stopper_x_max) / 2,
+                0,
+                stopper_well_z_min - hangboard_pocket_back_z + stopper_stack_offset(i)
+            ])
+                pocket_stopper(stopper_edge_depths[i]);
+        translate([0, 0, 45]) pocket_stopper(stopper_edge_depths[stopper_count - 1]);
+    }
+    arrow([finger_grip_center_x + 30, frame_center_y, 80],
+          [finger_grip_center_x + 30, frame_center_y, 50], 4);
+} else if (view == "phone") {
+    full_assembly(0);
+    color(c_phone) phone_reference();
 } else if (view == "slide_rest") {
     color(c_frame_b) frame_half("right");
     rest(frame_split_x_min - wrist_arm_x_min - 30);
