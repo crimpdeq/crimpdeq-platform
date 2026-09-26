@@ -105,8 +105,12 @@ if (mode == "frame_case") {
         fixed_frame_body();
     }
 } else if (mode == "frame_split_hardware_frame") {
-    // Bolts and nuts sit in their holes, counterbores and pockets.
-    intersection() { frame_split_hardware_model(); fixed_frame(); }
+    // Bolts and nuts sit in their holes, counterbores and pockets. Back them
+    // 0.01 mm off their seating faces so face contact is not an overlap.
+    intersection() {
+        frame_split_hardware_model(bolt_dz = 0.01, nut_dz = 0.01);
+        fixed_frame();
+    }
 } else if (mode == "frame_split_hardware_recessed") {
     // No head, nut or bolt tip stands proud of the top or bottom face.
     difference() {
