@@ -5,7 +5,7 @@
 - [ ] **All nine positions:** the pins go in and lock easily each time, and
       the heel deck passes cleanly through the channel in the palm post.
 - [ ] **Pin heads:** you can grip and pull each pin at every position. The
-      heads sit 6.5 mm from the bolster ends, 14.5 mm below its top.
+      heads sit 6.5 mm from the bolster ends, 2.5 mm below its top.
 - [ ] **Case access:** the USB port and switch are reachable at every position.
 - [ ] **Tabletop:** only the four feet touch. The nuts, bolt tips and pin tips
       stay clear.

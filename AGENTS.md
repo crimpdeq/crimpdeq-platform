@@ -26,8 +26,8 @@
 - Keep the grip-guide ledges under the grip's side walls with a Z gap and
   free X travel, so they catch tilt without carrying measured load.
 - Keep the rounded palm/wrist-heel pad beside the hangboard pocket, with its
-  heel deck level with the pocket mouth and its palm bolster rising 32 mm
-  above it, at least 10 mm above the pin buttons.
+  heel deck level with the pocket mouth and its palm bolster rising 20 mm
+  above it, at least 2 mm above the pin buttons.
 - Preserve its nine positively locked 25–105 mm opening positions, with
   discrete holes in the fixed rails, round holes in the pad arms, and two
   tethered Ø6 mm push-button ball-lock pins; adjustment must remain tool-free.

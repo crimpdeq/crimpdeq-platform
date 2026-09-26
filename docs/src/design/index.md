@@ -59,7 +59,7 @@ matching 5 mm rounded edges and no groove at the transition. Two low,
 than the grip so it slides past the grip guides when it goes onto the frame.
 
 At the finger-facing end, a straight palm bolster modelled on the GoGor LITE
-pad spans the full 78 mm pad width. It is 22 mm deep and 32 mm tall above
+pad spans the full 78 mm pad width. It is 22 mm deep and 20 mm tall above
 the deck, with a nearly flat 11 mm top, a 6 mm front top radius, a 5 mm rear
 top radius, rounded ends blended into the side lips, and a 3 mm concave fillet
 into the deck. It has no cup or ridge. The palm heel pushes on its
@@ -72,8 +72,8 @@ Behind the bolster, a 38 × 68 mm open heel deck remains solid and
 uninterrupted: no holes, slots, exposed fasteners, or separate pads beneath
 the wrist. The 14 mm-thick deck sits at Z = 34 mm, level with the finger
 pocket's +Z opening; only the bolster and the low lips rise above it. The
-bolster top, at Z = 66 mm, is 14.5 mm above the pin buttons, so a thumb
-wrapped round the bolster stays above the pin heads. A rounded clearance
+bolster top, at Z = 54 mm, is 2.5 mm above the pin buttons, and the pin heads
+sit 6.5 mm outboard of the bolster ends. A rounded clearance
 channel in the fixed right post keeps 2 mm under the deck at full wrist
 travel. The upper pin arms are trimmed flush with the palm face across the
 pad width and join the saddle through the bolster's end faces.

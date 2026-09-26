@@ -274,11 +274,10 @@ wrist_cradle_open_width_y = wrist_pad_y_max - wrist_pad_y_min - 2 * wrist_cradle
 // Straight GoGor LITE-style palm bolster: a full-width rounded-rectangle
 // section with a nearly flat top. Its -X face continues the palm face and it
 // extends only toward +X, so the nine 25-105 mm openings are unchanged. It
-// rises well above the deck, so the palm pushes high on it and a thumb
-// wrapped round it stays above the pin heads.
+// rises 20 mm above the deck, just above the pin buttons beside its ends.
 wrist_palm_bolster_depth_x =
     is_undef(wrist_palm_bolster_depth_x) ? 22 : wrist_palm_bolster_depth_x;
-wrist_palm_bolster_rise = is_undef(wrist_palm_bolster_rise) ? 32 : wrist_palm_bolster_rise;
+wrist_palm_bolster_rise = is_undef(wrist_palm_bolster_rise) ? 20 : wrist_palm_bolster_rise;
 wrist_palm_bolster_front_r =
     is_undef(wrist_palm_bolster_front_r) ? 6 : wrist_palm_bolster_front_r;
 wrist_palm_bolster_rear_r =
@@ -561,8 +560,8 @@ assert(wrist_saddle_t >= 2 * wrist_pad_corner_r + 4 &&
     wrist_palm_bolster_z_max > wrist_plate_z_max_2 + 2,
     "Palm and finger contact decks must align and the bolster must enclose the upper arm plates.");
 assert(wrist_palm_bolster_z_max >= wrist_plate_z_max_2 + wrist_quick_pin_head_h
-        + wrist_quick_pin_button_h + 10,
-    "The palm bolster must rise at least 10 mm above the pin buttons to keep the thumb clear.");
+        + wrist_quick_pin_button_h + 2,
+    "The palm bolster must rise at least 2 mm above the pin buttons.");
 assert(wrist_palm_bolster_design_bending_mpa <= allowable_printed_bending_mpa,
     "Palm bolster exceeds configured nominal bending stress.");
 assert(wrist_post_channel_clearance >= 2 && wrist_post_channel_y_margin >= 2 &&
@@ -594,7 +593,7 @@ assert(wrist_palm_bolster_x_min == wrist_saddle_x_min &&
     wrist_palm_bolster_x_max + wrist_palm_bolster_fillet_r
         < wrist_saddle_x_max - wrist_cradle_edge_w,
     "Palm bolster must start at the palm face, keep a nearly flat top, and cover the arm plates.");
-assert(wrist_palm_bolster_rise >= 28 && wrist_palm_bolster_rise <= 36 &&
+assert(wrist_palm_bolster_rise >= 18 && wrist_palm_bolster_rise <= 24 &&
     wrist_palm_bolster_front_r >= 5 && wrist_palm_bolster_front_r <= 8 &&
     wrist_palm_bolster_rear_r >= 4 &&
     wrist_palm_bolster_rear_r <= wrist_palm_bolster_front_r &&
