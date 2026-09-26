@@ -73,6 +73,15 @@ current_job_count() {
     jobs -pr | wc -l | tr -d ' '
 }
 
+# macOS ships bash 3.2, which lacks `wait -n` (bash 4.3+); poll instead.
+wait_for_any_job() {
+    if (( BASH_VERSINFO[0] > 4 || (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 3) )); then
+        wait -n || true
+    else
+        sleep 0.2
+    fi
+}
+
 check_mode() {
     local mode="$1"
     local expected="$2"
@@ -118,7 +127,7 @@ for check in "${checks[@]}"; do
     pids+=("$!")
 
     while (( $(current_job_count) >= check_jobs )); do
-        wait -n || true
+        wait_for_any_job
     done
 done
 

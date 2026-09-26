@@ -13,6 +13,8 @@ assert(test_position >= 0 && test_position < wrist_index_count &&
 test_offset = -wrist_adjust_range + test_position * wrist_index_pitch;
 
 module service_probe() {
+    // Kept 0.01 mm inside the tunnel floor and roof, so face contact is not
+    // an overlap.
     translate([
         0,
         (service_tunnel_y_min + service_tunnel_y_max) / 2,
@@ -21,7 +23,7 @@ module service_probe() {
         cube([
             usb_cable_boot_w,
             service_tunnel_y_max - service_tunnel_y_min,
-            service_tunnel_z_max - service_tunnel_z_min
+            service_tunnel_z_max - service_tunnel_z_min - 0.02
         ], center = true);
 }
 
