@@ -8,7 +8,9 @@ closed Crimpdeq enclosure and its 50 kg load cell sit in a printed frame: one
 load-cell eye is anchored to the frame, and the other is pulled by a
 four-finger hangboard pocket while the palm pushes against a rounded wrist rest.
 The wrist rest locks into one of nine hand openings with tool-free
-ball-lock pins, and the enclosure itself never carries load.
+ball-lock pins, and the enclosure itself never carries load. Drop-in
+stoppers give 25, 20, 15 and 10 mm edges, and a slot at the far end holds a
+phone running the Crimpdeq app.
 
 The project is standalone: it carries its own
 simplified reference of the Crimpdeq case interface and does not need the

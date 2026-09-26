@@ -33,9 +33,10 @@ clevis plate.
 ![Lower the grip in, pocket up, then slide it left over the right end of the case](../images/grip_in.png)
 
 1. Hold the grip with the finger pocket facing up.
-2. Lower it into the frame just to the right of the case until its top is
-   level with the frame top. Its two plates (cheeks) then sit at the height
-   of the case's top and bottom.
+2. Lower it into the frame just to the right of the case until the underside
+   of its side walls is just above the grip-guide ledges on the rails. Its
+   top is then level with the frame top, and its two plates (cheeks) sit at
+   the height of the case's top and bottom.
 3. Slide it left so the cheeks go over and under the right end of the case,
    until the cheek holes line up with the right eye. Hold it there until its
    sleeve is in.
@@ -68,5 +69,7 @@ and the nuts underneath.
 - [ ] The bolt thread passes fully through each nyloc nut.
 - [ ] The grip can move a little along the frame without the case touching the
       grip or the frame walls.
+- [ ] The grip's top is level with the frame top. If it tips, it rests on the
+      grip-guide ledges rather than dropping below the frame.
 - [ ] The USB port and switch are reachable through the side-rail window.
 - [ ] On a flat table only the four feet touch. The nuts stay clear.

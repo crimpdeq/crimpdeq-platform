@@ -24,7 +24,7 @@ fi
 
 parts=("$@")
 if (( ${#parts[@]} == 0 )); then
-    parts=(frame_left frame_right grip wrist_rest)
+    parts=(frame_left frame_right grip wrist_rest stoppers)
 fi
 
 mkdir -p "$out_dir"
@@ -45,14 +45,25 @@ export_part() {
     printf 'Exported %s\n' "$stl"
 }
 
+# macOS ships bash 3.2, which lacks `wait -n` (bash 4.3+); poll instead.
+wait_for_any_job() {
+    if (( BASH_VERSINFO[0] > 4 || (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 3) )); then
+        wait -n
+    else
+        sleep 0.2
+    fi
+}
+
 failed=0
+pids=()
 for part in "${parts[@]}"; do
     export_part "$part" &
+    pids+=("$!")
     while (( $(jobs -pr | wc -l) >= export_jobs )); do
-        wait -n || failed=1
+        wait_for_any_job || true
     done
 done
-while (( $(jobs -pr | wc -l) > 0 )); do
-    wait -n || failed=1
+for pid in "${pids[@]}"; do
+    wait "$pid" || failed=1
 done
 exit "$failed"

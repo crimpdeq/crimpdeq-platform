@@ -75,17 +75,24 @@ clevis_gap_z = frame_depth_z - 2 * clevis_plate_t;
 bushing_length = frame_depth_z;
 bushing_center_z = (frame_z_min + frame_z_max) / 2;
 
-// Fixed outer frame.
-frame_case_clear_y = is_undef(frame_case_clear_y) ? 4 : frame_case_clear_y;
+// Fixed outer frame. The rails clear the finger grip, which is wider than
+// the case, so the grip sets the frame's inner width.
 frame_rail_t = is_undef(frame_rail_t) ? 15 : frame_rail_t;
 frame_left_post_t = is_undef(frame_left_post_t) ? 22 : frame_left_post_t;
 frame_palm_post_t = is_undef(frame_palm_post_t) ? 22 : frame_palm_post_t;
 frame_corner_r = 7;
+frame_center_y = (case_outer_y_min + case_outer_y_max) / 2;
+grip_rail_gap_y = is_undef(grip_rail_gap_y) ? 3 : grip_rail_gap_y;
+hangboard_opening_w_y = is_undef(hangboard_opening_w_y) ? 80 : hangboard_opening_w_y;
+hangboard_side_wall_t = 4;
+hangboard_body_w_y = hangboard_opening_w_y + 2 * hangboard_side_wall_t;
 
-frame_inner_y_min = case_outer_y_min - frame_case_clear_y;
-frame_inner_y_max = case_outer_y_max + frame_case_clear_y;
+frame_inner_y_min = frame_center_y - hangboard_body_w_y / 2 - grip_rail_gap_y;
+frame_inner_y_max = frame_center_y + hangboard_body_w_y / 2 + grip_rail_gap_y;
 frame_outer_y_min = frame_inner_y_min - frame_rail_t;
 frame_outer_y_max = frame_inner_y_max + frame_rail_t;
+frame_case_clear_y = min(case_outer_y_min - frame_inner_y_min,
+    frame_inner_y_max - case_outer_y_max);
 
 frame_left_post_inner_x = case_outer_x_min - 4;
 frame_left_post_outer_x = frame_left_post_inner_x - frame_left_post_t;
@@ -96,17 +103,16 @@ hangboard_case_clear_x = 4;
 hangboard_body_x_min = case_outer_x_max + hangboard_case_clear_x;
 hangboard_body_w_x = is_undef(hangboard_body_w_x) ? 36 : hangboard_body_w_x;
 hangboard_body_x_max = hangboard_body_x_min + hangboard_body_w_x;
-hangboard_body_y_min = frame_inner_y_min + 3;
-hangboard_body_y_max = frame_inner_y_max - 3;
-hangboard_body_depth_z = is_undef(hangboard_body_depth_z) ? 28 : hangboard_body_depth_z;
+hangboard_body_y_min = frame_inner_y_min + grip_rail_gap_y;
+hangboard_body_y_max = frame_inner_y_max - grip_rail_gap_y;
+hangboard_body_depth_z = is_undef(hangboard_body_depth_z) ? 31 : hangboard_body_depth_z;
 hangboard_front_z = frame_z_max;
 hangboard_back_z = hangboard_front_z - hangboard_body_depth_z;
-hangboard_pocket_depth_z = is_undef(hangboard_pocket_depth_z) ? 20 : hangboard_pocket_depth_z;
+hangboard_pocket_depth_z = is_undef(hangboard_pocket_depth_z) ? 25 : hangboard_pocket_depth_z;
 hangboard_pocket_back_z = hangboard_front_z - hangboard_pocket_depth_z;
 hangboard_back_wall_t = hangboard_pocket_back_z - hangboard_back_z;
 hangboard_left_wall_t = 6;
 hangboard_right_lip_t = 10;
-hangboard_side_wall_t = 4;
 hangboard_opening_x_min = hangboard_body_x_min + hangboard_left_wall_t;
 hangboard_opening_x_max = hangboard_body_x_max - hangboard_right_lip_t;
 hangboard_opening_y_min = hangboard_body_y_min + hangboard_side_wall_t;
@@ -119,13 +125,56 @@ hangboard_lip_min_t = hangboard_right_lip_t - hangboard_lip_radius;
 finger_grip_center_x = (hangboard_body_x_min + hangboard_body_x_max) / 2;
 finger_yoke_spine_y = clevis_width_y;
 
+// The grip hangs from a single eye joint, which lets it tip. Ledges on the
+// rail inner faces catch the underside of its side walls with a small Z gap.
+// They leave X free, so they carry no measured load while the grip is level.
+grip_guide_gap_z = is_undef(grip_guide_gap_z) ? 0.3 : grip_guide_gap_z;
+grip_guide_bearing_y = is_undef(grip_guide_bearing_y) ? 4 : grip_guide_bearing_y;
+grip_guide_t = 6;
+grip_guide_w_y = grip_rail_gap_y + grip_guide_bearing_y;
+grip_guide_x_min = hangboard_body_x_min;
+grip_guide_x_max = hangboard_body_x_max + 2;
+grip_guide_z_max = hangboard_back_z - grip_guide_gap_z;
+grip_guide_z_min = grip_guide_z_max - grip_guide_t;
+
+// Two drop-in pocket stoppers raise the floor to give shallower edges: each
+// on its own, or both stacked in either order. The closed pocket walls locate
+// them; cords knotted through each stopper's pull holes lift it out, passing
+// through clearance holes in the other when it is on top. They stack in a
+// storage well in the left end of the frame.
+stopper_t_list = is_undef(stopper_t_list) ? [5, 10] : stopper_t_list;
+stopper_clearance = is_undef(stopper_clearance) ? 0.25 : stopper_clearance;
+stopper_count = len(stopper_t_list);
+stopper_x_min = hangboard_opening_x_min + hangboard_draft + stopper_clearance;
+stopper_x_max = hangboard_opening_x_max - hangboard_draft - stopper_clearance;
+stopper_center_x = (stopper_x_min + stopper_x_max) / 2;
+stopper_y_min = hangboard_opening_y_min + hangboard_draft + stopper_clearance;
+stopper_y_max = hangboard_opening_y_max - hangboard_draft - stopper_clearance;
+stopper_r = hangboard_opening_r - hangboard_draft;
+stopper_pull_hole_d = 3.5;
+stopper_pull_knot_d = 6;
+stopper_pull_knot_h = 2;
+stopper_pull_inset_y = 4;
+// Each stopper's own pull holes sit on its side of the X centre line.
+stopper_pull_offset_x = 4;
+function stopper_pull_x(i) = stopper_center_x + (2 * i - 1) * stopper_pull_offset_x;
+function sum_list(v, i = 0) = i >= len(v) ? 0 : v[i] + sum_list(v, i + 1);
+stopper_stack_h = sum_list(stopper_t_list);
+stopper_min_t = min(stopper_t_list);
+// Edges from each stopper alone, then from both stacked.
+stopper_edge_depths = concat(
+    [for (t = stopper_t_list) hangboard_pocket_depth_z - t],
+    [hangboard_pocket_depth_z - stopper_stack_h]);
+
 // Adjustable palm/wrist-heel pad beside the hangboard pocket.
 hand_opening = is_undef(hand_opening) ? 65 : hand_opening;
 wrist_adjust_range = is_undef(wrist_adjust_range) ? 40 : wrist_adjust_range;
 wrist_pad_t_x = is_undef(wrist_pad_t_x) ? 14 : wrist_pad_t_x;
 wrist_pad_center_x = hangboard_body_x_max + hand_opening + wrist_pad_t_x / 2;
-wrist_pad_y_min = hangboard_body_y_min;
-wrist_pad_y_max = hangboard_body_y_max;
+// The pad clears the grip-guide ledges as it slides onto the right half.
+wrist_pad_rail_clear_y = grip_guide_w_y + 1;
+wrist_pad_y_min = frame_inner_y_min + wrist_pad_rail_clear_y;
+wrist_pad_y_max = frame_inner_y_max - wrist_pad_rail_clear_y;
 wrist_pad_corner_r = 5;
 wrist_post_clear_x = 3;
 frame_palm_post_inner_x =
@@ -231,10 +280,11 @@ wrist_cradle_z_max = wrist_saddle_z_max + wrist_cradle_rise;
 wrist_cradle_open_width_y = wrist_pad_y_max - wrist_pad_y_min - 2 * wrist_cradle_edge_w;
 // Straight GoGor LITE-style palm bolster: a full-width rounded-rectangle
 // section with a nearly flat top. Its -X face continues the palm face and it
-// extends only toward +X, so the nine 25-105 mm openings are unchanged.
+// extends only toward +X, so the nine 25-105 mm openings are unchanged. It
+// rises 20 mm above the deck, just above the pin buttons beside its ends.
 wrist_palm_bolster_depth_x =
     is_undef(wrist_palm_bolster_depth_x) ? 22 : wrist_palm_bolster_depth_x;
-wrist_palm_bolster_rise = is_undef(wrist_palm_bolster_rise) ? 12 : wrist_palm_bolster_rise;
+wrist_palm_bolster_rise = is_undef(wrist_palm_bolster_rise) ? 20 : wrist_palm_bolster_rise;
 wrist_palm_bolster_front_r =
     is_undef(wrist_palm_bolster_front_r) ? 6 : wrist_palm_bolster_front_r;
 wrist_palm_bolster_rear_r =
@@ -292,6 +342,35 @@ service_tunnel_y_max = frame_outer_y_max + 0.2;
 
 rated_preview_deflection = 0.4;
 
+// Unloaded accessory block outboard of the left anchor post (-X): a well
+// for the stacked pocket stoppers next to the post, then a tilted slot that
+// holds a phone facing the user. Neither is in the load path.
+stopper_well_clearance = 0.5;
+stopper_well_x_max = frame_left_post_outer_x;
+stopper_well_x_min = stopper_well_x_max
+    - (stopper_x_max - stopper_x_min) - 2 * stopper_well_clearance;
+stopper_well_y_min = stopper_y_min - stopper_well_clearance;
+stopper_well_y_max = stopper_y_max + stopper_well_clearance;
+stopper_well_depth_z = stopper_stack_h + 1;
+stopper_well_z_min = frame_z_max - stopper_well_depth_z;
+phone_slot_w = is_undef(phone_slot_w) ? 14 : phone_slot_w;
+phone_slot_depth_z = is_undef(phone_slot_depth_z) ? 16 : phone_slot_depth_z;
+phone_slot_tilt = is_undef(phone_slot_tilt) ? 15 : phone_slot_tilt;
+phone_slot_inner_wall_x = 4;
+phone_slot_outer_wall_x = 5;
+phone_slot_z_min = frame_z_max - phone_slot_depth_z;
+// The slot's +X face meets the top face here and leans toward -X; its floor
+// is flat so it bridges when the half prints upside down.
+phone_slot_x_top = stopper_well_x_min - phone_slot_inner_wall_x
+    - phone_slot_depth_z * tan(phone_slot_tilt);
+phone_slot_top_w_x = phone_slot_w / cos(phone_slot_tilt);
+frame_x_min = phone_slot_x_top - phone_slot_top_w_x - phone_slot_outer_wall_x;
+frame_accessory_len_x = frame_left_post_outer_x - frame_x_min;
+// Largest phone, in its case, checked in the slot in either orientation.
+phone_probe_t = 13;
+phone_probe_l = 165;
+phone_probe_w = 80;
+
 // Two-piece frame for printers with a 256 mm bed (Bambu Lab A1/P1/X1). Each
 // rail is spliced by a bolted half-lap: the left half keeps the upper half of
 // the rail depth, the right half the lower half. Rail compression bears on the
@@ -306,7 +385,7 @@ frame_split_x_max = frame_split_x + frame_split_lap_len / 2;
 frame_split_lap_z = (frame_z_min + frame_z_max) / 2;
 frame_split_upper_t = frame_z_max - frame_split_lap_z;
 frame_split_lower_t = frame_split_lap_z - frame_z_min;
-frame_split_left_len = frame_split_x_max - frame_left_post_outer_x;
+frame_split_left_len = frame_split_x_max - frame_x_min;
 frame_split_right_len = frame_palm_post_outer_x - frame_split_x_min;
 // ISO 4762 M5 socket-head screws from the top face into DIN 985 nyloc nuts
 // held in hex pockets in the lower face; both stay recessed. The counterbore
@@ -419,6 +498,12 @@ wrist_saddle_overhang = wrist_saddle_depth_x - wrist_pad_t_x;
 wrist_saddle_section_modulus_mm3 = wrist_saddle_core_width_y * pow(wrist_saddle_t, 2) / 6;
 wrist_saddle_design_bending_mpa = design_force_n * wrist_saddle_overhang /
     wrist_saddle_section_modulus_mm3;
+// Palm bolster as a cantilever above the deck, with the full design force at
+// its top and only the full-thickness central width.
+wrist_palm_bolster_section_modulus_mm3 =
+    wrist_saddle_core_width_y * pow(wrist_palm_bolster_depth_x, 2) / 6;
+wrist_palm_bolster_design_bending_mpa = design_force_n * wrist_palm_bolster_rise /
+    wrist_palm_bolster_section_modulus_mm3;
 
 assert(loadcell_rated_kg == 50, "This interface is restricted to the 50 kg sensor.");
 assert(structural_safety_factor >= 2, "Use a structural design factor of at least 2.0.");
@@ -433,16 +518,24 @@ assert(pin_hole_d > bushing_core_od, "Clevis bores must clear the pin spacer.");
 assert(clevis_plate_t >= 4, "Clevis plates must be at least 4 mm thick.");
 assert(clevis_width_y >= 3 * pin_nominal_d,
     "Clevis width must provide adequate pin edge distance.");
-assert(frame_inner_y_min < case_outer_y_min && frame_inner_y_max > case_outer_y_max,
-    "Frame does not clear the enclosure in Y.");
+assert(frame_case_clear_y >= 4,
+    "Frame rails must clear the enclosure by at least 4 mm in Y.");
+assert(grip_rail_gap_y >= 2 && grip_guide_bearing_y >= 3 &&
+    grip_guide_gap_z > 0 && grip_guide_gap_z <= 0.5 &&
+    grip_guide_x_min > frame_split_x_min + 1 &&
+    grip_guide_z_max < frame_split_lap_z - 2 &&
+    grip_guide_z_min > frame_z_min + 2 &&
+    grip_guide_x_max > hangboard_body_x_max + rated_preview_deflection,
+    "Grip guides must sit under the grip side walls with a small Z gap, inside the right half's lower lap tongue, and leave X free.");
 assert(hangboard_body_x_min > case_outer_x_max,
     "Hangboard grip collides with the enclosure.");
-assert(hangboard_pocket_depth_z == 20,
-    "The hangboard pocket must remain 20 mm deep.");
+assert(hangboard_pocket_depth_z == 25,
+    "The hangboard pocket must remain 25 mm deep.");
 assert(hangboard_back_wall_t >= 6,
     "Hangboard pocket back wall must be at least 6 mm thick.");
-assert(hangboard_opening_y_max - hangboard_opening_y_min >= 64,
-    "Four-finger opening must be at least 64 mm wide.");
+assert(hangboard_opening_w_y >= 80 &&
+    abs(hangboard_opening_y_max - hangboard_opening_y_min - hangboard_opening_w_y) < 0.001,
+    "Four-finger opening must be at least 80 mm wide.");
 assert(hangboard_opening_x_max > hangboard_opening_x_min,
     "Hangboard pocket opening collapsed in X.");
 assert(hangboard_lip_radius > 0 && hangboard_lip_radius <= 2,
@@ -451,8 +544,23 @@ assert(hangboard_lip_min_t >= 8,
     "Rounded hangboard loading lip must retain at least 8 mm thickness.");
 assert(hangboard_opening_x_max - hangboard_opening_x_min - 2 * hangboard_draft >= 18,
     "Finger pocket must retain at least 18 mm clearance at its floor.");
-assert(hangboard_opening_y_max - hangboard_opening_y_min - 2 * hangboard_draft >= 64,
-    "Finger pocket must retain at least 64 mm usable width at its floor.");
+assert(hangboard_opening_y_max - hangboard_opening_y_min - 2 * hangboard_draft >= 78,
+    "Finger pocket must retain at least 78 mm usable width at its floor.");
+assert(stopper_count == 2 &&
+    (stopper_edge_depths == [20, 15, 10] || stopper_edge_depths == [15, 20, 10]),
+    "Use two stoppers that give 20 and 15 mm edges alone and 10 mm stacked.");
+assert(stopper_clearance >= 0.15 && stopper_clearance <= 0.4 &&
+    stopper_r >= 2 && stopper_min_t >= 5 &&
+    stopper_min_t - stopper_pull_knot_h >= 3 &&
+    stopper_pull_inset_y - stopper_pull_knot_d / 2 >= 0.5 &&
+    stopper_pull_offset_x + stopper_pull_knot_d / 2
+        <= (stopper_x_max - stopper_x_min) / 2 - 1 &&
+    2 * stopper_pull_offset_x - stopper_pull_knot_d / 2 - stopper_pull_hole_d / 2 >= 2 &&
+    stopper_y_max - stopper_pull_inset_y - stopper_pull_hole_d / 2
+        > frame_center_y + 32 &&
+    stopper_y_min + stopper_pull_inset_y + stopper_pull_hole_d / 2
+        < frame_center_y - 32,
+    "Stoppers need a sliding fit, at least 5 mm thickness, and pull holes outside the 64 mm finger width.");
 assert(hand_opening >= 40 && hand_opening <= 90,
     "Nominal hand_opening should remain within 40-90 mm.");
 assert(hand_opening_min == 25 && hand_opening_max == 105 && wrist_index_count == 9,
@@ -464,6 +572,11 @@ assert(wrist_saddle_t >= 2 * wrist_pad_corner_r + 4 &&
     wrist_saddle_z_min < wrist_rest_z_max - 1 &&
     wrist_palm_bolster_z_max > wrist_plate_z_max_2 + 2,
     "Palm and finger contact decks must align and the bolster must enclose the upper arm plates.");
+assert(wrist_palm_bolster_z_max >= wrist_plate_z_max_2 + wrist_quick_pin_head_h
+        + wrist_quick_pin_button_h + 2,
+    "The palm bolster must rise at least 2 mm above the pin buttons.");
+assert(wrist_palm_bolster_design_bending_mpa <= allowable_printed_bending_mpa,
+    "Palm bolster exceeds configured nominal bending stress.");
 assert(wrist_post_channel_clearance >= 2 && wrist_post_channel_y_margin >= 2 &&
     wrist_post_channel_y_max <= frame_inner_y_max &&
     wrist_post_channel_y_min >= frame_inner_y_min &&
@@ -493,7 +606,7 @@ assert(wrist_palm_bolster_x_min == wrist_saddle_x_min &&
     wrist_palm_bolster_x_max + wrist_palm_bolster_fillet_r
         < wrist_saddle_x_max - wrist_cradle_edge_w,
     "Palm bolster must start at the palm face, keep a nearly flat top, and cover the arm plates.");
-assert(wrist_palm_bolster_rise >= 10 && wrist_palm_bolster_rise <= 14 &&
+assert(wrist_palm_bolster_rise >= 18 && wrist_palm_bolster_rise <= 24 &&
     wrist_palm_bolster_front_r >= 5 && wrist_palm_bolster_front_r <= 8 &&
     wrist_palm_bolster_rear_r >= 4 &&
     wrist_palm_bolster_rear_r <= wrist_palm_bolster_front_r &&
@@ -572,6 +685,11 @@ assert(frame_split_x_min - 3 > service_tunnel_w / 2 &&
     frame_split_left_len <= frame_split_bed_max &&
     frame_split_right_len <= frame_split_bed_max,
     "Frame lap joint must cross plain rails only, clear the wrist arms and leave both halves printable.");
+assert(phone_slot_w >= 13 && phone_slot_w <= 16 &&
+    phone_slot_depth_z >= 12 && phone_slot_z_min > stopper_well_z_min - 20 &&
+    phone_slot_tilt >= 5 && phone_slot_tilt <= 25 &&
+    stopper_well_z_min >= frame_z_min + 8 && phone_slot_z_min >= frame_z_min + 8,
+    "Phone slot must fit a phone in its case, lean it back, and keep solid floors under the slot and stopper well.");
 assert(frame_split_bolt_end_dist >= 2 * frame_split_bolt_hole_d &&
     frame_split_bolt_pitch >= 3 * frame_split_bolt_d &&
     frame_split_bolt_side_wall_y >= 2.5 &&

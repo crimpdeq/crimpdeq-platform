@@ -26,6 +26,13 @@ checks=(
     "frame_case empty"
     "grip_case empty"
     "frame_grip empty"
+    "frame_grip_rated empty"
+    "grip_guide_support_0 nonempty"
+    "grip_guide_support_1 nonempty"
+    "stopper_stored empty"
+    "stopper_stored_seated nonempty"
+    "phone_slot empty"
+    "phone_seated nonempty"
     "interfaces_case empty"
     "interfaces_frame empty"
     "interfaces_grip empty"
@@ -68,9 +75,29 @@ done
 for index in {0..7}; do
     checks+=("frame_split_clamp_${index} nonempty")
 done
+for index in {0..1}; do
+    checks+=("stopper_pocket_${index} empty")
+    checks+=("stopper_seated_${index} nonempty")
+    checks+=("stopper_stack_pocket_${index} empty")
+    checks+=("stopper_stack_contact_${index} nonempty")
+    checks+=("stopper_cord_path_${index} empty")
+done
+for index in {0..3}; do
+    checks+=("stopper_located_${index} nonempty")
+    checks+=("stopper_stack_located_${index} nonempty")
+done
 
 current_job_count() {
     jobs -pr | wc -l | tr -d ' '
+}
+
+# macOS ships bash 3.2, which lacks `wait -n` (bash 4.3+); poll instead.
+wait_for_any_job() {
+    if (( BASH_VERSINFO[0] > 4 || (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 3) )); then
+        wait -n || true
+    else
+        sleep 0.2
+    fi
 }
 
 check_mode() {
@@ -81,7 +108,7 @@ check_mode() {
     local status_file="$tmp_dir/${mode}.status"
     local error_file="$tmp_dir/${mode}.error"
     local result log_text exit_code=0 scad_mode="$mode" test_position=0
-    if [[ "$mode" =~ ^(wrist_position|foot_contact|frame_split_clamp)_([0-8])$ ]]; then
+    if [[ "$mode" =~ ^(wrist_position|foot_contact|frame_split_clamp|grip_guide_support|stopper_pocket|stopper_seated|stopper_located|stopper_stack_pocket|stopper_stack_contact|stopper_stack_located|stopper_cord_path)_([0-8])$ ]]; then
         scad_mode="${BASH_REMATCH[1]}"
         test_position="${BASH_REMATCH[2]}"
     fi
@@ -118,7 +145,7 @@ for check in "${checks[@]}"; do
     pids+=("$!")
 
     while (( $(current_job_count) >= check_jobs )); do
-        wait -n || true
+        wait_for_any_job
     done
 done
 
@@ -156,6 +183,7 @@ fi
 
 echo "Collision checks passed."
 
+# The stoppers are unloaded and export as separate bodies.
 parts=(frame_left frame_right grip wrist_rest)
 stls=()
 for part in "${parts[@]}"; do
@@ -178,7 +206,15 @@ echo "STL connectivity checks passed."
 invalid_parameters=(
     'loadcell_rated_kg=60'
     'structural_safety_factor=1.5'
-    'hangboard_pocket_depth_z=19'
+    'hangboard_pocket_depth_z=24'
+    'hangboard_opening_w_y=76'
+    'grip_rail_gap_y=1'
+    'grip_guide_gap_z=0'
+    'grip_guide_gap_z=1'
+    'stopper_clearance=0.1'
+    'stopper_t_list=[3,10]'
+    'stopper_t_list=[10,10]'
+    'stopper_t_list=[5,10,5]'
     'hangboard_body_w_x=30'
     'hangboard_lip_radius=3'
     'hand_opening=75'
@@ -196,8 +232,8 @@ invalid_parameters=(
     'wrist_cradle_edge_radius=3'
     'wrist_palm_bolster_depth_x=18'
     'wrist_palm_bolster_depth_x=26'
-    'wrist_palm_bolster_rise=8'
     'wrist_palm_bolster_rise=16'
+    'wrist_palm_bolster_rise=26'
     'wrist_palm_bolster_front_r=4'
     'wrist_palm_bolster_rear_r=3'
     'wrist_palm_bolster_rear_r=7'
@@ -206,6 +242,9 @@ invalid_parameters=(
     'wrist_upper_arm_joint_x=20'
     'wrist_post_channel_clearance=1'
     'wrist_post_channel_y_margin=1'
+    'phone_slot_w=11'
+    'phone_slot_tilt=40'
+    'phone_slot_depth_z=10'
     'support_foot_clearance=4'
     'frame_split_x=30'
     'frame_split_x=80'

@@ -26,8 +26,10 @@ bending of the eccentric half-depth tongue.
 Additional nominal screens cover the left anchor post, unequal clevis
 reactions from the sensor's Z offset, the relieved right post, rail net
 sections and hole ligaments, the service-tunnel bridge, metal sleeve bending,
-collar bearing, finger-lip bending, wrist-arm bending, the upper-arm joint to
-the bolster, and local heel-deck bending. The heel-deck screen applies the
+collar bearing, finger-lip bending over the full 25 mm edge, wrist-arm
+bending, the upper-arm joint to the bolster, palm-bolster bending, and local
+heel-deck bending. The stoppers, grip guides, stopper
+well and phone slot are outside the load path and are not screened. The heel-deck screen applies the
 full design target at its cantilever tip. It does **not** rate the complete
 mechanism for vertical loading or authorise leaning body weight on the wrist
 rest.

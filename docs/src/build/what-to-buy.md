@@ -9,6 +9,7 @@
 | 4 | M5 nyloc nut | DIN 985, 8 mm across flats, ≤ 5 mm thick |
 | 2 | Push-button ball-lock pin | Ø6 mm, 60 mm grip length, head ≤ Ø18 × 8 mm, rated ≥ 1 kN double shear |
 | 2 | Pin lanyard | Fitted through the wrist-pad anchor holes |
+| 1 | Thin cord | About 60 cm of Ø2 mm cord, for the stopper pull loops |
 | 2 | Machined steel pin sleeve | Minimum specified yield 240 MPa |
 | 4 | Machined 6061-T6 aluminium flanged eye-collar half | |
 

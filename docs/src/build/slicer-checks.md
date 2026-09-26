@@ -25,21 +25,34 @@ A floating-regions warning means something is missing support.
 - [ ] There's no brim inside the frame U openings, as expected with "Outer brim only".
 - [ ] The brims of neighbouring parts are separate, or only just touch.
 - [ ] The flat faces on the bed are fully filled.
-- [ ] Support bases appear under the right-half lap tongues and channel
-      bridge, the left-half clevis cheek, the wrist-rest deck and the grip
+- [ ] Support bases appear under the right-half lap tongues, grip-guide
+      ledges and channel bridge, the left-half clevis cheek, the wrist-rest deck and the grip
       cheek.
-- [ ] The four screw counterbores of the left half are open on the bed.
+- [ ] The four screw counterbores, the stopper well and the phone slot of
+      the left half are open on the bed.
 - [ ] Nothing reaches the plate edge or the purge/cutter zone at the back left.
 
-## D. Plate 1: channel bridge (right half, about 14–18 mm)
+## D. Plate 1: phone slot and stopper well (left half, about 16 mm)
 
-Step up until the closed end of the right half starts spanning the channel.
+- [ ] At about 16 mm, the first layers closing the phone slot and the stopper
+      well are straight bridge lines across each opening.
+- [ ] Neither has support inside it.
+
+## E. Plate 1: clevis cheek (left half, about 35–45 mm)
+
+Step up until the cheek with the Ø17 hole first appears.
+
+- [ ] Its first layer sits entirely on support interface, with no edge in free
+      air, including the outer corner.
+- [ ] The support trees don't lean against the rails.
+
+## F. Plate 2: channel bridge, lap tongues and grip guides (right half)
+
+Step up to about 14–18 mm, until the closed end of the right half starts
+spanning the channel.
 
 - [ ] The layer just below has dense **support interface** under the bridge.
 - [ ] The first bridge layer is straight parallel lines across the gap.
-- [ ] The support trees stand on the plate, not on the brim or the other half.
-
-## E. Plate 1: lap tongues (right half, about 22.5 mm)
 
 Step up until the two lap tongues at the open end of the right half first
 appear.
@@ -47,22 +60,19 @@ appear.
 - [ ] Their first layer sits entirely on support interface, with no edge in
       free air.
 - [ ] The support stops at the lap face and doesn't fill the screw holes.
+- [ ] At about 31 mm, the two grip-guide ledges on the inner faces of the
+      rails also sit entirely on support interface.
+- [ ] The support trees stand on the plate, not on the brim.
 
-## F. Plate 1: clevis cheek (left half, about 35–45 mm)
-
-Step up until the cheek with the Ø17 hole first appears.
-
-- [ ] Its first layer sits entirely on support interface, with no edge in free
-      air, including the outer corner.
-- [ ] The support trees don't lean against the other half.
-
-## G. Plate 2: wrist rest and grip
+## G. Plate 3: wrist rest, grip and stoppers
 
 - [ ] The first layer of the heel deck, roughly 35–50 mm up, sits on support
       interface with no free-hanging edge.
 - [ ] The first layer of the grip's upper cheek sits on support interface.
 - [ ] No support trees grow between the grip and the wrist rest.
 - [ ] The top layer of the wrist rest is the palm surface, with no support on it.
+- [ ] The stoppers have no support, and their pull holes and knot
+      counterbores are open on the bed.
 
 ## H. Holes and pockets
 
@@ -73,8 +83,8 @@ Step up until the cheek with the Ø17 hole first appears.
 
 ## I. Top layer
 
-- [ ] On Plate 1 the last layers are the feet, two on each half. They are
-      complete.
+- [ ] On Plates 1 and 2 the last layers are the feet, two on each half.
+      They are complete.
 - [ ] No stray support sticks up above any part.
 
 ## J. Printer and material
@@ -89,10 +99,12 @@ Step up until the cheek with the Ø17 hole first appears.
 
 - **First 5 minutes:** brims and first layer are flat and stuck down. If a
   corner lifts, stop and clean or re-level.
-- **Plate 1, about 16 mm:** the channel bridge lands on its support.
-- **Plate 1, about 22.5 mm:** the right half's lap tongues land on their
-  support.
+- **Plate 1, about 16 mm:** the phone slot and stopper well bridges close
+  cleanly.
 - **Plate 1, about 40 mm:** the clevis cheek lands on its support.
+- **Plate 2, about 16 mm:** the channel bridge lands on its support.
+- **Plate 2, about 22.5 mm:** the lap tongues land on their support.
+- **Plate 2, about 31 mm:** the grip-guide ledges land on their support.
 - **If any part comes loose, stop immediately.** On the A1 a loose tall part
   gets dragged into the others.
 

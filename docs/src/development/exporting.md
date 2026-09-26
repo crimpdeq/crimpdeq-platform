@@ -18,6 +18,7 @@ openscad -D 'part="frame_left"' -o /tmp/dynamometer_frame_left.stl dynamometer_a
 | `frame_left`, `frame_right` | Frame halves, joined by bolted lap joints |
 | `grip` | Moving hangboard grip |
 | `wrist_rest` | Adjustable palm and wrist saddle |
+| `stoppers` | Two stackable pocket stoppers, laid out flat |
 
 `export-parts.sh` exports every part in the table (or only the parts given as
 arguments) as `crimpdeq-platform-<part>.stl` into `exports/`, which is ignored
@@ -36,5 +37,5 @@ openscad -D 'wrist_position=-1' dynamometer_assembly.scad
 The rated pose exaggerates displacement for visualisation and does not change
 exported parts. `wrist_position` previews the nearest physical index from `-1`
 (smallest opening) to `1` (largest opening). `show_case`, `show_internals`,
-`show_hardware`, and `show_wrist_rest` toggle the corresponding preview
-geometry.
+`show_hardware`, `show_wrist_rest`, `show_stoppers` (stacked in their well),
+and `show_phone` (off by default) toggle the corresponding preview geometry.

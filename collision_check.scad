@@ -13,6 +13,8 @@ assert(test_position >= 0 && test_position < wrist_index_count &&
 test_offset = -wrist_adjust_range + test_position * wrist_index_pitch;
 
 module service_probe() {
+    // Kept 0.01 mm inside the tunnel floor and roof, so face contact is not
+    // an overlap.
     translate([
         0,
         (service_tunnel_y_min + service_tunnel_y_max) / 2,
@@ -21,7 +23,7 @@ module service_probe() {
         cube([
             usb_cable_boot_w,
             service_tunnel_y_max - service_tunnel_y_min,
-            service_tunnel_z_max - service_tunnel_z_min
+            service_tunnel_z_max - service_tunnel_z_min - 0.02
         ], center = true);
 }
 
@@ -34,7 +36,7 @@ module eye_transfer_probe(x_pos) {
 }
 
 module support_surface_probe(clearance = 0) {
-    x_min = frame_left_post_outer_x - wrist_saddle_depth_x;
+    x_min = frame_x_min - wrist_saddle_depth_x;
     x_max = frame_palm_post_outer_x + wrist_saddle_depth_x + wrist_adjust_range;
     translate([x_min, frame_outer_y_min - 20, support_foot_bottom_z - 1])
         cube([x_max - x_min, frame_outer_y_max - frame_outer_y_min + 40,
@@ -50,12 +52,129 @@ module wrist_quick_pin_probe(x_offset = 0) {
             );
 }
 
+module stopper_in_pocket(i, dx = 0, dy = 0, dz = 0) {
+    translate([dx, dy, dz]) pocket_stopper(i);
+}
+
+module phone_slot_neighbours() {
+    fixed_frame();
+    crimpdeq_case_reference();
+    moving_finger_grip();
+    adjustable_wrist_rest(x_offset = -wrist_adjust_range);
+    wrist_rest_hardware_model(x_offset = -wrist_adjust_range);
+    dynamometer_hardware();
+    dynamometer_bushings();
+    frame_split_hardware_model();
+    stored_pocket_stoppers();
+}
+
 if (mode == "frame_case") {
     intersection() { fixed_frame(); crimpdeq_case_reference(); }
 } else if (mode == "grip_case") {
     intersection() { moving_finger_grip(); crimpdeq_case_reference(); }
 } else if (mode == "frame_grip") {
     intersection() { fixed_frame(); moving_finger_grip(); }
+} else if (mode == "frame_grip_rated") {
+    intersection() {
+        fixed_frame();
+        translate([rated_preview_deflection, 0, 0]) moving_finger_grip();
+    }
+} else if (mode == "grip_guide_support") {
+    // Dropped by just more than the guide gap, the grip lands on the guide
+    // ledge of the selected side and on nothing else in that half.
+    assert(test_position < 2, "Guide index must be 0-1.");
+    intersection() {
+        fixed_frame();
+        translate([0, 0, -grip_guide_gap_z - 0.02]) moving_finger_grip();
+        translate([hangboard_body_x_min - 1,
+                   test_position == 0 ? frame_outer_y_min : frame_center_y,
+                   grip_guide_z_min])
+            cube([hangboard_body_w_x + 2,
+                  (frame_outer_y_max - frame_outer_y_min) / 2,
+                  grip_guide_t + 0.01]);
+    }
+} else if (mode == "stopper_pocket") {
+    assert(test_position < stopper_count, "Stopper index out of range.");
+    // Lifted 0.01 mm off the floor, so its seating face is not an overlap.
+    intersection() { moving_finger_grip(); stopper_in_pocket(test_position, dz = 0.01); }
+} else if (mode == "stopper_seated") {
+    // Each stopper rests on the pocket floor.
+    assert(test_position < stopper_count, "Stopper index out of range.");
+    intersection() {
+        moving_finger_grip();
+        stopper_in_pocket(test_position, dz = -0.02);
+    }
+} else if (mode == "stopper_located") {
+    // The pocket walls stop each stopper within its clearance in X and Y.
+    assert(test_position < 2 * stopper_count, "Stopper index out of range.");
+    shift = stopper_clearance + 0.1;
+    intersection() {
+        moving_finger_grip();
+        stopper_in_pocket(test_position % stopper_count,
+            dx = test_position < stopper_count ? shift : 0,
+            dy = test_position < stopper_count ? 0 : shift);
+    }
+} else if (mode == "stopper_stack_pocket") {
+    // Both stoppers stacked, either one at the bottom, clear of the grip.
+    // Seating faces are backed off 0.01 mm so face contact is not an overlap.
+    assert(test_position < 2, "Stack order must be 0-1.");
+    intersection() {
+        moving_finger_grip();
+        translate([0, 0, 0.01]) stacked_pocket_stoppers(test_position, dz_top = 0.01);
+    }
+} else if (mode == "stopper_stack_contact") {
+    // The upper stopper rests on the lower one.
+    assert(test_position < 2, "Stack order must be 0-1.");
+    intersection() {
+        pocket_stopper(test_position);
+        translate([0, 0, stopper_t_list[test_position] - 0.02])
+            pocket_stopper(1 - test_position);
+    }
+} else if (mode == "stopper_stack_located") {
+    // The drafted pocket walls still stop the upper stopper in X and Y.
+    assert(test_position < 4, "Stack index must be 0-3.");
+    bottom = test_position % 2;
+    shift = stopper_clearance + 0.1
+        + hangboard_draft * stopper_t_list[bottom] / hangboard_pocket_depth_z;
+    intersection() {
+        moving_finger_grip();
+        translate([test_position < 2 ? shift : 0, test_position < 2 ? 0 : shift,
+                   stopper_t_list[bottom]])
+            pocket_stopper(1 - bottom);
+    }
+} else if (mode == "stopper_cord_path") {
+    // The lower stopper's pull cords pass up through the upper stopper.
+    assert(test_position < 2, "Stack order must be 0-1.");
+    intersection() {
+        translate([0, 0, stopper_t_list[test_position]])
+            pocket_stopper(1 - test_position);
+        for (y_pos = [stopper_y_min + stopper_pull_inset_y,
+                      stopper_y_max - stopper_pull_inset_y])
+            translate([stopper_pull_x(test_position), y_pos, hangboard_pocket_back_z])
+                cylinder(d = 2.5, h = hangboard_pocket_depth_z + 5);
+    }
+} else if (mode == "stopper_stored") {
+    intersection() {
+        fixed_frame();
+        translate([0, 0, 0.01]) stored_pocket_stoppers();
+    }
+} else if (mode == "stopper_stored_seated") {
+    intersection() {
+        fixed_frame();
+        translate([0, 0, -0.02]) stored_pocket_stoppers();
+    }
+} else if (mode == "phone_slot") {
+    // The largest phone clears everything in either orientation, including
+    // the grip, the wrist rest and the stored stoppers.
+    intersection() {
+        union() {
+            phone_reference(portrait = false, drop = -0.02);
+            phone_reference(portrait = true, drop = -0.02);
+        }
+        phone_slot_neighbours();
+    }
+} else if (mode == "phone_seated") {
+    intersection() { fixed_frame(); phone_reference(drop = 0.02); }
 } else if (mode == "interfaces_case") {
     intersection() { dynamometer_bushings(); crimpdeq_case_reference(); }
 } else if (mode == "interfaces_frame") {
