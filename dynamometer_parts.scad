@@ -130,6 +130,19 @@ module service_tunnel_cut() {
         ], center = true);
 }
 
+module wrist_post_channel_cut() {
+    // Only the middle of the right-hand closing post is relieved. The fixed
+    // side rails and the lower post stay continuous across all nine settings.
+    dyno_rounded_box_xyz(
+        [(frame_palm_post_inner_x + frame_palm_post_outer_x) / 2,
+         (wrist_post_channel_y_min + wrist_post_channel_y_max) / 2,
+         (wrist_post_channel_z_min + frame_z_max + 2) / 2],
+        [frame_palm_post_t + 8,
+         wrist_post_channel_y_max - wrist_post_channel_y_min,
+         frame_z_max + 2 - wrist_post_channel_z_min], 2
+    );
+}
+
 module grip_guides() {
     // Ledges on both rail inner faces under the grip's side walls.
     for (side = [[frame_inner_y_min - 1, frame_inner_y_min + grip_guide_w_y],
@@ -177,6 +190,7 @@ module fixed_frame() {
         }
         vertical_pin_bore(dyno_eye_x_left);
         wrist_index_bores();
+        wrist_post_channel_cut();
         service_tunnel_cut();
         frame_split_bolt_cuts();
         stopper_well_cut();
@@ -330,11 +344,14 @@ module wrist_side_arms(z_min, z_max, x_max = wrist_arm_x_max) {
 
 module wrist_palm_face_clear_cut() {
     // Across the pad width, the upper arms may not project ahead of the palm
-    // face toward the fingers. Behind it they merge into the raised deck.
-    translate([wrist_arm_x_min - 1, wrist_pad_y_min - 0.01, wrist_plate_z_min_2 - 0.1])
-        cube([wrist_saddle_x_min - wrist_arm_x_min + 1,
-              wrist_pad_y_max - wrist_pad_y_min + 0.02,
-              wrist_plate_t + 1.1]);
+    // face or through the bolster's rear radius; the bolster is their root.
+    for (x_span = [[wrist_arm_x_min - 1, wrist_saddle_x_min],
+                   [wrist_palm_bolster_x_max - wrist_palm_bolster_rear_r - 1,
+                    wrist_upper_arm_x_max + 1]])
+        translate([x_span[0], wrist_pad_y_min - 0.01, wrist_saddle_z_min])
+            cube([x_span[1] - x_span[0],
+                  wrist_pad_y_max - wrist_pad_y_min + 0.02,
+                  wrist_plate_z_max_2 + 1 - wrist_saddle_z_min]);
 }
 
 module palm_bolster() {

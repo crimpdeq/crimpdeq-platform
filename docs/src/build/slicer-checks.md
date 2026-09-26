@@ -25,8 +25,8 @@ A floating-regions warning means something is missing support.
 - [ ] There's no brim inside the frame U openings, as expected with "Outer brim only".
 - [ ] The brims of neighbouring parts are separate, or only just touch.
 - [ ] The flat faces on the bed are fully filled.
-- [ ] Support bases appear under the right-half lap tongues and grip-guide
-      ledges, the left-half clevis cheek, the wrist-rest deck and the grip
+- [ ] Support bases appear under the right-half lap tongues, grip-guide
+      ledges and channel bridge, the left-half clevis cheek, the wrist-rest deck and the grip
       cheek.
 - [ ] The four screw counterbores, the stopper well and the phone slot of
       the left half are open on the bed.
@@ -48,7 +48,13 @@ Step up until the cheek with the Ø17 hole first appears.
       air, including the outer corner.
 - [ ] The support trees don't lean against the rails.
 
-## F. Plate 2: lap tongues and grip guides (right half, about 22.5 mm and 31 mm)
+## F. Plate 2: channel bridge, lap tongues and grip guides (right half)
+
+Step up to about 14–18 mm, until the closed end of the right half starts
+spanning the channel.
+
+- [ ] The layer just below has dense **support interface** under the bridge.
+- [ ] The first bridge layer is straight parallel lines across the gap.
 
 Step up until the two lap tongues at the open end of the right half first
 appear.
@@ -62,7 +68,7 @@ appear.
 
 ## G. Plate 3: wrist rest, grip and stoppers
 
-- [ ] The first layer of the heel deck, roughly 55 mm up, sits on support
+- [ ] The first layer of the heel deck, roughly 35–50 mm up, sits on support
       interface with no free-hanging edge.
 - [ ] The first layer of the grip's upper cheek sits on support interface.
 - [ ] No support trees grow between the grip and the wrist rest.
@@ -98,6 +104,7 @@ appear.
 - **Plate 1, about 16 mm and 31 mm:** the phone slot and stopper well
   bridges close cleanly.
 - **Plate 1, about 40 mm:** the clevis cheek lands on its support.
+- **Plate 2, about 16 mm:** the channel bridge lands on its support.
 - **Plate 2, about 22.5 mm:** the lap tongues land on their support.
 - **Plate 2, about 31 mm:** the grip-guide ledges land on their support.
 - **If any part comes loose, stop immediately.** On the A1 a loose tall part

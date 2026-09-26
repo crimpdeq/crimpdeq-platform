@@ -238,16 +238,21 @@ hand_opening_max = hand_opening + wrist_adjust_range;
 // One continuous L-shaped palm/heel saddle, not a hand resting on the rails.
 // Keep the 60 mm pin stack independent of the taller contact surface.
 wrist_saddle_depth_x = is_undef(wrist_saddle_depth_x) ? 65 : wrist_saddle_depth_x;
-wrist_saddle_t = is_undef(wrist_saddle_t) ? 18 : wrist_saddle_t;
+wrist_saddle_t = is_undef(wrist_saddle_t) ? 14 : wrist_saddle_t;
 wrist_saddle_x_min = wrist_pad_center_x - wrist_pad_t_x / 2;
 wrist_saddle_x_max = wrist_saddle_x_min + wrist_saddle_depth_x;
-// The palm/heel deck sits above the +Z finger-pocket mouth, high enough to
-// keep the thumb above the pin heads. Its underside clears the frame top, so
-// it passes over the right post and joins the upper arms.
-wrist_rest_raise = is_undef(wrist_rest_raise) ? 20 : wrist_rest_raise;
-wrist_deck_frame_clearance = 2;
-wrist_saddle_z_max = hangboard_front_z + wrist_rest_raise;
+// Align the palm/heel contact deck with the +Z finger-pocket mouth. The
+// sliding deck needs a clearance channel through the non-anchor right post.
+wrist_saddle_z_max = hangboard_front_z;
 wrist_saddle_z_min = wrist_saddle_z_max - wrist_saddle_t;
+wrist_post_channel_clearance = is_undef(wrist_post_channel_clearance) ? 2 : wrist_post_channel_clearance;
+wrist_post_channel_y_margin = is_undef(wrist_post_channel_y_margin) ? 3 : wrist_post_channel_y_margin;
+wrist_post_channel_z_min = wrist_saddle_z_min - wrist_post_channel_clearance;
+wrist_post_channel_y_min = wrist_pad_y_min - wrist_post_channel_y_margin;
+wrist_post_channel_y_max = wrist_pad_y_max + wrist_post_channel_y_margin;
+wrist_post_remaining_depth_z = wrist_post_channel_z_min - frame_z_min;
+wrist_post_remaining_web_y = min(frame_outer_y_max - wrist_post_channel_y_max,
+    wrist_post_channel_y_min - frame_outer_y_min);
 wrist_saddle_core_width_y = wrist_pad_y_max - wrist_pad_y_min - 2 * wrist_pad_corner_r;
 wrist_pin_access_d = wrist_quick_pin_head_d + 2;
 // The pin-tip model is the lowest point of the adjustable hardware.
@@ -268,10 +273,12 @@ wrist_cradle_z_max = wrist_saddle_z_max + wrist_cradle_rise;
 wrist_cradle_open_width_y = wrist_pad_y_max - wrist_pad_y_min - 2 * wrist_cradle_edge_w;
 // Straight GoGor LITE-style palm bolster: a full-width rounded-rectangle
 // section with a nearly flat top. Its -X face continues the palm face and it
-// extends only toward +X, so the nine 25-105 mm openings are unchanged.
+// extends only toward +X, so the nine 25-105 mm openings are unchanged. It
+// rises well above the deck, so the palm pushes high on it and a thumb
+// wrapped round it stays above the pin heads.
 wrist_palm_bolster_depth_x =
     is_undef(wrist_palm_bolster_depth_x) ? 22 : wrist_palm_bolster_depth_x;
-wrist_palm_bolster_rise = is_undef(wrist_palm_bolster_rise) ? 12 : wrist_palm_bolster_rise;
+wrist_palm_bolster_rise = is_undef(wrist_palm_bolster_rise) ? 32 : wrist_palm_bolster_rise;
 wrist_palm_bolster_front_r =
     is_undef(wrist_palm_bolster_front_r) ? 6 : wrist_palm_bolster_front_r;
 wrist_palm_bolster_rear_r =
@@ -293,8 +300,8 @@ wrist_palm_bolster_flat_top_x =
 wrist_cradle_open_depth_x =
     wrist_saddle_depth_x - wrist_palm_bolster_depth_x - wrist_cradle_edge_w;
 wrist_cradle_open_depth_min_x = 38;
-// The upper arms join the palm face and the deck above them, behind the
-// palm-face plane. Extend them rearward above the frame to keep that joint
+// The upper arms join the saddle only through the bolster's end faces, behind
+// the palm-face plane. Extend them rearward above the frame to keep that joint
 // section; the lower arms keep their original clearance to the right feet.
 wrist_upper_arm_joint_x = is_undef(wrist_upper_arm_joint_x) ? 24 : wrist_upper_arm_joint_x;
 wrist_upper_arm_x_max = wrist_saddle_x_min + wrist_upper_arm_joint_x;
@@ -309,7 +316,7 @@ wrist_pin_design_shear_mpa =
     wrist_force_per_fastener_n / wrist_pin_double_shear_area_mm2;
 wrist_arm_bearing_area_mm2 = 2 * wrist_plate_t * wrist_quick_pin_d;
 wrist_arm_design_bearing_mpa = wrist_force_per_fastener_n / wrist_arm_bearing_area_mm2;
-// Screen one upper arm's joint to the saddle for the entire force,
+// Screen one upper arm's joint to the bolster end face for the entire force,
 // without relying on the lower arm or the other station to share it.
 wrist_upper_arm_joint_shear_mpa = wrist_force_per_fastener_n /
     (wrist_upper_arm_joint_x * wrist_plate_t);
@@ -424,6 +431,9 @@ allowable_collar_bearing_mpa = is_undef(allowable_collar_bearing_mpa) ? 90 : all
 anchor_half_span = (frame_outer_y_max - frame_outer_y_min) / 2;
 anchor_section_modulus_mm3 = frame_depth_z * frame_left_post_t * frame_left_post_t / 6;
 anchor_design_bending_mpa = design_force_n * anchor_half_span / anchor_section_modulus_mm3;
+// Conservatively screen the relieved right post for the full frame force.
+wrist_post_section_modulus_mm3 = wrist_post_remaining_depth_z * pow(frame_palm_post_t, 2) / 6;
+wrist_post_design_bending_mpa = design_force_n * anchor_half_span / wrist_post_section_modulus_mm3;
 rail_net_tension_mpa = wrist_force_per_fastener_n / (frame_depth_z * wrist_index_remaining_web_y);
 rail_ligament_shear_mpa = wrist_force_per_fastener_n / (2 * frame_depth_z * wrist_index_ligament_x);
 service_net_tension_mpa = design_force_n /
@@ -482,6 +492,12 @@ wrist_saddle_overhang = wrist_saddle_depth_x - wrist_pad_t_x;
 wrist_saddle_section_modulus_mm3 = wrist_saddle_core_width_y * pow(wrist_saddle_t, 2) / 6;
 wrist_saddle_design_bending_mpa = design_force_n * wrist_saddle_overhang /
     wrist_saddle_section_modulus_mm3;
+// Palm bolster as a cantilever above the deck, with the full design force at
+// its top and only the full-thickness central width.
+wrist_palm_bolster_section_modulus_mm3 =
+    wrist_saddle_core_width_y * pow(wrist_palm_bolster_depth_x, 2) / 6;
+wrist_palm_bolster_design_bending_mpa = design_force_n * wrist_palm_bolster_rise /
+    wrist_palm_bolster_section_modulus_mm3;
 
 assert(loadcell_rated_kg == 50, "This interface is restricted to the 50 kg sensor.");
 assert(structural_safety_factor >= 2, "Use a structural design factor of at least 2.0.");
@@ -540,18 +556,27 @@ assert(hand_opening_min == 25 && hand_opening_max == 105 && wrist_index_count ==
 assert(wrist_saddle_depth_x >= 50 && wrist_saddle_depth_x <= 65,
     "Heel saddle must provide a 50-65 mm continuous contact surface.");
 assert(wrist_saddle_t >= 2 * wrist_pad_corner_r + 4 &&
-    wrist_rest_raise >= 15 && wrist_rest_raise <= 25 &&
-    wrist_saddle_z_min >= frame_z_max + wrist_deck_frame_clearance &&
-    wrist_saddle_z_min <= wrist_plate_z_max_2 - 3 &&
-    wrist_saddle_z_max >= wrist_plate_z_max_2 + wrist_quick_pin_head_h
-        + wrist_quick_pin_button_h + 2,
-    "The heel deck must clear the frame top, join the upper arms, and sit above the pin heads.");
+    wrist_saddle_z_max == hangboard_front_z &&
+    wrist_saddle_z_min < wrist_rest_z_max - 1 &&
+    wrist_palm_bolster_z_max > wrist_plate_z_max_2 + 2,
+    "Palm and finger contact decks must align and the bolster must enclose the upper arm plates.");
+assert(wrist_palm_bolster_z_max >= wrist_plate_z_max_2 + wrist_quick_pin_head_h
+        + wrist_quick_pin_button_h + 10,
+    "The palm bolster must rise at least 10 mm above the pin buttons to keep the thumb clear.");
+assert(wrist_palm_bolster_design_bending_mpa <= allowable_printed_bending_mpa,
+    "Palm bolster exceeds configured nominal bending stress.");
+assert(wrist_post_channel_clearance >= 2 && wrist_post_channel_y_margin >= 2 &&
+    wrist_post_channel_y_max <= frame_inner_y_max &&
+    wrist_post_channel_y_min >= frame_inner_y_min &&
+    wrist_post_remaining_depth_z >= 25 && wrist_post_remaining_web_y >= 12 &&
+    wrist_post_design_bending_mpa <= allowable_printed_bending_mpa,
+    "Right-post palm channel leaves too little frame material or deck clearance.");
 assert(wrist_saddle_core_width_y >= 64 &&
     wrist_arm_pad_overlap_y >= 4 && wrist_arm_pad_overlap_y <= wrist_cradle_edge_w &&
     wrist_upper_arm_x_max >= wrist_arm_x_max &&
     wrist_upper_arm_x_max > wrist_palm_bolster_x_max &&
     wrist_upper_arm_joint_shear_mpa <= allowable_printed_tension_mpa / 2,
-    "Upper arms must stay outside the skin-contact deck and keep their saddle joint section.");
+    "Upper arms must stay outside the skin-contact deck and keep their bolster joint section.");
 assert(wrist_cradle_edge_w >= 4 && wrist_cradle_edge_w <= wrist_pad_corner_r &&
     wrist_cradle_open_width_y >= 64 &&
     wrist_cradle_open_depth_x >= wrist_cradle_open_depth_min_x,
@@ -569,7 +594,7 @@ assert(wrist_palm_bolster_x_min == wrist_saddle_x_min &&
     wrist_palm_bolster_x_max + wrist_palm_bolster_fillet_r
         < wrist_saddle_x_max - wrist_cradle_edge_w,
     "Palm bolster must start at the palm face, keep a nearly flat top, and cover the arm plates.");
-assert(wrist_palm_bolster_rise >= 10 && wrist_palm_bolster_rise <= 14 &&
+assert(wrist_palm_bolster_rise >= 28 && wrist_palm_bolster_rise <= 36 &&
     wrist_palm_bolster_front_r >= 5 && wrist_palm_bolster_front_r <= 8 &&
     wrist_palm_bolster_rear_r >= 4 &&
     wrist_palm_bolster_rear_r <= wrist_palm_bolster_front_r &&

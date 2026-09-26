@@ -59,7 +59,7 @@ matching 5 mm rounded edges and no groove at the transition. Two low,
 than the grip so it slides past the grip guides when it goes onto the frame.
 
 At the finger-facing end, a straight palm bolster modelled on the GoGor LITE
-pad spans the full 78 mm pad width. It is 22 mm deep and 12 mm tall above
+pad spans the full 78 mm pad width. It is 22 mm deep and 32 mm tall above
 the deck, with a nearly flat 11 mm top, a 6 mm front top radius, a 5 mm rear
 top radius, rounded ends blended into the side lips, and a 3 mm concave fillet
 into the deck. It has no cup or ridge. The palm heel pushes on its
@@ -70,13 +70,13 @@ material, with no soft layer.
 
 Behind the bolster, a 38 × 68 mm open heel deck remains solid and
 uninterrupted: no holes, slots, exposed fasteners, or separate pads beneath
-the wrist. The 18 mm-thick deck tops out at Z = 54 mm, 20 mm above the finger
-pocket's +Z opening, and the bolster at Z = 66 mm; only the bolster and the
-low lips rise above the deck. The deck is 2.5 mm above the pin buttons and
-14.5 mm below the bolster top, so a thumb wrapped round the bolster stays
-above the pin heads. Its underside is 2 mm above the frame, so it passes over
-the solid right post at full travel. The upper pin arms are trimmed flush
-with the palm face across the pad width and merge into the deck behind it.
+the wrist. The 14 mm-thick deck sits at Z = 34 mm, level with the finger
+pocket's +Z opening; only the bolster and the low lips rise above it. The
+bolster top, at Z = 66 mm, is 14.5 mm above the pin buttons, so a thumb
+wrapped round the bolster stays above the pin heads. A rounded clearance
+channel in the fixed right post keeps 2 mm under the deck at full wrist
+travel. The upper pin arms are trimmed flush with the palm face across the
+pad width and join the saddle through the bolster's end faces.
 
 The whole saddle moves with the selected opening. The index holes and release
 pins remain outboard of the contact surface; they are adjustment features, not
@@ -95,8 +95,9 @@ These are setup guides, not ergonomic prescriptions.
 
 The lower wrist arms are 28 mm wide. The upper arms extend 3 mm farther away
 from the fingers, giving 24 mm of joint length behind the palm face where they
-join the palm face and the deck. The full-depth indexed rails, the left
-load-cell anchor and the right closing post stay intact. The rails sit 10.7 mm
+enter the bolster's end faces. The full-depth indexed rails and left load-cell
+anchor stay intact; the right closing post retains a 29 mm-deep lower bridge
+and 20 mm side webs under its clearance channel. The rails sit 10.7 mm
 from the case on each side, set by the grip width, so the service tunnel
 through the +Y rail is 26 mm long.
 

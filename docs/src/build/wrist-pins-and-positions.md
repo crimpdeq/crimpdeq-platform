@@ -8,7 +8,7 @@
    with the middle (5th) hole.
 2. Press the pin's button and push the pin down from the top through the
    upper arm, the rail and the lower arm, until the head rests on the upper
-   arm. Release the button. The head sits beside the heel deck, below its
+   arm. Release the button. The head sits beside the bolster, below its
    top.
 3. Check that both locking balls stand out fully below the lower arm, then
    tug the pin to confirm that it is locked.

@@ -79,6 +79,7 @@ intended print orientation.
 |---|---|
 | Right frame half | Underside of both lap tongues, about 22.5 mm up |
 | Right frame half | Grip-guide ledges on the rail inner faces, about 31 mm up |
+| Right frame half | Bridge over the palm-deck channel at the closed end |
 | Left frame half | Clevis cheek with the Ø17 hole, about 35–45 mm up |
 | Wrist rest | Underside of the overhanging heel deck and outer upper arms |
 | Grip | Underside of the upper clevis cheek and pocket body |

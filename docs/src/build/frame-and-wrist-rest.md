@@ -21,7 +21,7 @@
    middle of the index-hole row. The upright palm face passes between the
    two grip-guide ledges on the rail inner faces.
 5. Check that it slides freely over the whole row of index holes and that
-   the heel deck passes over the palm post.
+   the heel deck passes through the channel in the palm post.
 
 ## Bolt the halves together
 

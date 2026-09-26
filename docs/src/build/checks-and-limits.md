@@ -3,9 +3,9 @@
 ## Assembly checks
 
 - [ ] **All nine positions:** the pins go in and lock easily each time, and
-      the heel deck passes cleanly over the palm post.
+      the heel deck passes cleanly through the channel in the palm post.
 - [ ] **Pin heads:** you can grip and pull each pin at every position. The
-      heads sit 6.5 mm from the side of the deck and below its top.
+      heads sit 6.5 mm from the bolster ends, 14.5 mm below its top.
 - [ ] **Case access:** the USB port and switch are reachable at every position.
 - [ ] **Tabletop:** only the four feet touch. The nuts, bolt tips and pin tips
       stay clear.
@@ -46,8 +46,8 @@ Copy this table into a comment or a new note.
 | Frame joint fit (tight / good / loose) | |
 | Sleeve, collar and pin fit (tight / good / loose) | |
 | Grip level (level / on the ledges / tilted) | |
-| Wrist-rest slide over the palm post | |
-| Pin-head access beside the deck | |
+| Wrist-rest slide through the channel | |
+| Pin-head access at the bolster | |
 | Thumb clear of the pin heads | |
 | Stopper fit and removal | |
 | Phone model and fit in the slot | |
