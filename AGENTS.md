@@ -16,11 +16,17 @@
   must never be tested above its 50 kg rating.
 - Route hand force through both Ø17 mm load-cell eyes, pin spacers, collars,
   and double-shear clevis cheeks.
-- Keep the four-finger hangboard pocket exactly 20 mm deep with at least a
-  64 mm-wide opening, 6 mm back wall, and 8 mm loading lip.
+- Keep the four-finger hangboard pocket exactly 25 mm deep with at least an
+  80 mm-wide opening, 6 mm back wall, and 8 mm loading lip.
 - Keep its `+Z` opening clear and retain the full-depth left spine joining it
   to both clevis cheeks.
-- Keep the rounded palm/wrist-heel pad beside the hangboard pocket.
+- Keep the drop-in pocket stoppers for 20, 15, and 10 mm edges located by the
+  closed pocket walls, and their storage well in the unloaded block outboard
+  of the left anchor post.
+- Keep the grip-guide ledges under the grip's side walls with a Z gap and
+  free X travel, so they catch tilt without carrying measured load.
+- Keep the rounded palm/wrist-heel pad beside the hangboard pocket, with its
+  heel deck 20 mm above the pocket mouth and above the pin heads.
 - Preserve its nine positively locked 25–105 mm opening positions, with
   discrete holes in the fixed rails, round holes in the pad arms, and two
   tethered Ø6 mm push-button ball-lock pins; adjustment must remain tool-free.
@@ -32,6 +38,8 @@
 - Do not use the enclosure shell, lid, or enclosure screws as load-bearing
   members.
 - Preserve switch and USB access through the +Y frame service tunnel.
+- Keep the phone slot at the left (-X) end, outside the load path and clear
+  of the hand at every wrist position.
 - Keep the frame, grip, case, and pin interfaces collision-free except for
   explicitly modelled load-cell contact surfaces.
 

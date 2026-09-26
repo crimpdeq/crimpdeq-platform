@@ -80,19 +80,20 @@ module wrist_index_bores() {
 module fixed_frame_body() {
     union() {
         dyno_rounded_prism_xy(
-            frame_left_post_outer_x, frame_palm_post_outer_x,
+            frame_x_min, frame_palm_post_outer_x,
             frame_inner_y_max, frame_outer_y_max,
             frame_z_min, frame_z_max,
             frame_corner_r
         );
         dyno_rounded_prism_xy(
-            frame_left_post_outer_x, frame_palm_post_outer_x,
+            frame_x_min, frame_palm_post_outer_x,
             frame_outer_y_min, frame_inner_y_min,
             frame_z_min, frame_z_max,
             frame_corner_r
         );
+        // Left anchor post plus the unloaded accessory block outboard of it.
         dyno_rounded_prism_xy(
-            frame_left_post_outer_x, frame_left_post_inner_x,
+            frame_x_min, frame_left_post_inner_x,
             frame_outer_y_min, frame_outer_y_max,
             frame_z_min, frame_z_max,
             frame_corner_r
@@ -129,17 +130,41 @@ module service_tunnel_cut() {
         ], center = true);
 }
 
-module wrist_post_channel_cut() {
-    // Only the middle of the right-hand closing post is relieved. The fixed
-    // side rails and the lower post stay continuous across all nine settings.
-    dyno_rounded_box_xyz(
-        [(frame_palm_post_inner_x + frame_palm_post_outer_x) / 2,
-         (wrist_post_channel_y_min + wrist_post_channel_y_max) / 2,
-         (wrist_post_channel_z_min + frame_z_max + 2) / 2],
-        [frame_palm_post_t + 8,
-         wrist_post_channel_y_max - wrist_post_channel_y_min,
-         frame_z_max + 2 - wrist_post_channel_z_min], 2
+module grip_guides() {
+    // Ledges on both rail inner faces under the grip's side walls.
+    for (side = [[frame_inner_y_min - 1, frame_inner_y_min + grip_guide_w_y],
+                 [frame_inner_y_max - grip_guide_w_y, frame_inner_y_max + 1]])
+        dyno_rounded_prism_xy(
+            grip_guide_x_min, grip_guide_x_max,
+            side[0], side[1],
+            grip_guide_z_min, grip_guide_z_max, 1
+        );
+}
+
+module stopper_well_cut() {
+    dyno_rounded_prism_xy(
+        stopper_well_x_min, stopper_well_x_max,
+        stopper_well_y_min, stopper_well_y_max,
+        stopper_well_z_min, frame_z_max + 0.1,
+        stopper_r + stopper_well_clearance
     );
+}
+
+module phone_slot_cut() {
+    // Leans toward -X so the screen faces the user; the flat floor holds the
+    // phone's lower edge. Open at both rail ends for long phones.
+    intersection() {
+        translate([phone_slot_x_top, frame_outer_y_min - 1, frame_z_max])
+            rotate([0, -phone_slot_tilt, 0])
+                translate([-phone_slot_w, 0, -2 * phone_slot_depth_z])
+                    cube([phone_slot_w,
+                          frame_outer_y_max - frame_outer_y_min + 2,
+                          4 * phone_slot_depth_z]);
+        translate([frame_x_min - 1, frame_outer_y_min - 2, phone_slot_z_min])
+            cube([frame_accessory_len_x + 2,
+                  frame_outer_y_max - frame_outer_y_min + 4,
+                  phone_slot_depth_z + 1]);
+    }
 }
 
 module fixed_frame() {
@@ -148,12 +173,14 @@ module fixed_frame() {
             fixed_frame_body();
             frame_support_feet();
             clevis_cheek_pair(fixed_clevis_x_min, fixed_clevis_x_max);
+            grip_guides();
         }
         vertical_pin_bore(dyno_eye_x_left);
         wrist_index_bores();
-        wrist_post_channel_cut();
         service_tunnel_cut();
         frame_split_bolt_cuts();
+        stopper_well_cut();
+        phone_slot_cut();
     }
 }
 
@@ -303,14 +330,11 @@ module wrist_side_arms(z_min, z_max, x_max = wrist_arm_x_max) {
 
 module wrist_palm_face_clear_cut() {
     // Across the pad width, the upper arms may not project ahead of the palm
-    // face or through the bolster's rear radius; the bolster is their root.
-    for (x_span = [[wrist_arm_x_min - 1, wrist_saddle_x_min],
-                   [wrist_palm_bolster_x_max - wrist_palm_bolster_rear_r - 1,
-                    wrist_upper_arm_x_max + 1]])
-        translate([x_span[0], wrist_pad_y_min - 0.01, wrist_saddle_z_min])
-            cube([x_span[1] - x_span[0],
-                  wrist_pad_y_max - wrist_pad_y_min + 0.02,
-                  wrist_plate_z_max_2 + 1 - wrist_saddle_z_min]);
+    // face toward the fingers. Behind it they merge into the raised deck.
+    translate([wrist_arm_x_min - 1, wrist_pad_y_min - 0.01, wrist_plate_z_min_2 - 0.1])
+        cube([wrist_saddle_x_min - wrist_arm_x_min + 1,
+              wrist_pad_y_max - wrist_pad_y_min + 0.02,
+              wrist_plate_t + 1.1]);
 }
 
 module palm_bolster() {
@@ -416,6 +440,57 @@ module adjustable_wrist_rest(x_offset = 0) {
 
             rounded_palm_cradle();
         }
+}
+
+module pocket_stopper(edge_depth) {
+    // Sits on the pocket floor; the top face becomes the new, shallower edge.
+    t = stopper_t(edge_depth);
+    difference() {
+        dyno_rounded_prism_xy(
+            stopper_x_min, stopper_x_max, stopper_y_min, stopper_y_max,
+            hangboard_pocket_back_z, hangboard_pocket_back_z + t, stopper_r
+        );
+        // Pull-cord holes at both ends, outside the finger width, with a
+        // counterbore underneath for the knot.
+        for (y_pos = [stopper_y_min + stopper_pull_inset_y,
+                      stopper_y_max - stopper_pull_inset_y])
+            translate([(stopper_x_min + stopper_x_max) / 2, y_pos,
+                       hangboard_pocket_back_z - 0.1]) {
+                cylinder(d = stopper_pull_hole_d, h = t + 0.2);
+                cylinder(d = stopper_pull_knot_d, h = stopper_pull_knot_h + 0.1);
+            }
+    }
+}
+
+function stopper_stack_offset(i) = i == 0 ? 0
+    : stopper_t(stopper_edge_depths[i - 1]) + stopper_stack_offset(i - 1);
+
+module stored_pocket_stoppers() {
+    // All stoppers stacked in the frame's storage well.
+    for (i = [0 : stopper_count - 1])
+        translate([
+            (stopper_well_x_min + stopper_well_x_max) / 2
+                - (stopper_x_min + stopper_x_max) / 2,
+            0,
+            stopper_well_z_min - hangboard_pocket_back_z + stopper_stack_offset(i)
+        ])
+            pocket_stopper(stopper_edge_depths[i]);
+}
+
+module phone_reference(portrait = false, drop = 0) {
+    // Largest supported phone in its case, resting on the slot floor and
+    // leaning against the slot's outer (-X) face.
+    height = portrait ? phone_probe_l : phone_probe_w;
+    width = portrait ? phone_probe_w : phone_probe_l;
+    gap = (phone_slot_w - phone_probe_t) / 2;
+    // Lowest (-X) bottom corner sits on the slot floor.
+    corner_x = -phone_slot_w + gap;
+    z0 = (phone_slot_z_min - frame_z_max - corner_x * sin(phone_slot_tilt))
+        / cos(phone_slot_tilt);
+    translate([phone_slot_x_top, frame_center_y - width / 2, frame_z_max - drop])
+        rotate([0, -phone_slot_tilt, 0])
+            translate([corner_x, 0, z0])
+                cube([phone_probe_t, width, height]);
 }
 
 module pin_spacer() {
@@ -563,7 +638,7 @@ module fixed_frame_half_print_layout(side = "left") {
     // The flat upper rail faces rest on the bed and the two feet build upward.
     // The right half's lower lap tongues need support under their lap faces.
     x_mid = side == "left"
-        ? (frame_left_post_outer_x + frame_split_x_max) / 2
+        ? (frame_x_min + frame_split_x_max) / 2
         : (frame_split_x_min + frame_palm_post_outer_x) / 2;
     translate([-x_mid, 0, frame_z_max])
         rotate([180, 0, 0])
@@ -573,6 +648,19 @@ module fixed_frame_half_print_layout(side = "left") {
 module moving_finger_grip_print_layout() {
     translate([0, 0, -frame_z_min])
         moving_finger_grip();
+}
+
+module pocket_stoppers_print_layout() {
+    // Side by side, flat on the bed.
+    pitch = stopper_x_max - stopper_x_min + 8;
+    for (i = [0 : stopper_count - 1])
+        translate([
+            (i - (stopper_count - 1) / 2) * pitch
+                - (stopper_x_min + stopper_x_max) / 2,
+            -frame_center_y,
+            -hangboard_pocket_back_z
+        ])
+            pocket_stopper(stopper_edge_depths[i]);
 }
 
 module wrist_rest_print_layout() {
