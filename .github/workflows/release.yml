@@ -47,7 +47,7 @@ jobs:
 
             - name: Verify release assets exist
               run: |
-                  for part in frame_left frame_right grip wrist_rest; do
+                  for part in frame_left frame_right grip wrist_rest stoppers; do
                       test -f "release-assets/platform/crimpdeq-platform-${part}.stl"
                   done
 
