@@ -30,18 +30,18 @@ crowding and edge pressure; comfort still needs testing with different hands.
 ## Pocket stoppers
 
 Two drop-in stoppers, 5 and 10 mm thick, raise the pocket floor. On their
-own they give 20 and 15 mm edges; stacked, with the 5 mm one at the bottom,
-they give a 10 mm edge. Without a stopper the edge is 25 mm. Each is a
-17.5 × 77.5 mm plate that fills the pocket floor with 0.25 mm clearance, so
-the closed pocket walls locate it in both directions, and the fingers press it
-onto the floor or the stopper below. The loaded lip is unchanged.
+own they give 20 and 15 mm edges; stacked, in either order, they give a
+10 mm edge. Without a stopper the edge is 25 mm. Each is a 17.5 × 77.5 mm
+plate that fills the pocket floor with 0.25 mm clearance, so the closed
+pocket walls locate it in both directions, and the fingers press it onto the
+floor or the stopper below. The loaded lip is unchanged.
 
-Each stopper has a 4 × 8 mm pull tab at one end, outside the 64 mm finger
-width: the 5 mm stopper at one end, the 10 mm stopper at the other. With the
-stopper on the pocket floor, its tab stands 6 mm above the grip top, so it can
-be pinched and pulled straight up; stacked, the 10 mm stopper's tab stands
-11 mm proud. The 5 mm stopper's tab passes through a notch in the end of the
-10 mm stopper.
+Each stopper has a 3 × 8 mm pull tab on one end face: the 5 mm stopper at one
+end, the 10 mm stopper at the other. The tabs run in vertical slots in the
+pocket end walls, which leave 2 mm of wall behind them, so the whole top of
+the stopper stays free for the fingers. With the stopper on the pocket floor,
+its tab stands 6 mm above the grip top, so it can be pinched and pulled
+straight up; the top stopper of a stack stands a further 5 or 10 mm proud.
 
 When not in use, the stoppers stack in a 16 mm-deep well in the left end of
 the frame, next to the anchor post, with their tabs standing above it.

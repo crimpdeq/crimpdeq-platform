@@ -32,7 +32,7 @@ without pulling.
 - [ ] Your thumb stays clear of the pin heads when it wraps round the
       bolster.
 - [ ] The stopper tabs at the pocket ends don't catch your index or little
-      finger.
+      finger above the grip.
 - [ ] The bolster and deck edges are smooth enough; nothing digs in.
 - [ ] The heel deck supports your wrist without pressure points.
 - [ ] Note which openings suit full crimp, half crimp and open hand.
