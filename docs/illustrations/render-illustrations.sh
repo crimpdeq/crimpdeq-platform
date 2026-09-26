@@ -16,10 +16,9 @@ declare -A cameras=(
     [overview]="62,0,28"
     [plate1]="0,0,0"
     [plate2]="0,0,0"
-    [dry_fit]="60,0,35"
     [slide_rest]="58,0,32"
-    [glue]="58,0,28"
-    [glue_braces]="100,0,30"
+    [join_frame]="58,0,28"
+    [frame_joint]="0,0,0"
     [case_in]="58,0,25"
     [grip_in]="58,0,25"
     [bolt_stack]="0,0,0"
@@ -27,7 +26,6 @@ declare -A cameras=(
     [wrist_pin]="0,0,0"
     [position_min]="0,0,0"
     [position_max]="0,0,0"
-    [printed_hardware]="55,0,30"
 )
 
 views=("$@")

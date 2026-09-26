@@ -19,6 +19,10 @@ must still be locked; the one-station calculation does not authorise
 single-pin use. Each steel wrist pin must have at least 1 kN manufacturer-rated
 double-shear capacity.
 
+Either frame lap joint is also screened for the entire force: M5 screw
+shear, printed bearing at the screws and lap shoulders, net tension, and
+bending of the eccentric half-depth tongue.
+
 Additional nominal screens cover the left anchor post, unequal clevis
 reactions from the sensor's Z offset, the relieved right post, rail net
 sections and hole ligaments, the service-tunnel bridge, metal sleeve bending,
@@ -30,9 +34,10 @@ rest.
 
 The long sleeves bridge the enclosure between the cheeks and carry bending,
 not just pin shear. Their bending stress and the collar bearing stress both
-exceed the printed-material limits, which is why the loaded version requires
-[metal inserts](../loaded-version/hardware.md). The M8 bolts retain the joints;
-the calculation takes no credit for them reinforcing a loose sleeve.
+exceed the printed-material limits, which is why the build requires
+[metal inserts](../build/what-to-buy.md#load-transfer-inserts). The M8 bolts
+retain the joints; the calculation takes no credit for them reinforcing a
+loose sleeve.
 
 ## Limits of the screening
 

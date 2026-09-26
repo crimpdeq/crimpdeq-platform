@@ -78,13 +78,19 @@ tabletop. The modelled bolt nuts and wrist-pin tips keep at least
 Set the assembled frame on a level surface and confirm that all four soles
 touch without rocking before considering any load.
 
-## Split frame for fit prototypes
+## Two-piece frame
 
-The one-piece frame is 297.6 mm long. For an unloaded fit and comfort trial on
-a 256 mm bed, the frame can be exported as two halves that meet at
-`frame_split_x`, where they cross only the two plain side rails, clear of the
-service tunnel, index holes, load anchor, and feet. Each rail gets two Ø5 mm
-printed pegs in 12 mm-deep teardrop bores, and a glued U-channel brace across
-each seam. The brace legs stand on the same plane as the corner feet, and the
-brace posts carry the grip level with the frame. The glued frame is for fit
-trials only; any force test requires the one-piece frame.
+The complete frame is 297.6 mm long, so it is printed as two halves that fit a
+256 mm bed: 163.8 mm and 181.8 mm long. They join at `frame_split_x` with a
+48 mm half-lap in each side rail, crossing only plain rail clear of the
+service tunnel, load anchor, feet and index holes, and clear of the wrist arms
+at minimum travel. The left half keeps the upper half of the rail depth and
+the right half the lower half.
+
+Two M5 × 35 socket-head screws per rail clamp the lap. Their heads sit in
+counterbores in the top face and nyloc nuts in hex pockets in the bottom face,
+so nothing stands proud of the frame. Rail compression bears on the lap
+shoulders; the screws and the thinner tongue are also screened for the full
+design force (see [Structural screening](structural.md)). Because the frame
+only closes when the halves are bolted, the wrist rest can slide onto the
+right half first and be removed again later.

@@ -78,66 +78,54 @@ if (mode == "frame_case") {
 } else if (mode == "right_eye_alignment") {
     intersection() { eye_transfer_probe(dyno_eye_x_right); loadcell_reference(); }
 } else if (mode == "frame_split_complete") {
-    // The two fit-prototype halves rebuild the frame except for peg bores.
+    // The two halves rebuild the whole frame.
     difference() {
         fixed_frame();
         fixed_frame_half("left");
         fixed_frame_half("right");
-        frame_split_peg_holes();
     }
 } else if (mode == "frame_split_overlap") {
-    // The halves only share the cut plane; neither crosses it by >0.01 mm.
-    intersection() {
+    // The halves only share the lap faces; neither crosses them by >0.01 mm.
+    difference() {
         fixed_frame_half("left");
-        translate([frame_split_x + 0.01, -500, -500]) cube(1000);
+        frame_split_left_region(grow = 0.01);
     }
     intersection() {
         fixed_frame_half("right");
-        translate([frame_split_x - 1000.01, -500, -500]) cube(1000);
+        frame_split_left_region(grow = -0.01);
     }
-} else if (mode == "frame_split_peg_wall") {
-    // Peg bores stay inside the rails with no break-out to any surface.
+} else if (mode == "frame_split_bore_wall") {
+    // Bolt holes, counterbores and nut pockets break out only through the
+    // top and bottom faces, never through a rail side.
     difference() {
-        frame_split_peg_holes();
+        intersection() {
+            frame_split_bolt_cuts();
+            translate([-500, -500, frame_z_min]) cube([1000, 1000, frame_depth_z]);
+        }
         fixed_frame_body();
     }
-} else if (mode == "frame_split_brace_frame") {
-    // Braces seat on the rails without penetrating them.
-    intersection() { frame_split_braces(contact_relief = 0.01); fixed_frame(); }
-} else if (mode == "frame_split_brace_contact") {
-    // Each brace bears on BOTH halves of its rail (0.01 mm probe overlap).
-    assert(test_position < 4, "Brace contact index must be 0-3.");
+} else if (mode == "frame_split_hardware_frame") {
+    // Bolts and nuts sit in their holes, counterbores and pockets. Back them
+    // 0.01 mm off their seating faces so face contact is not an overlap.
     intersection() {
-        frame_split_brace(test_position < 2 ? "bottom" : "top", contact_relief = -0.01);
-        fixed_frame_half(test_position % 2 == 0 ? "left" : "right");
+        frame_split_hardware_model(bolt_dz = 0.01, nut_dz = 0.01);
+        fixed_frame();
     }
-} else if (mode == "frame_split_brace_sole") {
-    // Each leg has a real sole on the corner-foot plane.
-    assert(test_position < 2, "Brace sole index must be 0-1.");
-    intersection() {
-        frame_split_brace(test_position == 0 ? "bottom" : "top");
-        translate([frame_split_x - frame_split_brace_sole_x / 2 - 0.1,
-                   frame_outer_y_min - 20, support_foot_bottom_z])
-            cube([frame_split_brace_sole_x + 0.2,
-                  frame_outer_y_max - frame_outer_y_min + 40, 0.1]);
+} else if (mode == "frame_split_hardware_recessed") {
+    // No head, nut or bolt tip stands proud of the top or bottom face.
+    difference() {
+        frame_split_hardware_model();
+        translate([-500, -500, frame_z_min + 0.01])
+            cube([1000, 1000, frame_depth_z - 0.02]);
     }
-} else if (mode == "frame_split_brace_grip_support") {
-    // Each post pad sits under the grip body within the grip gap, so the
-    // grip rests level on both sides instead of tipping.
-    assert(test_position < 2, "Brace grip-support index must be 0-1.");
+} else if (mode == "frame_split_hardware_clear") {
+    // The joint hardware stays clear of the moving and mounted parts,
+    // including the wrist rest at minimum travel, the grip at rated
+    // deflection and the tabletop.
     intersection() {
-        frame_split_brace(test_position == 0 ? "bottom" : "top",
-            contact_relief = -(frame_split_brace_grip_gap + 0.01));
-        moving_finger_grip();
-    }
-} else if (mode == "frame_split_brace_clear") {
-    // Minimum wrist travel brings the lower arms closest to the braces. The
-    // grip is checked in place, at rated deflection and where it is lowered
-    // in before sliding onto the case.
-    intersection() {
-        frame_split_braces();
+        frame_split_hardware_model();
         union() {
-            for (x_offset = [0, rated_preview_deflection, frame_split_brace_grip_slide_x])
+            for (x_offset = [0, rated_preview_deflection])
                 translate([x_offset, 0, 0])
                     moving_finger_grip();
             crimpdeq_case_reference();
@@ -145,7 +133,35 @@ if (mode == "frame_case") {
             wrist_rest_hardware_model(x_offset = -wrist_adjust_range);
             dynamometer_hardware();
             dynamometer_bushings();
+            support_surface_probe(clearance = 5);
         }
+    }
+} else if (mode == "frame_split_clamp") {
+    // Each bolt clamps both halves: an annulus around its hole bears on the
+    // left half above the lap face and the right half below it.
+    assert(test_position < 2 * frame_split_bolt_count, "Clamp index must be 0-7.");
+    bolt = floor(test_position / 2);
+    x_pos = frame_split_bolt_x[bolt % 2];
+    y_pos = frame_split_bolt_y[floor(bolt / 2)];
+    intersection() {
+        fixed_frame_half(test_position % 2 == 0 ? "left" : "right");
+        translate([x_pos, y_pos, frame_z_min])
+            difference() {
+                cylinder(d = frame_split_bolt_hole_d + 1, h = frame_depth_z);
+                translate([0, 0, -0.1])
+                    cylinder(d = frame_split_bolt_hole_d - 0.02, h = frame_depth_z + 0.2);
+            }
+    }
+} else if (mode == "wrist_slide_on") {
+    // Before the halves are joined, the wrist rest slides onto the right
+    // half from its lap end, starting fully clear of the lap.
+    start = frame_split_x_min - 1 - wrist_saddle_x_max;
+    steps = ceil((-wrist_adjust_range - start) / wrist_index_pitch);
+    intersection() {
+        fixed_frame_half("right");
+        for (i = [0 : steps])
+            adjustable_wrist_rest(
+                x_offset = min(-wrist_adjust_range, start + i * wrist_index_pitch));
     }
 } else if (mode == "wrist_frame_center") {
     intersection() { adjustable_wrist_rest(); fixed_frame(); }

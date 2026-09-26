@@ -25,8 +25,10 @@ A floating-regions warning means something is missing support.
 - [ ] There's no brim inside the frame U openings, as expected with "Outer brim only".
 - [ ] The brims of neighbouring parts are separate, or only just touch.
 - [ ] The flat faces on the bed are fully filled.
-- [ ] Support bases appear under the right-half channel bridge, the left-half
-      clevis cheek, the wrist-rest deck and the grip cheek.
+- [ ] Support bases appear under the right-half lap tongues and channel
+      bridge, the left-half clevis cheek, the wrist-rest deck and the grip
+      cheek.
+- [ ] The four screw counterbores of the left half are open on the bed.
 - [ ] Nothing reaches the plate edge or the purge/cutter zone at the back left.
 
 ## D. Plate 1: channel bridge (right half, about 14–18 mm)
@@ -37,7 +39,16 @@ Step up until the closed end of the right half starts spanning the channel.
 - [ ] The first bridge layer is straight parallel lines across the gap.
 - [ ] The support trees stand on the plate, not on the brim or the other half.
 
-## E. Plate 1: clevis cheek (left half, about 35–45 mm)
+## E. Plate 1: lap tongues (right half, about 22.5 mm)
+
+Step up until the two lap tongues at the open end of the right half first
+appear.
+
+- [ ] Their first layer sits entirely on support interface, with no edge in
+      free air.
+- [ ] The support stops at the lap face and doesn't fill the screw holes.
+
+## F. Plate 1: clevis cheek (left half, about 35–45 mm)
 
 Step up until the cheek with the Ø17 hole first appears.
 
@@ -45,7 +56,7 @@ Step up until the cheek with the Ø17 hole first appears.
       air, including the outer corner.
 - [ ] The support trees don't lean against the other half.
 
-## F. Plate 2: wrist rest and grip
+## G. Plate 2: wrist rest and grip
 
 - [ ] The first layer of the heel deck, roughly 35–50 mm up, sits on support
       interface with no free-hanging edge.
@@ -53,32 +64,34 @@ Step up until the cheek with the Ø17 hole first appears.
 - [ ] No support trees grow between the grip and the wrist rest.
 - [ ] The top layer of the wrist rest is the palm surface, with no support on it.
 
-## G. Peg bores, index holes and printed hardware
+## H. Holes and pockets
 
-- [ ] The peg bores print as teardrops with a pointed top and no support inside.
-- [ ] There's no support in the index holes.
-- [ ] The bolts, pins, nuts and washers have no support.
-- [ ] The two seam braces stand upright on their soles with no support.
+- [ ] There's no support in the index holes or screw holes.
+- [ ] Each screw counterbore of the left half is bridged at about 9 mm.
+- [ ] The hex nut pockets at the top of the right half's lap tongues are
+      open, with no support or top skin in them.
 
-## H. Top layer
+## I. Top layer
 
 - [ ] On Plate 1 the last layers are the feet, two on each half. They are
       complete.
 - [ ] No stray support sticks up above any part.
 
-## I. Printer and material
+## J. Printer and material
 
 - [ ] The textured PEI plate matches the slicer's **Plate type**. Wash it with
       dish soap and warm water, dry it, and don't touch the surface.
-- [ ] There's enough dry PLA on the spool for the plate, plus margin.
+- [ ] There's enough dry filament on the spool for the plate, plus margin.
 - [ ] There's nothing behind the printer for the moving bed to hit.
 - [ ] **Bed leveling** is on in the print dialog.
 
-## J. During the print
+## K. During the print
 
 - **First 5 minutes:** brims and first layer are flat and stuck down. If a
   corner lifts, stop and clean or re-level.
 - **Plate 1, about 16 mm:** the channel bridge lands on its support.
+- **Plate 1, about 22.5 mm:** the right half's lap tongues land on their
+  support.
 - **Plate 1, about 40 mm:** the clevis cheek lands on its support.
 - **If any part comes loose, stop immediately.** On the A1 a loose tall part
   gets dragged into the others.

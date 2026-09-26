@@ -53,7 +53,6 @@ dyno_eye_y = 0;
 dyno_eye_z = loadcell_center_z;
 
 // M8 retainer, steel load-transfer sleeve, and aluminium flanged eye collars.
-// Printed replicas are for unloaded fit checks only; geometry is unchanged.
 pin_nominal_d = is_undef(pin_nominal_d) ? 8 : pin_nominal_d;
 bushing_od = is_undef(bushing_od) ? 16.4 : bushing_od;
 bushing_id = pin_nominal_d + 0.4;
@@ -293,76 +292,60 @@ service_tunnel_y_max = frame_outer_y_max + 0.2;
 
 rated_preview_deflection = 0.4;
 
-// Optional two-piece frame for printers with a 256 mm bed (Bambu A1/P1/X1).
-// The glued, pegged rail joint is for unloaded fit prototypes only; the
-// structural frame stays one piece.
-frame_split_x = is_undef(frame_split_x) ? 79 : frame_split_x;
+// Two-piece frame for printers with a 256 mm bed (Bambu Lab A1/P1/X1). Each
+// rail is spliced by a bolted half-lap: the left half keeps the upper half of
+// the rail depth, the right half the lower half. Rail compression bears on the
+// lap shoulders; two M5 bolts per rail clamp the lap and carry any shear or
+// tension. The joint lets the wrist rest slide onto the right half before the
+// frame is closed.
+frame_split_x = is_undef(frame_split_x) ? 70 : frame_split_x;
 frame_split_bed_max = is_undef(frame_split_bed_max) ? 240 : frame_split_bed_max;
-frame_split_peg_d = is_undef(frame_split_peg_d) ? 5 : frame_split_peg_d;
-frame_split_peg_clearance = is_undef(frame_split_peg_clearance) ? 0.4 : frame_split_peg_clearance;
-frame_split_peg_hole_d = frame_split_peg_d + frame_split_peg_clearance;
-frame_split_peg_depth = is_undef(frame_split_peg_depth) ? 12 : frame_split_peg_depth;
-frame_split_peg_l = 2 * frame_split_peg_depth - 1;
-frame_split_peg_edge = is_undef(frame_split_peg_edge) ? 11 : frame_split_peg_edge;
-frame_split_peg_z = [frame_z_min + frame_split_peg_edge, frame_z_max - frame_split_peg_edge];
-frame_split_peg_y = [wrist_mount_y_bottom, wrist_mount_y_top];
-frame_split_peg_count = len(frame_split_peg_z) * len(frame_split_peg_y);
-frame_split_left_len = frame_split_x - frame_left_post_outer_x;
-frame_split_right_len = frame_palm_post_outer_x - frame_split_x;
-frame_split_peg_wall_y = (frame_rail_t - frame_split_peg_hole_d) / 2;
-// A glued brace per rail straddles the seam: a U-channel of outer splint,
-// underside slab and inner post, on a leg that stands on the corner-foot
-// plane. The post top is a pad under the grip body edge that holds the grip
-// level with the frame. The upper face (hand/deck) stays clear.
-frame_split_brace_half_len =
-    is_undef(frame_split_brace_half_len) ? 18 : frame_split_brace_half_len;
-frame_split_brace_web_t = is_undef(frame_split_brace_web_t) ? 4 : frame_split_brace_web_t;
-frame_split_brace_flange_t = is_undef(frame_split_brace_flange_t) ? 4 : frame_split_brace_flange_t;
-frame_split_brace_sole_x = is_undef(frame_split_brace_sole_x) ? 16 : frame_split_brace_sole_x;
-// Glue gap on the outer face only; the leg seats directly on the rail.
-frame_split_brace_glue_gap =
-    is_undef(frame_split_brace_glue_gap) ? 0.15 : frame_split_brace_glue_gap;
-frame_split_brace_corner_relief = 0.8;
-// The post fills the 3 mm rail-to-grip gap and reaches under the grip body.
-frame_split_brace_post_t = is_undef(frame_split_brace_post_t) ? 8 : frame_split_brace_post_t;
-// Small gap under the grip so the pad locates it without lifting it.
-frame_split_brace_grip_gap =
-    is_undef(frame_split_brace_grip_gap) ? 0.2 : frame_split_brace_grip_gap;
-frame_split_brace_pad_z = hangboard_back_z - frame_split_brace_grip_gap;
-frame_split_brace_grip_overlap_y = frame_split_brace_glue_gap + frame_split_brace_post_t
-    - min(hangboard_body_y_min - frame_inner_y_min, frame_inner_y_max - hangboard_body_y_max);
-// The grip is lowered in right of the case, then slid left onto its eye.
-frame_split_brace_grip_slide_x = case_outer_x_max - moving_clevis_x_min + 2;
-frame_split_brace_x_min = frame_split_x - frame_split_brace_half_len;
-frame_split_brace_x_max = frame_split_x + frame_split_brace_half_len;
-frame_split_brace_z_min = support_foot_bottom_z;
-frame_split_brace_slab_z_min = frame_z_min - frame_split_brace_flange_t;
-
-// Printed stand-ins for the M8 joint hardware and ball-lock pins. They match
-// the modelled hardware envelopes for unloaded fit trials only; the coarse
-// printed thread and unlocked pins are not load-rated.
-fit_bolt_d = is_undef(fit_bolt_d) ? 7.6 : fit_bolt_d;
-fit_bolt_head_d = is_undef(fit_bolt_head_d) ? 13 : fit_bolt_head_d;
-fit_bolt_head_h = is_undef(fit_bolt_head_h) ? 5.3 : fit_bolt_head_h;
-fit_bolt_protrusion = is_undef(fit_bolt_protrusion) ? 2 : fit_bolt_protrusion;
-fit_bolt_thread_pitch = is_undef(fit_bolt_thread_pitch) ? 3 : fit_bolt_thread_pitch;
-fit_bolt_thread_depth = is_undef(fit_bolt_thread_depth) ? 0.9 : fit_bolt_thread_depth;
-fit_bolt_thread_clearance = is_undef(fit_bolt_thread_clearance) ? 0.35 : fit_bolt_thread_clearance;
-fit_bolt_thread_runout = is_undef(fit_bolt_thread_runout) ? 4 : fit_bolt_thread_runout;
-fit_bolt_l = frame_depth_z + 2 * loadcell_washer_t + loadcell_nut_h + fit_bolt_protrusion;
-fit_bolt_thread_l = loadcell_nut_h + fit_bolt_protrusion + fit_bolt_thread_runout;
-fit_nut_d = is_undef(fit_nut_d) ? 14.4 : fit_nut_d;
-fit_washer_d = is_undef(fit_washer_d) ? 16 : fit_washer_d;
-fit_washer_id = is_undef(fit_washer_id) ? fit_bolt_d + 1 : fit_washer_id;
-fit_pin_clearance = is_undef(fit_pin_clearance) ? 0.3 : fit_pin_clearance;
-fit_pin_d = wrist_quick_pin_d - fit_pin_clearance;
-fit_pin_l = wrist_quick_pin_grip_l + wrist_quick_pin_lock_ball_d / 2 + 0.2
-    + wrist_quick_pin_tip_l;
-fit_pin_retainer_d = is_undef(fit_pin_retainer_d) ? 2.4 : fit_pin_retainer_d;
-fit_pin_retainer_gap = is_undef(fit_pin_retainer_gap) ? 0.3 : fit_pin_retainer_gap;
-fit_pin_retainer_z = wrist_quick_pin_grip_l + fit_pin_retainer_gap + fit_pin_retainer_d / 2;
-fit_pin_lanyard_d = is_undef(fit_pin_lanyard_d) ? 2.5 : fit_pin_lanyard_d;
-fit_pin_lanyard_r = is_undef(fit_pin_lanyard_r) ? 6 : fit_pin_lanyard_r;
+frame_split_lap_len = is_undef(frame_split_lap_len) ? 48 : frame_split_lap_len;
+frame_split_x_min = frame_split_x - frame_split_lap_len / 2;
+frame_split_x_max = frame_split_x + frame_split_lap_len / 2;
+frame_split_lap_z = (frame_z_min + frame_z_max) / 2;
+frame_split_upper_t = frame_z_max - frame_split_lap_z;
+frame_split_lower_t = frame_split_lap_z - frame_z_min;
+frame_split_left_len = frame_split_x_max - frame_left_post_outer_x;
+frame_split_right_len = frame_palm_post_outer_x - frame_split_x_min;
+// ISO 4762 M5 socket-head screws from the top face into DIN 985 nyloc nuts
+// held in hex pockets in the lower face; both stay recessed. The counterbore
+// depth follows from the screw length so the tip ends just inside the lower
+// face, where it picks up a nut held at the pocket mouth and draws it in.
+frame_split_bolt_d = is_undef(frame_split_bolt_d) ? 5 : frame_split_bolt_d;
+frame_split_bolt_l = is_undef(frame_split_bolt_l) ? 35 : frame_split_bolt_l;
+frame_split_bolt_pitch = is_undef(frame_split_bolt_pitch) ? 24 : frame_split_bolt_pitch;
+frame_split_bolt_hole_d = frame_split_bolt_d + 0.5;
+frame_split_bolt_head_d = 1.7 * frame_split_bolt_d;
+frame_split_bolt_head_h = frame_split_bolt_d;
+frame_split_bolt_cbore_d = frame_split_bolt_head_d + 1;
+frame_split_bolt_tip_recess =
+    is_undef(frame_split_bolt_tip_recess) ? 1 : frame_split_bolt_tip_recess;
+frame_split_nut_af = 1.6 * frame_split_bolt_d;
+frame_split_nut_h = frame_split_bolt_d;
+frame_split_nut_pocket_af = frame_split_nut_af + 0.4;
+// The bolt tip passes the nylon insert by this much.
+frame_split_bolt_protrusion = 1.5;
+frame_split_bolt_x = [frame_split_x - frame_split_bolt_pitch / 2,
+    frame_split_x + frame_split_bolt_pitch / 2];
+frame_split_bolt_y = [wrist_mount_y_bottom, wrist_mount_y_top];
+frame_split_bolt_count = len(frame_split_bolt_x) * len(frame_split_bolt_y);
+frame_split_bolt_tip_z = frame_z_min + frame_split_bolt_tip_recess;
+frame_split_bolt_head_z = frame_split_bolt_tip_z + frame_split_bolt_l;
+frame_split_bolt_cbore_depth = frame_z_max - frame_split_bolt_head_z;
+frame_split_nut_top_z =
+    frame_split_bolt_tip_z + frame_split_bolt_protrusion + frame_split_nut_h;
+frame_split_nut_pocket_depth = frame_split_nut_top_z - frame_z_min;
+// Thread overlap with the nut held at the pocket mouth, before tightening.
+frame_split_nut_start_engagement =
+    frame_z_min + frame_split_nut_h - frame_split_bolt_tip_z;
+frame_split_bolt_end_dist = (frame_split_lap_len - frame_split_bolt_pitch) / 2;
+frame_split_bolt_side_wall_y = (frame_rail_t
+    - max(frame_split_bolt_cbore_d, frame_split_nut_pocket_af)) / 2;
+// Printed bolt bearing length in each half, excluding the head counterbore
+// and nut pocket.
+frame_split_bolt_bearing_l = min(frame_split_bolt_head_z - frame_split_lap_z,
+    frame_split_lap_z - frame_split_nut_top_z);
 
 // Nominal load-path screens, not a strength qualification. Material limits
 // require coupon verification in the actual print orientation/environment.
@@ -383,9 +366,27 @@ rail_ligament_shear_mpa = wrist_force_per_fastener_n / (2 * frame_depth_z * wris
 service_net_tension_mpa = design_force_n /
     (frame_rail_t * (frame_depth_z - (service_tunnel_z_max - service_tunnel_z_min)));
 
+// Screen one rail's lap joint for the entire frame force, as for the wrist
+// stations. Compression bears on a lap shoulder; the bolts (thread root taken
+// as 0.8 d) and the thinner tongue are also screened for it as shear and
+// tension. The eccentric tongue sees the force offset by a quarter depth.
+allowable_frame_bolt_shear_mpa =
+    is_undef(allowable_frame_bolt_shear_mpa) ? 150 : allowable_frame_bolt_shear_mpa;
+frame_split_bolts_per_rail = len(frame_split_bolt_x);
+frame_split_tongue_t = min(frame_split_upper_t, frame_split_lower_t);
+frame_split_bolt_design_shear_mpa = design_force_n /
+    (frame_split_bolts_per_rail * PI * pow(0.8 * frame_split_bolt_d, 2) / 4);
+frame_split_bolt_design_bearing_mpa = design_force_n /
+    (frame_split_bolts_per_rail * frame_split_bolt_d * frame_split_bolt_bearing_l);
+frame_split_shoulder_bearing_mpa = design_force_n / (frame_rail_t * frame_split_tongue_t);
+frame_split_tongue_net_tension_mpa = design_force_n / (frame_split_tongue_t *
+    (frame_rail_t - max(frame_split_bolt_cbore_d, frame_split_nut_pocket_af)));
+frame_split_tongue_design_bending_mpa = design_force_n * frame_depth_z / 4 /
+    (frame_rail_t * pow(frame_split_tongue_t, 2) / 6) + frame_split_shoulder_bearing_mpa;
+
 // Sleeve as a simply supported annular beam between cheek midplanes, with
 // the sensor force applied at its actual (off-centre) Z datum. No credit for
-// the loose M8 retainer sharing bending. Printed sleeves are fit models only.
+// the loose M8 retainer sharing bending.
 sleeve_support_low_z = frame_z_min + clevis_plate_t / 2;
 sleeve_support_high_z = frame_z_max - clevis_plate_t / 2;
 sleeve_span = sleeve_support_high_z - sleeve_support_low_z;
@@ -565,50 +566,24 @@ assert(collar_design_bearing_mpa <= allowable_collar_bearing_mpa,
 assert(lip_design_bending_mpa <= allowable_printed_bending_mpa &&
     wrist_arm_design_bending_mpa <= allowable_printed_bending_mpa,
     "Finger lip or wrist arms exceed configured nominal bending stress.");
-assert(frame_split_x - frame_split_peg_depth > service_tunnel_w / 2 + 3 &&
-    frame_split_x + frame_split_peg_depth
-        < wrist_mount_x - wrist_adjust_range - wrist_index_hole_d / 2 - 3 &&
-    frame_split_x - frame_split_peg_depth > fixed_clevis_x_max + 3 &&
+assert(frame_split_x_min - 3 > service_tunnel_w / 2 &&
+    frame_split_x_min - 3 > fixed_clevis_x_max &&
+    frame_split_x_max + 3 <= wrist_arm_x_min - wrist_adjust_range &&
     frame_split_left_len <= frame_split_bed_max &&
     frame_split_right_len <= frame_split_bed_max,
-    "Frame split must cross plain rails only and leave both halves printable.");
-assert(frame_split_peg_wall_y >= 4 &&
-    frame_split_peg_z[1] - frame_split_peg_z[0] >= frame_split_peg_hole_d + 8 &&
-    frame_split_peg_edge >= frame_split_peg_hole_d / 2 + 6 &&
-    frame_split_peg_clearance >= 0.2 && frame_split_peg_depth >= 2 * frame_split_peg_d,
-    "Frame split pegs need enough rail wall, spacing, clearance and engagement.");
-assert(frame_split_brace_half_len >= frame_split_peg_depth + 4 &&
-    frame_split_brace_x_max + 3
-        <= wrist_arm_x_min - wrist_adjust_range &&
-    frame_split_brace_x_min - 3 > support_foot_x_left + support_foot_w_x / 2 &&
-    frame_split_brace_web_t >= 3 && frame_split_brace_flange_t >= 3 &&
-    frame_split_brace_slab_z_min > frame_split_brace_z_min &&
-    frame_split_brace_sole_x >= support_foot_w_x &&
-    frame_split_brace_sole_x <= 2 * frame_split_brace_half_len &&
-    frame_split_brace_glue_gap >= 0.1 && frame_split_brace_glue_gap <= 0.3 &&
-    frame_split_brace_corner_relief < frame_split_brace_web_t / 2,
-    "Split braces must cover the pegs, clear the wrist rest at minimum travel and reach the foot plane.");
-assert(frame_split_brace_grip_gap >= 0.1 && frame_split_brace_grip_gap <= 0.5 &&
-    frame_split_brace_grip_overlap_y >= 4 &&
-    frame_split_brace_x_min < hangboard_body_x_max - 16 &&
-    frame_split_brace_x_min > case_outer_x_max + 4 &&
-    frame_inner_y_min + frame_split_brace_glue_gap + frame_split_brace_post_t
-        < -clevis_width_y / 2 - 2 &&
-    frame_inner_y_max - frame_split_brace_glue_gap - frame_split_brace_post_t
-        > clevis_width_y / 2 + 2,
-    "Brace posts must reach under the grip body edge, clear the case and leave the grip level.");
-assert(fit_bolt_d + 0.4 <= bushing_id &&
-    fit_bolt_d > fit_bolt_thread_depth * 4 &&
-    fit_bolt_thread_clearance >= 0.2 &&
-    fit_bolt_thread_pitch >= 2 * fit_bolt_thread_depth &&
-    fit_bolt_thread_runout >= 2 &&
-    loadcell_nut_low_z - fit_bolt_protrusion >= support_foot_bottom_z + 2 &&
-    fit_washer_id > fit_bolt_d + 0.4 && fit_washer_d > fit_washer_id + 4 &&
-    fit_nut_d * cos(30) >= fit_bolt_d + 2 * fit_bolt_thread_clearance + 3,
-    "Printed fit bolts need spacer clearance, a mating thread, tabletop clearance and nut/washer walls.");
-assert(fit_pin_clearance >= 0.2 && fit_pin_d + fit_pin_clearance <= wrist_mount_hole_d &&
-    fit_pin_d - fit_pin_retainer_d >= 3 &&
-    fit_pin_l - fit_pin_retainer_z - fit_pin_retainer_d / 2 >= 1.5 &&
-    fit_pin_lanyard_r + fit_pin_lanyard_d / 2 + 1.5 <= wrist_quick_pin_head_d / 2 &&
-    fit_pin_lanyard_r - fit_pin_lanyard_d / 2 - 1.5 >= fit_pin_d / 2,
-    "Printed fit pins need hole clearance, a retainer below the lower arm and head walls.");
+    "Frame lap joint must cross plain rails only, clear the wrist arms and leave both halves printable.");
+assert(frame_split_bolt_end_dist >= 2 * frame_split_bolt_hole_d &&
+    frame_split_bolt_pitch >= 3 * frame_split_bolt_d &&
+    frame_split_bolt_side_wall_y >= 2.5 &&
+    frame_split_bolt_bearing_l >= 2 * frame_split_bolt_d &&
+    frame_split_nut_pocket_depth >= frame_split_nut_h &&
+    frame_split_bolt_cbore_depth >= frame_split_bolt_head_h + 0.5 &&
+    frame_split_bolt_tip_recess >= 0.5 &&
+    frame_split_nut_start_engagement >= frame_split_nut_h / 2,
+    "Frame lap bolts need edge distance, rail walls, bearing length, recessed heads and nuts, and a screw that reaches a nut at the pocket mouth.");
+assert(frame_split_bolt_design_shear_mpa <= allowable_frame_bolt_shear_mpa &&
+    frame_split_bolt_design_bearing_mpa <= allowable_printed_bearing_mpa &&
+    frame_split_shoulder_bearing_mpa <= allowable_printed_bearing_mpa &&
+    frame_split_tongue_net_tension_mpa <= allowable_printed_tension_mpa &&
+    frame_split_tongue_design_bending_mpa <= allowable_printed_bending_mpa,
+    "Frame lap joint exceeds configured bolt shear or printed bearing, tension or bending stress.");

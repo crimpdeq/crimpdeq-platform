@@ -1,6 +1,6 @@
 # Crimpdeq Platform
 
-![Assembled fit prototype](docs/src/images/overview.png)
+![Assembled platform](docs/src/images/overview.png)
 
 A parametric OpenSCAD platform that turns the [Crimpdeq](https://github.com/crimpdeq)
 v2 portable force sensor into an isometric finger and hand dynamometer. The
@@ -18,9 +18,8 @@ export, or validate the model.
 ## Documentation
 
 The [book](docs/src/SUMMARY.md) covers the design and its structural
-assumptions, a step-by-step guide to printing and assembling the fit prototype
-on a 256 mm printer, the requirements for a future loaded version, and the
-development workflow. Build it locally with [mdBook](https://rust-lang.github.io/mdBook/):
+assumptions, a step-by-step guide to buying the hardware and printing and
+assembling the parts on a 256 mm printer, and the development workflow. Build it locally with [mdBook](https://rust-lang.github.io/mdBook/):
 
 ```bash
 mdbook serve docs
