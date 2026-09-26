@@ -75,12 +75,16 @@ done
 for index in {0..7}; do
     checks+=("frame_split_clamp_${index} nonempty")
 done
-for index in {0..2}; do
+for index in {0..1}; do
     checks+=("stopper_pocket_${index} empty")
     checks+=("stopper_seated_${index} nonempty")
+    checks+=("stopper_stack_pocket_${index} empty")
+    checks+=("stopper_stack_contact_${index} nonempty")
+    checks+=("stopper_cord_path_${index} empty")
 done
-for index in {0..5}; do
+for index in {0..3}; do
     checks+=("stopper_located_${index} nonempty")
+    checks+=("stopper_stack_located_${index} nonempty")
 done
 
 current_job_count() {
@@ -104,7 +108,7 @@ check_mode() {
     local status_file="$tmp_dir/${mode}.status"
     local error_file="$tmp_dir/${mode}.error"
     local result log_text exit_code=0 scad_mode="$mode" test_position=0
-    if [[ "$mode" =~ ^(wrist_position|foot_contact|frame_split_clamp|grip_guide_support|stopper_pocket|stopper_seated|stopper_located)_([0-8])$ ]]; then
+    if [[ "$mode" =~ ^(wrist_position|foot_contact|frame_split_clamp|grip_guide_support|stopper_pocket|stopper_seated|stopper_located|stopper_stack_pocket|stopper_stack_contact|stopper_stack_located|stopper_cord_path)_([0-8])$ ]]; then
         scad_mode="${BASH_REMATCH[1]}"
         test_position="${BASH_REMATCH[2]}"
     fi
@@ -208,7 +212,9 @@ invalid_parameters=(
     'grip_guide_gap_z=0'
     'grip_guide_gap_z=1'
     'stopper_clearance=0.1'
-    'stopper_edge_depths=[20,15,10,22]'
+    'stopper_t_list=[3,10]'
+    'stopper_t_list=[10,10]'
+    'stopper_t_list=[5,10,5]'
     'hangboard_body_w_x=30'
     'hangboard_lip_radius=3'
     'hand_opening=75'

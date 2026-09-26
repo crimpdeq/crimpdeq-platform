@@ -18,7 +18,7 @@ openscad -D 'part="frame_left"' -o /tmp/dynamometer_frame_left.stl dynamometer_a
 | `frame_left`, `frame_right` | Frame halves, joined by bolted lap joints |
 | `grip` | Moving hangboard grip |
 | `wrist_rest` | Adjustable palm and wrist saddle |
-| `stoppers` | Three pocket stoppers, laid out flat |
+| `stoppers` | Two stackable pocket stoppers, laid out flat |
 
 `export-parts.sh` exports every part in the table (or only the parts given as
 arguments) as `crimpdeq-platform-<part>.stl` into `exports/`, which is ignored

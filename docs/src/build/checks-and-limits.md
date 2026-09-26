@@ -14,8 +14,8 @@
       screw heads sit below the top face.
 - [ ] **Grip level:** the grip's top is level with the frame top on both
       sides. Note whether it hangs free or rests on the grip-guide ledges.
-- [ ] **Stoppers:** each one drops onto the pocket floor, stays put under
-      the fingers, and lifts out by its cord.
+- [ ] **Stoppers:** each one, and both stacked, sit flat in the pocket, stay
+      put under the fingers, and lift out by their cords.
 - [ ] **Phone:** your phone, in its case, stands in the slot and stays put
       while you pull on the grip.
 

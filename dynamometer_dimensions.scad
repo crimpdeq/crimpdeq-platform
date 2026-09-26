@@ -137,27 +137,34 @@ grip_guide_x_max = hangboard_body_x_max + 2;
 grip_guide_z_max = hangboard_back_z - grip_guide_gap_z;
 grip_guide_z_min = grip_guide_z_max - grip_guide_t;
 
-// Drop-in pocket stoppers raise the floor to give shallower edges. The
-// closed pocket walls locate them; a cord knotted through each pull hole
-// lifts them out. They stack in a storage well in the left end of the frame.
-stopper_edge_depths = is_undef(stopper_edge_depths) ? [20, 15, 10] : stopper_edge_depths;
+// Two drop-in pocket stoppers raise the floor to give shallower edges: each
+// on its own, or both stacked in either order. The closed pocket walls locate
+// them; cords knotted through each stopper's pull holes lift it out, passing
+// through clearance holes in the other when it is on top. They stack in a
+// storage well in the left end of the frame.
+stopper_t_list = is_undef(stopper_t_list) ? [5, 10] : stopper_t_list;
 stopper_clearance = is_undef(stopper_clearance) ? 0.25 : stopper_clearance;
-stopper_count = len(stopper_edge_depths);
+stopper_count = len(stopper_t_list);
 stopper_x_min = hangboard_opening_x_min + hangboard_draft + stopper_clearance;
 stopper_x_max = hangboard_opening_x_max - hangboard_draft - stopper_clearance;
+stopper_center_x = (stopper_x_min + stopper_x_max) / 2;
 stopper_y_min = hangboard_opening_y_min + hangboard_draft + stopper_clearance;
 stopper_y_max = hangboard_opening_y_max - hangboard_draft - stopper_clearance;
 stopper_r = hangboard_opening_r - hangboard_draft;
 stopper_pull_hole_d = 3.5;
-stopper_pull_knot_d = 7;
+stopper_pull_knot_d = 6;
 stopper_pull_knot_h = 2;
 stopper_pull_inset_y = 4;
-stopper_stack_h = hangboard_pocket_depth_z * stopper_count
-    - sum_list(stopper_edge_depths);
+// Each stopper's own pull holes sit on its side of the X centre line.
+stopper_pull_offset_x = 4;
+function stopper_pull_x(i) = stopper_center_x + (2 * i - 1) * stopper_pull_offset_x;
 function sum_list(v, i = 0) = i >= len(v) ? 0 : v[i] + sum_list(v, i + 1);
-function stopper_t(edge_depth) = hangboard_pocket_depth_z - edge_depth;
-function stopper_min_t(i = 0) = i >= stopper_count ? hangboard_pocket_depth_z
-    : min(stopper_t(stopper_edge_depths[i]), stopper_min_t(i + 1));
+stopper_stack_h = sum_list(stopper_t_list);
+stopper_min_t = min(stopper_t_list);
+// Edges from each stopper alone, then from both stacked.
+stopper_edge_depths = concat(
+    [for (t = stopper_t_list) hangboard_pocket_depth_z - t],
+    [hangboard_pocket_depth_z - stopper_stack_h]);
 
 // Adjustable palm/wrist-heel pad beside the hangboard pocket.
 hand_opening = is_undef(hand_opening) ? 65 : hand_opening;
@@ -539,10 +546,16 @@ assert(hangboard_opening_x_max - hangboard_opening_x_min - 2 * hangboard_draft >
     "Finger pocket must retain at least 18 mm clearance at its floor.");
 assert(hangboard_opening_y_max - hangboard_opening_y_min - 2 * hangboard_draft >= 78,
     "Finger pocket must retain at least 78 mm usable width at its floor.");
+assert(stopper_count == 2 &&
+    (stopper_edge_depths == [20, 15, 10] || stopper_edge_depths == [15, 20, 10]),
+    "Use two stoppers that give 20 and 15 mm edges alone and 10 mm stacked.");
 assert(stopper_clearance >= 0.15 && stopper_clearance <= 0.4 &&
-    stopper_r >= 2 && stopper_min_t() >= 5 &&
-    stopper_min_t() - stopper_pull_knot_h >= 3 &&
+    stopper_r >= 2 && stopper_min_t >= 5 &&
+    stopper_min_t - stopper_pull_knot_h >= 3 &&
     stopper_pull_inset_y - stopper_pull_knot_d / 2 >= 0.5 &&
+    stopper_pull_offset_x + stopper_pull_knot_d / 2
+        <= (stopper_x_max - stopper_x_min) / 2 - 1 &&
+    2 * stopper_pull_offset_x - stopper_pull_knot_d / 2 - stopper_pull_hole_d / 2 >= 2 &&
     stopper_y_max - stopper_pull_inset_y - stopper_pull_hole_d / 2
         > frame_center_y + 32 &&
     stopper_y_min + stopper_pull_inset_y + stopper_pull_hole_d / 2

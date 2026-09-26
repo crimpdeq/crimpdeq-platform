@@ -2,9 +2,9 @@
 
 ## Pocket stoppers
 
-![Stoppers in the pocket and in their storage well](../images/stoppers.png)
+![Stacking the stoppers in the pocket](../images/stoppers.png)
 
-The finger pocket is 25 mm deep. Each stopper raises its floor to give a
+The finger pocket is 25 mm deep. The stoppers raise its floor to give a
 shallower edge:
 
 | Stopper | Edge |
@@ -12,20 +12,22 @@ shallower edge:
 | None | 25 mm |
 | 5 mm | 20 mm |
 | 10 mm | 15 mm |
-| 15 mm | 10 mm |
+| 5 mm and 10 mm, stacked | 10 mm |
 
-1. Cut the cord into six pieces about 15 cm long. Thread one through each
-   pull hole from underneath and knot it, so the knot sits in the counterbore
-   under the stopper. Tie the two cords of each stopper into a loop above it.
-2. Drop the stopper flat into the pocket, loop up. Its thickness faces up; the
-   pocket walls hold it in place.
-3. Tuck the loop against the end of the pocket, outside your fingers.
-4. To take it out, pull the loop straight up.
+1. Cut the cord into four pieces about 15 cm long. On each stopper, find the
+   two pull holes with a counterbore underneath, one at each end. Thread a
+   cord through each from underneath and knot it, so the knot sits in the
+   counterbore. Tie the two cords of each stopper into a loop above it.
+2. Drop a stopper flat into the pocket, loop up. The pocket walls hold it in
+   place.
+3. For the 10 mm edge, thread the lower stopper's cords up through the plain
+   holes of the other one, then drop it on top. Either can go at the bottom.
+4. Tuck the loops against the ends of the pocket, outside your fingers.
+5. To take a stopper out, pull its loop straight up. Lift the top one first.
 
-Use one stopper at a time; they don't stack in the pocket. Tare the
-instrument again after fitting or removing one.
+Tare the instrument again after fitting or removing a stopper.
 
-Store the stoppers stacked flat in the well at the left end of the frame,
+Store both stoppers stacked flat in the well at the left end of the frame,
 loops up.
 
 ## Phone

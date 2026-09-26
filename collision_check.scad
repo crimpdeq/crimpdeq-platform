@@ -53,7 +53,7 @@ module wrist_quick_pin_probe(x_offset = 0) {
 }
 
 module stopper_in_pocket(i, dx = 0, dy = 0, dz = 0) {
-    translate([dx, dy, dz]) pocket_stopper(stopper_edge_depths[i]);
+    translate([dx, dy, dz]) pocket_stopper(i);
 }
 
 module phone_slot_neighbours() {
@@ -113,6 +113,45 @@ if (mode == "frame_case") {
         stopper_in_pocket(test_position % stopper_count,
             dx = test_position < stopper_count ? shift : 0,
             dy = test_position < stopper_count ? 0 : shift);
+    }
+} else if (mode == "stopper_stack_pocket") {
+    // Both stoppers stacked, either one at the bottom, clear of the grip.
+    // Seating faces are backed off 0.01 mm so face contact is not an overlap.
+    assert(test_position < 2, "Stack order must be 0-1.");
+    intersection() {
+        moving_finger_grip();
+        translate([0, 0, 0.01]) stacked_pocket_stoppers(test_position, dz_top = 0.01);
+    }
+} else if (mode == "stopper_stack_contact") {
+    // The upper stopper rests on the lower one.
+    assert(test_position < 2, "Stack order must be 0-1.");
+    intersection() {
+        pocket_stopper(test_position);
+        translate([0, 0, stopper_t_list[test_position] - 0.02])
+            pocket_stopper(1 - test_position);
+    }
+} else if (mode == "stopper_stack_located") {
+    // The drafted pocket walls still stop the upper stopper in X and Y.
+    assert(test_position < 4, "Stack index must be 0-3.");
+    bottom = test_position % 2;
+    shift = stopper_clearance + 0.1
+        + hangboard_draft * stopper_t_list[bottom] / hangboard_pocket_depth_z;
+    intersection() {
+        moving_finger_grip();
+        translate([test_position < 2 ? shift : 0, test_position < 2 ? 0 : shift,
+                   stopper_t_list[bottom]])
+            pocket_stopper(1 - bottom);
+    }
+} else if (mode == "stopper_cord_path") {
+    // The lower stopper's pull cords pass up through the upper stopper.
+    assert(test_position < 2, "Stack order must be 0-1.");
+    intersection() {
+        translate([0, 0, stopper_t_list[test_position]])
+            pocket_stopper(1 - test_position);
+        for (y_pos = [stopper_y_min + stopper_pull_inset_y,
+                      stopper_y_max - stopper_pull_inset_y])
+            translate([stopper_pull_x(test_position), y_pos, hangboard_pocket_back_z])
+                cylinder(d = 2.5, h = hangboard_pocket_depth_z + 5);
     }
 } else if (mode == "stopper_stored") {
     intersection() {

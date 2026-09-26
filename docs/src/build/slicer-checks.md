@@ -32,12 +32,10 @@ A floating-regions warning means something is missing support.
       the left half are open on the bed.
 - [ ] Nothing reaches the plate edge or the purge/cutter zone at the back left.
 
-## D. Plate 1: phone slot and stopper well (left half, about 16 mm and 31 mm)
+## D. Plate 1: phone slot and stopper well (left half, about 16 mm)
 
-- [ ] At about 16 mm, the first layer closing the phone slot is straight
-      bridge lines across the slot.
-- [ ] At about 31 mm, the first layer closing the stopper well is straight
-      bridge lines across the well.
+- [ ] At about 16 mm, the first layers closing the phone slot and the stopper
+      well are straight bridge lines across each opening.
 - [ ] Neither has support inside it.
 
 ## E. Plate 1: clevis cheek (left half, about 35–45 mm)
@@ -101,8 +99,8 @@ appear.
 
 - **First 5 minutes:** brims and first layer are flat and stuck down. If a
   corner lifts, stop and clean or re-level.
-- **Plate 1, about 16 mm and 31 mm:** the phone slot and stopper well
-  bridges close cleanly.
+- **Plate 1, about 16 mm:** the phone slot and stopper well bridges close
+  cleanly.
 - **Plate 1, about 40 mm:** the clevis cheek lands on its support.
 - **Plate 2, about 16 mm:** the channel bridge lands on its support.
 - **Plate 2, about 22.5 mm:** the lap tongues land on their support.

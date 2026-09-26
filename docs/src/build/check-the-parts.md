@@ -36,8 +36,8 @@ Check that the printed parts fit the hardware before assembling anything.
 ## Stoppers
 
 - [ ] Each stopper drops flat onto the floor of the finger pocket without
-      force, and doesn't rattle sideways.
-- [ ] All three stack in the well at the left end of the frame half, just
-      below its top face.
+      force, and doesn't rattle sideways, alone or stacked on the other.
+- [ ] Both stack in the well at the left end of the frame half, just below
+      its top face.
 
 Sand tight holes lightly; don't enlarge them past a sliding fit.

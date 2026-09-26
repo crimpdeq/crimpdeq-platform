@@ -19,7 +19,7 @@ not fit together.
 | `crimpdeq-platform-frame_right.stl` | Right frame half (index holes, grip guides, palm post, lower lap tongues) | 2 |
 | `crimpdeq-platform-wrist_rest.stl` | Wrist rest with palm bolster | 3 |
 | `crimpdeq-platform-grip.stl` | Finger grip | 3 |
-| `crimpdeq-platform-stoppers.stl` | Three pocket stoppers, 5, 10 and 15 mm thick | 3 |
+| `crimpdeq-platform-stoppers.stl` | Two stackable pocket stoppers, 5 and 10 mm thick | 3 |
 
 > [!NOTE]
 > The frame comes as two halves because the full frame is 343.9 mm long and

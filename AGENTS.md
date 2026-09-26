@@ -20,9 +20,9 @@
   80 mm-wide opening, 6 mm back wall, and 8 mm loading lip.
 - Keep its `+Z` opening clear and retain the full-depth left spine joining it
   to both clevis cheeks.
-- Keep the drop-in pocket stoppers for 20, 15, and 10 mm edges located by the
-  closed pocket walls, and their storage well in the unloaded block outboard
-  of the left anchor post.
+- Keep the two stackable drop-in pocket stoppers (5 and 10 mm) for 20, 15,
+  and 10 mm edges located by the closed pocket walls, and their storage well
+  in the unloaded block outboard of the left anchor post.
 - Keep the grip-guide ledges under the grip's side walls with a Z gap and
   free X travel, so they catch tilt without carrying measured load.
 - Keep the rounded palm/wrist-heel pad beside the hangboard pocket, with its

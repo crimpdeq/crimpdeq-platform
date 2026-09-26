@@ -282,21 +282,14 @@ if (view == "overview") {
 } else if (view == "plate3") {
     plate_3();
 } else if (view == "stoppers") {
-    // One stopper lowered into the pocket, the other two in the well.
+    // The 5 mm stopper in the pocket, the 10 mm one lowered onto it.
     frame_bolted();
     rest(rest_far);
     grip();
     case_model();
     color(c_stopper) {
-        for (i = [0 : stopper_count - 2])
-            translate([
-                (stopper_well_x_min + stopper_well_x_max) / 2
-                    - (stopper_x_min + stopper_x_max) / 2,
-                0,
-                stopper_well_z_min - hangboard_pocket_back_z + stopper_stack_offset(i)
-            ])
-                pocket_stopper(stopper_edge_depths[i]);
-        translate([0, 0, 45]) pocket_stopper(stopper_edge_depths[stopper_count - 1]);
+        pocket_stopper(0);
+        translate([0, 0, 45]) pocket_stopper(1);
     }
     arrow([finger_grip_center_x + 30, frame_center_y, 80],
           [finger_grip_center_x + 30, frame_center_y, 50], 4);

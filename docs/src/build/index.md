@@ -27,8 +27,8 @@ printed as two halves, dark and light grey in the pictures, joined by a
 bolted half-lap in each rail. Ledges on the rails keep the grip level. The USB
 port and switch stay reachable through a window in the side rail.
 
-Three **pocket stoppers** (teal) drop into the pocket for 20, 15 and 10 mm
-edges, and are stored in a well at the left end of the frame. Beyond it, a
+Two **pocket stoppers** (teal) drop into the pocket, alone or stacked, for
+20, 15 and 10 mm edges, and are stored in a well at the left end of the frame. Beyond it, a
 slot holds a phone running the Crimpdeq app.
 
 ## Colour key

@@ -459,39 +459,43 @@ module adjustable_wrist_rest(x_offset = 0) {
         }
 }
 
-module pocket_stopper(edge_depth) {
-    // Sits on the pocket floor; the top face becomes the new, shallower edge.
-    t = stopper_t(edge_depth);
+module pocket_stopper(i) {
+    // Stopper i on the pocket floor; its top face becomes the new edge.
+    t = stopper_t_list[i];
     difference() {
         dyno_rounded_prism_xy(
             stopper_x_min, stopper_x_max, stopper_y_min, stopper_y_max,
             hangboard_pocket_back_z, hangboard_pocket_back_z + t, stopper_r
         );
-        // Pull-cord holes at both ends, outside the finger width, with a
-        // counterbore underneath for the knot.
+        // Pull-cord holes at both ends, outside the finger width: its own,
+        // with a counterbore underneath for the knot, and plain clearance
+        // holes for the other stopper's cords when this one is on top.
         for (y_pos = [stopper_y_min + stopper_pull_inset_y,
                       stopper_y_max - stopper_pull_inset_y])
-            translate([(stopper_x_min + stopper_x_max) / 2, y_pos,
-                       hangboard_pocket_back_z - 0.1]) {
-                cylinder(d = stopper_pull_hole_d, h = t + 0.2);
-                cylinder(d = stopper_pull_knot_d, h = stopper_pull_knot_h + 0.1);
-            }
+            for (j = [0 : stopper_count - 1])
+                translate([stopper_pull_x(j), y_pos, hangboard_pocket_back_z - 0.1]) {
+                    cylinder(d = stopper_pull_hole_d, h = t + 0.2);
+                    if (j == i)
+                        cylinder(d = stopper_pull_knot_d, h = stopper_pull_knot_h + 0.1);
+                }
     }
 }
 
-function stopper_stack_offset(i) = i == 0 ? 0
-    : stopper_t(stopper_edge_depths[i - 1]) + stopper_stack_offset(i - 1);
+module stacked_pocket_stoppers(bottom = 0, dz_top = 0) {
+    // Both stoppers in the pocket, stopper `bottom` on the floor.
+    pocket_stopper(bottom);
+    translate([0, 0, stopper_t_list[bottom] + dz_top])
+        pocket_stopper(1 - bottom);
+}
 
 module stored_pocket_stoppers() {
-    // All stoppers stacked in the frame's storage well.
-    for (i = [0 : stopper_count - 1])
-        translate([
-            (stopper_well_x_min + stopper_well_x_max) / 2
-                - (stopper_x_min + stopper_x_max) / 2,
-            0,
-            stopper_well_z_min - hangboard_pocket_back_z + stopper_stack_offset(i)
-        ])
-            pocket_stopper(stopper_edge_depths[i]);
+    // Both stoppers stacked in the frame's storage well.
+    translate([
+        (stopper_well_x_min + stopper_well_x_max) / 2 - stopper_center_x,
+        0,
+        stopper_well_z_min - hangboard_pocket_back_z
+    ])
+        stacked_pocket_stoppers();
 }
 
 module phone_reference(portrait = false, drop = 0) {
@@ -672,12 +676,11 @@ module pocket_stoppers_print_layout() {
     pitch = stopper_x_max - stopper_x_min + 8;
     for (i = [0 : stopper_count - 1])
         translate([
-            (i - (stopper_count - 1) / 2) * pitch
-                - (stopper_x_min + stopper_x_max) / 2,
+            (i - (stopper_count - 1) / 2) * pitch - stopper_center_x,
             -frame_center_y,
             -hangboard_pocket_back_z
         ])
-            pocket_stopper(stopper_edge_depths[i]);
+            pocket_stopper(i);
 }
 
 module wrist_rest_print_layout() {
