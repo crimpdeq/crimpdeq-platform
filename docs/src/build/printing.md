@@ -87,7 +87,7 @@ intended print orientation.
 Nothing else needs support: the index holes are self-supporting, the screw
 counterbores, stopper well and phone slot of the left half bridge over their
 openings, the nut pockets of the right half open upwards, and the stoppers
-print flat.
+print flat with their pull tabs standing upright.
 
 The right half's lap faces bear the rail load. Remove their support
 carefully and sand them flat, without rounding the edges. The grip rests on

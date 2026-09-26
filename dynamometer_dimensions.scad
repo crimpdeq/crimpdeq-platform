@@ -138,9 +138,10 @@ grip_guide_z_max = hangboard_back_z - grip_guide_gap_z;
 grip_guide_z_min = grip_guide_z_max - grip_guide_t;
 
 // Two drop-in pocket stoppers raise the floor to give shallower edges: each
-// on its own, or both stacked in either order. The closed pocket walls locate
-// them; cords knotted through each stopper's pull holes lift it out, passing
-// through clearance holes in the other when it is on top. They stack in a
+// on its own, or both stacked with the thinner one at the bottom. The closed
+// pocket walls locate them. A pull tab at one end of each, outside the finger
+// width, stands proud of the grip top so it can be pinched; the thinner
+// stopper's tab passes through a notch in the thicker one. They stack in a
 // storage well in the left end of the frame.
 stopper_t_list = is_undef(stopper_t_list) ? [5, 10] : stopper_t_list;
 stopper_clearance = is_undef(stopper_clearance) ? 0.25 : stopper_clearance;
@@ -151,13 +152,13 @@ stopper_center_x = (stopper_x_min + stopper_x_max) / 2;
 stopper_y_min = hangboard_opening_y_min + hangboard_draft + stopper_clearance;
 stopper_y_max = hangboard_opening_y_max - hangboard_draft - stopper_clearance;
 stopper_r = hangboard_opening_r - hangboard_draft;
-stopper_pull_hole_d = 3.5;
-stopper_pull_knot_d = 6;
-stopper_pull_knot_h = 2;
-stopper_pull_inset_y = 4;
-// Each stopper's own pull holes sit on its side of the X centre line.
-stopper_pull_offset_x = 4;
-function stopper_pull_x(i) = stopper_center_x + (2 * i - 1) * stopper_pull_offset_x;
+stopper_tab_t_y = 4;
+stopper_tab_w_x = 8;
+stopper_tab_rise = is_undef(stopper_tab_rise) ? 6 : stopper_tab_rise;
+stopper_tab_h = hangboard_pocket_depth_z + stopper_tab_rise;
+stopper_tab_notch_clearance = 0.5;
+// Stopper 0 (bottom) has its tab at the -Y end, stopper 1 at the +Y end.
+function stopper_tab_y_min(i) = i == 0 ? stopper_y_min : stopper_y_max - stopper_tab_t_y;
 function sum_list(v, i = 0) = i >= len(v) ? 0 : v[i] + sum_list(v, i + 1);
 stopper_stack_h = sum_list(stopper_t_list);
 stopper_min_t = min(stopper_t_list);
@@ -546,21 +547,18 @@ assert(hangboard_opening_x_max - hangboard_opening_x_min - 2 * hangboard_draft >
     "Finger pocket must retain at least 18 mm clearance at its floor.");
 assert(hangboard_opening_y_max - hangboard_opening_y_min - 2 * hangboard_draft >= 78,
     "Finger pocket must retain at least 78 mm usable width at its floor.");
-assert(stopper_count == 2 &&
-    (stopper_edge_depths == [20, 15, 10] || stopper_edge_depths == [15, 20, 10]),
-    "Use two stoppers that give 20 and 15 mm edges alone and 10 mm stacked.");
+assert(stopper_count == 2 && stopper_edge_depths == [20, 15, 10],
+    "Use a 5 mm bottom and a 10 mm top stopper for 20, 15 and 10 mm edges.");
 assert(stopper_clearance >= 0.15 && stopper_clearance <= 0.4 &&
-    stopper_r >= 2 && stopper_min_t >= 5 &&
-    stopper_min_t - stopper_pull_knot_h >= 3 &&
-    stopper_pull_inset_y - stopper_pull_knot_d / 2 >= 0.5 &&
-    stopper_pull_offset_x + stopper_pull_knot_d / 2
-        <= (stopper_x_max - stopper_x_min) / 2 - 1 &&
-    2 * stopper_pull_offset_x - stopper_pull_knot_d / 2 - stopper_pull_hole_d / 2 >= 2 &&
-    stopper_y_max - stopper_pull_inset_y - stopper_pull_hole_d / 2
-        > frame_center_y + 32 &&
-    stopper_y_min + stopper_pull_inset_y + stopper_pull_hole_d / 2
-        < frame_center_y - 32,
-    "Stoppers need a sliding fit, at least 5 mm thickness, and pull holes outside the 64 mm finger width.");
+    stopper_r >= 2 && stopper_min_t >= 5,
+    "Stoppers need a sliding fit and at least 5 mm thickness.");
+assert(stopper_tab_rise >= 4 && stopper_tab_rise <= 10 &&
+    stopper_tab_t_y >= 3 && stopper_tab_w_x >= 6 &&
+    stopper_tab_w_x + 2 * stopper_tab_notch_clearance
+        <= stopper_x_max - stopper_x_min - 2 * stopper_r &&
+    stopper_y_min + stopper_tab_t_y + stopper_tab_notch_clearance <= frame_center_y - 32 &&
+    stopper_y_max - stopper_tab_t_y >= frame_center_y + 32,
+    "Stopper pull tabs must stand proud enough to pinch, fit the straight ends, and stay outside the 64 mm finger width.");
 assert(hand_opening >= 40 && hand_opening <= 90,
     "Nominal hand_opening should remain within 40-90 mm.");
 assert(hand_opening_min == 25 && hand_opening_max == 105 && wrist_index_count == 9,

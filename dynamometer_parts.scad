@@ -459,33 +459,49 @@ module adjustable_wrist_rest(x_offset = 0) {
         }
 }
 
+module stopper_tab(i) {
+    // Pull tab with a rounded top, standing proud of the grip top when the
+    // stopper sits on the pocket floor.
+    y0 = stopper_tab_y_min(i);
+    r = stopper_tab_w_x / 2;
+    hull() {
+        translate([stopper_center_x - r, y0, hangboard_pocket_back_z])
+            cube([stopper_tab_w_x, stopper_tab_t_y, 0.01]);
+        translate([stopper_center_x, y0, hangboard_pocket_back_z + stopper_tab_h - r])
+            rotate([-90, 0, 0])
+                cylinder(r = r, h = stopper_tab_t_y);
+    }
+}
+
 module pocket_stopper(i) {
     // Stopper i on the pocket floor; its top face becomes the new edge.
     t = stopper_t_list[i];
     difference() {
-        dyno_rounded_prism_xy(
-            stopper_x_min, stopper_x_max, stopper_y_min, stopper_y_max,
-            hangboard_pocket_back_z, hangboard_pocket_back_z + t, stopper_r
-        );
-        // Pull-cord holes at both ends, outside the finger width: its own,
-        // with a counterbore underneath for the knot, and plain clearance
-        // holes for the other stopper's cords when this one is on top.
-        for (y_pos = [stopper_y_min + stopper_pull_inset_y,
-                      stopper_y_max - stopper_pull_inset_y])
-            for (j = [0 : stopper_count - 1])
-                translate([stopper_pull_x(j), y_pos, hangboard_pocket_back_z - 0.1]) {
-                    cylinder(d = stopper_pull_hole_d, h = t + 0.2);
-                    if (j == i)
-                        cylinder(d = stopper_pull_knot_d, h = stopper_pull_knot_h + 0.1);
-                }
+        union() {
+            dyno_rounded_prism_xy(
+                stopper_x_min, stopper_x_max, stopper_y_min, stopper_y_max,
+                hangboard_pocket_back_z, hangboard_pocket_back_z + t, stopper_r
+            );
+            stopper_tab(i);
+        }
+        // The top stopper clears the bottom one's tab.
+        if (i == 1)
+            translate([
+                stopper_center_x - stopper_tab_w_x / 2 - stopper_tab_notch_clearance,
+                stopper_y_min - 1,
+                hangboard_pocket_back_z - 0.1
+            ])
+                cube([stopper_tab_w_x + 2 * stopper_tab_notch_clearance,
+                      stopper_tab_t_y + stopper_tab_notch_clearance + 1,
+                      t + 0.2]);
     }
 }
 
-module stacked_pocket_stoppers(bottom = 0, dz_top = 0) {
-    // Both stoppers in the pocket, stopper `bottom` on the floor.
-    pocket_stopper(bottom);
-    translate([0, 0, stopper_t_list[bottom] + dz_top])
-        pocket_stopper(1 - bottom);
+module stacked_pocket_stoppers(dz_top = 0) {
+    // Both stoppers in the pocket, the thinner one on the floor.
+    pocket_stopper(0);
+    translate([0, 0, stopper_t_list[0] + dz_top])
+        pocket_stopper(1);
 }
 
 module stored_pocket_stoppers() {

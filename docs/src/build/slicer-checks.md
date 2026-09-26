@@ -71,8 +71,8 @@ appear.
 - [ ] The first layer of the grip's upper cheek sits on support interface.
 - [ ] No support trees grow between the grip and the wrist rest.
 - [ ] The top layer of the wrist rest is the palm surface, with no support on it.
-- [ ] The stoppers have no support, and their pull holes and knot
-      counterbores are open on the bed.
+- [ ] The stoppers have no support, and their pull tabs print as complete
+      upright fins.
 
 ## H. Holes and pockets
 
