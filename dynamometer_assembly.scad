@@ -30,8 +30,10 @@ show_case = true;
 show_internals = true;
 show_hardware = true;
 show_wrist_rest = true;
-// Pocket stoppers, stacked in their storage well
+// Pocket stoppers; any not in the pocket stay in their storage well
 show_stoppers = true;
+// Stoppers fitted in the finger pocket, by thickness in mm
+pocket_stoppers = "none"; // [none, 5, 10, both]
 // Largest supported phone in its slot
 show_phone = false;
 
@@ -48,6 +50,14 @@ wrist_x_offset =
 
 assert(pose == "unloaded" || pose == "rated" || pose == "exploded",
     str("Unknown pose: ", pose));
+
+// Stopper indices in the pocket (bottom first) and in the storage well.
+stoppers_in_pocket = [for (i = [0 : stopper_count - 1])
+    if (pocket_stoppers == "both" || str(stopper_t_list[i]) == pocket_stoppers) i];
+stoppers_stored = [for (i = [0 : stopper_count - 1])
+    if (len(search(i, stoppers_in_pocket)) == 0) i];
+assert(pocket_stoppers == "none" || len(stoppers_in_pocket) > 0,
+    str("Unknown pocket_stoppers: ", pocket_stoppers));
 assert(wrist_position >= -1 && wrist_position <= 1,
     "wrist_position must be between -1 and +1.");
 
@@ -59,6 +69,14 @@ module crimpdeq_enclosure_preview() {
 
     if (show_internals)
         %crimpdeq_internals_reference();
+}
+
+module stopper_stack(indices) {
+    // The listed stoppers stacked from the pocket floor datum, in order.
+    if (len(indices) > 0)
+        for (k = [0 : len(indices) - 1])
+            translate([0, 0, k == 0 ? 0 : stopper_t_list[indices[0]]])
+                pocket_stopper(indices[k]);
 }
 
 module dynamometer_complete() {
@@ -79,9 +97,19 @@ module dynamometer_complete() {
         crimpdeq_enclosure_preview();
 
     if (show_stoppers)
-        color([0.2, 0.6, 0.55])
-            translate([-exploded_xy, 0, 0])
-                stored_pocket_stoppers();
+        color([0.2, 0.6, 0.55]) {
+            // Stacked on the pocket floor, moving with the grip.
+            translate([right_preview_offset + exploded_xy, 0, 0])
+                stopper_stack(stoppers_in_pocket);
+            // The rest stacked in the storage well.
+            translate([
+                (stopper_well_x_min + stopper_well_x_max) / 2 - stopper_center_x
+                    - exploded_xy,
+                0,
+                stopper_well_z_min - hangboard_pocket_back_z
+            ])
+                stopper_stack(stoppers_stored);
+        }
 
     if (show_phone)
         color([0.1, 0.1, 0.1, 0.6])
