@@ -17,9 +17,10 @@ and that the wrist rest slides onto the right half from its lap end. They also c
 entry path, pin withdrawal beside the saddle, hardware clearance to the
 tabletop, and the solid, unobstructed palm and heel contact surfaces. The grip
 must clear the frame at rest and at rated deflection, and land on both
-guide ledges when dropped by the guide gap. Each stopper, and both stacked in either order,
-must fit the pocket and be stopped by its walls, the lower stopper's cords
-must pass through the upper one, and the stack must fit its storage well. The largest phone must sit in its slot in either orientation,
+guide ledges when dropped by the guide gap. Each stopper, and both stacked in either order, must
+fit the pocket and be stopped by its walls, with its pull tab standing above
+the grip top and nothing above its plate, and the stack must fit its storage
+well. The largest phone must sit in its slot in either orientation,
 clear of every other part. Contact
 probes use a 0.01 mm intentional overlap to avoid exporting zero-volume mating
 faces.

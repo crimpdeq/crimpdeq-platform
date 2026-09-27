@@ -161,6 +161,8 @@ module stopper_well_cut() {
         stopper_well_z_min, frame_z_max + 0.1,
         stopper_r + stopper_well_clearance
     );
+    // Room for the pull tabs at both ends.
+    stopper_tab_slots((stopper_well_x_min + stopper_well_x_max) / 2, stopper_well_z_min);
 }
 
 module phone_slot_cut() {
@@ -306,6 +308,7 @@ module moving_finger_grip() {
 
         vertical_pin_bore(dyno_eye_x_right);
         hangboard_pocket_cut();
+        stopper_tab_slots();
     }
 }
 
@@ -459,26 +462,44 @@ module adjustable_wrist_rest(x_offset = 0) {
         }
 }
 
+module stopper_tab(i) {
+    // Pull tab with a rounded top, standing proud of the grip top when the
+    // stopper sits on the pocket floor.
+    y0 = stopper_tab_y_min(i);
+    r = stopper_tab_w_x / 2;
+    hull() {
+        translate([stopper_center_x - r, y0, hangboard_pocket_back_z])
+            cube([stopper_tab_w_x, stopper_tab_t_y, 0.01]);
+        translate([stopper_center_x, y0, hangboard_pocket_back_z + stopper_tab_h - r])
+            rotate([-90, 0, 0])
+                cylinder(r = r, h = stopper_tab_t_y);
+    }
+}
+
 module pocket_stopper(i) {
-    // Stopper i on the pocket floor; its top face becomes the new edge.
+    // Stopper i on the pocket floor; its top face becomes the new edge. The
+    // tab sits outside the plate, on its end face.
     t = stopper_t_list[i];
-    difference() {
+    end_y = i == 0 ? stopper_y_min : stopper_y_max;
+    union() {
         dyno_rounded_prism_xy(
             stopper_x_min, stopper_x_max, stopper_y_min, stopper_y_max,
             hangboard_pocket_back_z, hangboard_pocket_back_z + t, stopper_r
         );
-        // Pull-cord holes at both ends, outside the finger width: its own,
-        // with a counterbore underneath for the knot, and plain clearance
-        // holes for the other stopper's cords when this one is on top.
-        for (y_pos = [stopper_y_min + stopper_pull_inset_y,
-                      stopper_y_max - stopper_pull_inset_y])
-            for (j = [0 : stopper_count - 1])
-                translate([stopper_pull_x(j), y_pos, hangboard_pocket_back_z - 0.1]) {
-                    cylinder(d = stopper_pull_hole_d, h = t + 0.2);
-                    if (j == i)
-                        cylinder(d = stopper_pull_knot_d, h = stopper_pull_knot_h + 0.1);
-                }
+        stopper_tab(i);
+        // Fuse the tab to the plate within the plate thickness only.
+        translate([stopper_center_x - stopper_tab_w_x / 2, end_y - 0.5,
+                   hangboard_pocket_back_z])
+            cube([stopper_tab_w_x, 1, t]);
     }
+}
+
+module stopper_tab_slots(x_center = stopper_center_x, z_min = hangboard_pocket_back_z) {
+    for (y_span = [[stopper_tab_slot_y_min, stopper_y_min + 1],
+                   [stopper_y_max - 1, stopper_tab_slot_y_max]])
+        translate([x_center - stopper_tab_slot_w_x / 2, y_span[0], z_min])
+            cube([stopper_tab_slot_w_x, y_span[1] - y_span[0],
+                  frame_z_max + 0.1 - z_min]);
 }
 
 module stacked_pocket_stoppers(bottom = 0, dz_top = 0) {

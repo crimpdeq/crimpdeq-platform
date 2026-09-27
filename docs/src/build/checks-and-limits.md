@@ -15,7 +15,7 @@
 - [ ] **Grip level:** the grip's top is level with the frame top on both
       sides. Note whether it hangs free or rests on the grip-guide ledges.
 - [ ] **Stoppers:** each one, and both stacked, sit flat in the pocket, stay
-      put under the fingers, and lift out by their cords.
+      put under the fingers, and lift out by their tabs.
 - [ ] **Phone:** your phone, in its case, stands in the slot and stays put
       while you pull on the grip.
 
@@ -31,6 +31,8 @@ without pulling.
 - [ ] The palm bolster height suits your hand: not too high, not too low.
 - [ ] Your thumb stays clear of the pin heads when it wraps round the
       bolster.
+- [ ] The stopper tabs at the pocket ends don't catch your index or little
+      finger above the grip.
 - [ ] The bolster and deck edges are smooth enough; nothing digs in.
 - [ ] The heel deck supports your wrist without pressure points.
 - [ ] Note which openings suit full crimp, half crimp and open hand.

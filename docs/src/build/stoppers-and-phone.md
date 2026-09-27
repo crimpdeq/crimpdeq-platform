@@ -14,21 +14,17 @@ shallower edge:
 | 10 mm | 15 mm |
 | 5 mm and 10 mm, stacked | 10 mm |
 
-1. Cut the cord into four pieces about 15 cm long. On each stopper, find the
-   two pull holes with a counterbore underneath, one at each end. Thread a
-   cord through each from underneath and knot it, so the knot sits in the
-   counterbore. Tie the two cords of each stopper into a loop above it.
-2. Drop a stopper flat into the pocket, loop up. The pocket walls hold it in
-   place.
-3. For the 10 mm edge, thread the lower stopper's cords up through the plain
-   holes of the other one, then drop it on top. Either can go at the bottom.
-4. Tuck the loops against the ends of the pocket, outside your fingers.
-5. To take a stopper out, pull its loop straight up. Lift the top one first.
+1. Drop a stopper flat into the pocket, with its tab in the slot at one end of
+   the pocket. The pocket walls hold it in place.
+2. For the 10 mm edge, drop the other stopper on top, with its tab in the slot
+   at the other end. Either can go at the bottom.
+3. To take a stopper out, pinch its tab and pull it straight up. Take the top
+   one out first.
 
 Tare the instrument again after fitting or removing a stopper.
 
-Store both stoppers stacked flat in the well at the left end of the frame,
-loops up.
+Store both stoppers stacked the same way in the well at the left end of the
+frame, with the tabs in the slots at opposite ends.
 
 ## Phone
 

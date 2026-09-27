@@ -36,14 +36,15 @@ plate that fills the pocket floor with 0.25 mm clearance, so the closed
 pocket walls locate it in both directions, and the fingers press it onto the
 floor or the stopper below. The loaded lip is unchanged.
 
-Near each end, outside the 64 mm finger width, each stopper has two Ø3.5 mm
-holes side by side. One takes its own knotted pull cord, with the knot in a
-counterbore underneath; the other lets the cord of the stopper below pass
-through when the two are stacked. Each stopper's cord holes are on opposite
-sides, so either can be lifted out by its own cord.
+Each stopper has a 3 × 8 mm pull tab on one end face: the 5 mm stopper at one
+end, the 10 mm stopper at the other. The tabs run in vertical slots in the
+pocket end walls, which leave 2 mm of wall behind them, so the whole top of
+the stopper stays free for the fingers. With the stopper on the pocket floor,
+its tab stands 6 mm above the grip top, so it can be pinched and pulled
+straight up; the top stopper of a stack stands a further 5 or 10 mm proud.
 
 When not in use, the stoppers stack in a 16 mm-deep well in the left end of
-the frame, next to the anchor post.
+the frame, next to the anchor post, with their tabs standing above it.
 
 ## Grip guides
 

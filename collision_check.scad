@@ -115,15 +115,21 @@ if (mode == "frame_case") {
             dy = test_position < stopper_count ? 0 : shift);
     }
 } else if (mode == "stopper_stack_pocket") {
-    // Both stoppers stacked, either one at the bottom, clear of the grip.
-    // Seating faces are backed off 0.01 mm so face contact is not an overlap.
+    // Both stoppers stacked, either one at the bottom, clear of the grip and
+    // of each other. Seating faces are backed off 0.01 mm so face contact is
+    // not an overlap.
     assert(test_position < 2, "Stack order must be 0-1.");
     intersection() {
         moving_finger_grip();
         translate([0, 0, 0.01]) stacked_pocket_stoppers(test_position, dz_top = 0.01);
     }
+    intersection() {
+        pocket_stopper(test_position);
+        translate([0, 0, stopper_t_list[test_position] + 0.01])
+            pocket_stopper(1 - test_position);
+    }
 } else if (mode == "stopper_stack_contact") {
-    // The upper stopper rests on the lower one.
+    // The top stopper rests on the bottom one.
     assert(test_position < 2, "Stack order must be 0-1.");
     intersection() {
         pocket_stopper(test_position);
@@ -131,7 +137,7 @@ if (mode == "frame_case") {
             pocket_stopper(1 - test_position);
     }
 } else if (mode == "stopper_stack_located") {
-    // The drafted pocket walls still stop the upper stopper in X and Y.
+    // The drafted pocket walls still stop the top stopper in X and Y.
     assert(test_position < 4, "Stack index must be 0-3.");
     bottom = test_position % 2;
     shift = stopper_clearance + 0.1
@@ -142,16 +148,27 @@ if (mode == "frame_case") {
                    stopper_t_list[bottom]])
             pocket_stopper(1 - bottom);
     }
-} else if (mode == "stopper_cord_path") {
-    // The lower stopper's pull cords pass up through the upper stopper.
-    assert(test_position < 2, "Stack order must be 0-1.");
+} else if (mode == "stopper_finger_width") {
+    // Nothing stands above the top stopper's full plate, alone or stacked,
+    // so the tabs don't narrow the edge.
+    assert(test_position < 4, "Index must be 0-3.");
+    stacked = test_position >= 2;
+    i = test_position % 2;
+    top_z = hangboard_pocket_back_z + stopper_t_list[i]
+        + (stacked ? stopper_t_list[1 - i] : 0);
     intersection() {
-        translate([0, 0, stopper_t_list[test_position]])
-            pocket_stopper(1 - test_position);
-        for (y_pos = [stopper_y_min + stopper_pull_inset_y,
-                      stopper_y_max - stopper_pull_inset_y])
-            translate([stopper_pull_x(test_position), y_pos, hangboard_pocket_back_z])
-                cylinder(d = 2.5, h = hangboard_pocket_depth_z + 5);
+        if (stacked) stacked_pocket_stoppers(i); else pocket_stopper(i);
+        translate([stopper_x_min, stopper_y_min, top_z + 0.01])
+            cube([stopper_x_max - stopper_x_min, stopper_y_max - stopper_y_min, 50]);
+    }
+} else if (mode == "stopper_tab_proud") {
+    // With the stopper on the pocket floor, its pull tab stands above the
+    // grip top.
+    assert(test_position < 2, "Stopper index out of range.");
+    intersection() {
+        pocket_stopper(test_position);
+        translate([-500, -500, hangboard_front_z + stopper_tab_rise - 1])
+            cube([1000, 1000, 0.5]);
     }
 } else if (mode == "stopper_stored") {
     intersection() {
