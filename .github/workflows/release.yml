@@ -3,9 +3,11 @@ name: Release Crimpdeq Platform
 on:
     release:
         types: [created]
+    # Dry run: build and check the release files without publishing them.
+    workflow_dispatch:
 
 permissions:
-    contents: write
+    contents: read
 
 jobs:
     parts:
@@ -22,6 +24,16 @@ jobs:
             - name: Build STL files
               run: EXPORT_DIR=artifacts bash export-parts.sh
 
+            - name: Check STL files
+              run: |
+                  for part in frame_left frame_right grip wrist_rest stoppers; do
+                      test -f "artifacts/crimpdeq-platform-${part}.stl"
+                  done
+                  python3 check-stl-components.py \
+                      artifacts/crimpdeq-platform-{frame_left,frame_right,grip,wrist_rest}.stl
+                  python3 check-stl-components.py --expect 2 \
+                      artifacts/crimpdeq-platform-stoppers.stl
+
             - name: Upload platform release files
               uses: actions/upload-artifact@v6
               with:
@@ -32,9 +44,12 @@ jobs:
 
     publish:
         name: Upload files to GitHub release
+        if: github.event_name == 'release'
         runs-on: ubuntu-latest
         needs:
             - parts
+        permissions:
+            contents: write
 
         steps:
             - name: Download platform release files
