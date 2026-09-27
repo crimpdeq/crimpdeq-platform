@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Validate that each STL contains one connected triangle component."""
+"""Validate the number of connected triangle components in each STL.
+
+Each file must contain exactly one component, or N with `--expect N`.
+"""
 
 from __future__ import annotations
 
@@ -94,18 +97,23 @@ def component_count(triangles: list[tuple[tuple[float, float, float], ...]]) -> 
 
 
 def main(argv: list[str]) -> int:
-    if len(argv) < 2:
-        print("usage: check-stl-components.py FILE.stl [...]")
+    args = argv[1:]
+    expected = 1
+    if len(args) >= 2 and args[0] == "--expect" and args[1].isdigit():
+        expected = int(args[1])
+        args = args[2:]
+    if not args or expected < 1:
+        print("usage: check-stl-components.py [--expect N] FILE.stl [...]")
         return 2
 
     failed = False
-    for arg in argv[1:]:
+    for arg in args:
         path = Path(arg)
         triangles = read_stl(path)
         components = component_count(triangles)
         print(f"{path.name}: {len(triangles)} triangles, {components} connected component(s)")
 
-        if not triangles or components != 1:
+        if not triangles or components != expected:
             failed = True
 
     return 1 if failed else 0
