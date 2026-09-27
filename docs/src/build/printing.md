@@ -80,7 +80,7 @@ intended print orientation.
 | Right frame half | Underside of both lap tongues, about 22.5 mm up |
 | Right frame half | Grip-guide ledges on the rail inner faces, about 31 mm up |
 | Right frame half | Bridge over the palm-deck channel at the closed end |
-| Left frame half | Clevis cheek with the Ø17 hole, about 35–45 mm up |
+| Left frame half | Clevis cheek with the Ø12.9 mm sleeve hole, about 35–45 mm up |
 | Wrist rest | Underside of the overhanging heel deck and outer upper arms |
 | Grip | Underside of the upper clevis cheek and pocket body |
 
@@ -91,4 +91,6 @@ print flat with their pull tabs standing upright.
 
 The right half's lap faces bear the rail load. Remove their support
 carefully and sand them flat, without rounding the edges. The grip rests on
-the top faces of the guide ledges: sand those smooth and flat too.
+the top faces of the guide ledges: sand those smooth and flat too. The wrist
+rest's upper arms slide just above the rail tops and its lower arms just
+below them, so sand support scars on those faces flat as well.
