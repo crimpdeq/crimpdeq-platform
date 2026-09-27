@@ -1,0 +1,23 @@
+name: OpenSCAD 2021.01 compatibility
+
+# The stable release has only the slow CGAL backend, so it runs weekly rather
+# than on every change. Ubuntu 24.04 packages 2021.01; keep the image pinned.
+on:
+    schedule:
+        - cron: "0 5 * * 1"
+    workflow_dispatch:
+
+jobs:
+    geometry:
+        name: Collision and connectivity checks (OpenSCAD 2021.01)
+        runs-on: ubuntu-24.04
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Install OpenSCAD 2021.01
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y openscad
+                  openscad --version
+            - name: Run collision checks
+              run: CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash check-collisions.sh

@@ -62,7 +62,10 @@
   `crimpdeq-case` source.
 - `export-parts.sh`: exports every printable part; used by the release
   workflow.
-- `.github/workflows/`: CI checks and release STL publication.
+- `.github/workflows/`: CI checks, release STL publication, and a weekly
+  OpenSCAD 2021.01 compatibility check.
+- `.github/actions/setup-openscad/`: the pinned OpenSCAD snapshot used by CI
+  and releases.
 - `docs/`: mdBook documentation; `docs/illustrations/` renders the images in
   `docs/src/images/` from the model.
 - `README.md`: short prose overview; keep details, lists, and figures that

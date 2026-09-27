@@ -11,3 +11,8 @@ collision checks. It is not a replacement enclosure design.
 All dimensions are in millimetres and forces in newtons. Parameters can be
 overridden from the command line with `-D name=value`; unsafe combinations
 fail with an assertion.
+
+The model is tested with the OpenSCAD development snapshot pinned for
+[continuous integration](validation.md#continuous-integration), which
+renders far faster than the 2021.01 release. It also works on 2021.01, which
+is checked weekly.
