@@ -28,14 +28,22 @@ the same script and attaches the files to each GitHub release.
 
 ## Preview options
 
+The view options appear in OpenSCAD's Customizer (**Window → Customizer**)
+when `dynamometer_assembly.scad` is open: pick the part and pose from lists,
+drag the wrist position, and tick what to show. On the command line, set
+them with `-D`:
+
 ```bash
 openscad -D 'pose="rated"' dynamometer_assembly.scad
 openscad -D 'pose="exploded"' dynamometer_assembly.scad
 openscad -D 'wrist_position=-1' dynamometer_assembly.scad
+openscad -D 'pocket_stoppers="both"' dynamometer_assembly.scad
 ```
 
 The rated pose exaggerates displacement for visualisation and does not change
 exported parts. `wrist_position` previews the nearest physical index from `-1`
 (smallest opening) to `1` (largest opening). `show_case`, `show_internals`,
-`show_hardware`, `show_wrist_rest`, `show_stoppers` (stacked in their well),
-and `show_phone` (off by default) toggle the corresponding preview geometry.
+`show_hardware`, `show_wrist_rest`, `show_stoppers`, and `show_phone` (off by
+default) toggle the corresponding preview geometry. `pocket_stoppers` fits the
+5 mm stopper, the 10 mm stopper, or both stacked in the finger pocket
+(`"none"`, `"5"`, `"10"`, `"both"`); the others stay in their storage well.
