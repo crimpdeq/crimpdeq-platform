@@ -72,7 +72,9 @@
 
 - Define reusable geometry as modules; only entry-point files should emit
   top-level geometry.
-- Use `is_undef(parameter) ? default : parameter` for CLI-overridable values.
+- Use `is_undef(parameter) ? default : parameter` for CLI-overridable values,
+  except the view options in `dynamometer_assembly.scad`, which stay
+  annotated literals so OpenSCAD's Customizer lists them.
 - Use `render_fn` for tessellation and keep validation renders at
   `OPENSCAD_RENDER_FN=24`.
 - Add assertions for invalid clearances, collapsed sections, and unsafe

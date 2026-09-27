@@ -9,23 +9,35 @@
 //   openscad -D 'part="wrist_rest"' -o /tmp/dyno-wrist-rest.stl dynamometer_assembly.scad
 //   openscad -D 'part="stoppers"' -o /tmp/dyno-stoppers.stl dynamometer_assembly.scad
 //
+// The view options below are literals so that OpenSCAD's Customizer
+// (Window > Customizer) lists them; -D still overrides them.
+//
 
 use <dynamometer_parts.scad>
 use <crimpdeq_reference.scad>
 include <dynamometer_dimensions.scad>
 
+/* [View] */
+// Part to preview or export
+part = "assembly"; // [assembly, frame_left, frame_right, grip, wrist_rest, stoppers]
+// Preview pose; rated exaggerates the grip displacement
+pose = "unloaded"; // [unloaded, rated, exploded]
+// Wrist rest position, from the smallest (-1) to the largest (1) opening
+wrist_position = 0; // [-1:0.25:1]
+
+/* [Show] */
+show_case = true;
+show_internals = true;
+show_hardware = true;
+show_wrist_rest = true;
+// Pocket stoppers, stacked in their storage well
+show_stoppers = true;
+// Largest supported phone in its slot
+show_phone = false;
+
+/* [Hidden] */
 render_fn = is_undef(render_fn) ? 96 : render_fn;
 $fn = render_fn;
-
-part = is_undef(part) ? "assembly" : part;
-pose = is_undef(pose) ? "unloaded" : pose;
-show_case = is_undef(show_case) ? true : show_case;
-show_internals = is_undef(show_internals) ? true : show_internals;
-show_hardware = is_undef(show_hardware) ? true : show_hardware;
-show_wrist_rest = is_undef(show_wrist_rest) ? true : show_wrist_rest;
-show_stoppers = is_undef(show_stoppers) ? true : show_stoppers;
-show_phone = is_undef(show_phone) ? false : show_phone;
-wrist_position = is_undef(wrist_position) ? 0 : wrist_position; // -1 to +1
 
 right_preview_offset = pose == "rated" ? rated_preview_deflection : 0;
 exploded_xy = pose == "exploded" ? 24 : 0;

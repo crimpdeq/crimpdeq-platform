@@ -28,6 +28,11 @@ the same script and attaches the files to each GitHub release.
 
 ## Preview options
 
+The view options appear in OpenSCAD's Customizer (**Window → Customizer**)
+when `dynamometer_assembly.scad` is open: pick the part and pose from lists,
+drag the wrist position, and tick what to show. On the command line, set
+them with `-D`:
+
 ```bash
 openscad -D 'pose="rated"' dynamometer_assembly.scad
 openscad -D 'pose="exploded"' dynamometer_assembly.scad
