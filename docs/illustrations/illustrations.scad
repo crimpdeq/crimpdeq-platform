@@ -32,8 +32,7 @@ c_ghost = [0.60, 0.62, 0.66, 0.30];
 rest_far = wrist_adjust_range;
 
 // Load-cell joint hardware, matching the modelled envelopes: M8 x 60 bolt,
-// DIN 125 washers and the nut below the lower washer.
-m8_bolt_l = 60;
+// DIN 125 washers and the DIN 985 nyloc nut below the lower washer.
 m8_head_d = 13;
 m8_head_h = 5.3;
 m8_washer_d = 16;
@@ -44,7 +43,7 @@ nut_z = frame_z_min - loadcell_washer_t - loadcell_nut_h;
 module m8_bolt() {
     // Head down, like a bolt standing on its head.
     cylinder(d = m8_head_d, h = m8_head_h, $fn = 6);
-    translate([0, 0, m8_head_h - 0.01]) cylinder(d = pin_nominal_d, h = m8_bolt_l + 0.01);
+    translate([0, 0, m8_head_h - 0.01]) cylinder(d = pin_nominal_d, h = loadcell_bolt_l + 0.01);
 }
 
 module m8_washer() {

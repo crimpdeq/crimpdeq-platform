@@ -108,8 +108,9 @@ from the case on each side, set by the grip width, so the service tunnel
 through the +Y rail is 26 mm long.
 
 Four integral 12 × 12 mm corner feet hold the fixed frame above a flat
-tabletop. The modelled bolt nuts and wrist-pin tips keep at least
-`support_foot_clearance` to the foot plane; the case shell is not a support.
+tabletop. The modelled M8 nuts and wrist-pin tips keep at least
+`support_foot_clearance` to the foot plane, and the tips of the M8 × 60 bolts,
+which pass through the nuts, at least 5 mm; the case shell is not a support.
 Set the assembled frame on a level surface and confirm that all four soles
 touch without rocking before considering any load.
 

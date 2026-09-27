@@ -184,12 +184,15 @@ fi
 
 echo "Collision checks passed."
 
-# The stoppers are unloaded and export as separate bodies.
-parts=(frame_left frame_right grip wrist_rest)
+# The load-bearing parts must each be one body. The unloaded stoppers export
+# together and must be exactly two bodies, one per stopper.
+parts=(frame_left frame_right grip wrist_rest stoppers)
 stls=()
 for part in "${parts[@]}"; do
     log_file="$tmp_dir/export_${part}.log"
-    stls+=("$tmp_dir/dynamometer_${part}.stl")
+    if [[ "$part" != stoppers ]]; then
+        stls+=("$tmp_dir/dynamometer_${part}.stl")
+    fi
     if ! openscad -D "render_fn=${render_fn}" -D "part=\"${part}\"" \
         -o "$tmp_dir/dynamometer_${part}.stl" "$project_root/dynamometer_assembly.scad" \
         >"$log_file" 2>&1 || grep -Eq 'ERROR:|WARNING:' "$log_file"; then
@@ -200,6 +203,8 @@ for part in "${parts[@]}"; do
 done
 
 python3 "$project_root/check-stl-components.py" "${stls[@]}"
+python3 "$project_root/check-stl-components.py" --expect 2 \
+    "$tmp_dir/dynamometer_stoppers.stl"
 
 echo "STL connectivity checks passed."
 
@@ -248,6 +253,8 @@ invalid_parameters=(
     'phone_slot_tilt=40'
     'phone_slot_depth_z=10'
     'support_foot_clearance=4'
+    'loadcell_bolt_l=55'
+    'loadcell_bolt_l=70'
     'frame_split_x=30'
     'frame_split_x=80'
     'frame_split_lap_len=36'

@@ -9,6 +9,9 @@ Check that the printed parts fit the hardware before assembling anything.
 - Sand the right half's lap faces flat where their support was.
 - Sand the tops of the right half's grip-guide ledges smooth and flat where
   their support was.
+- Sand the undersides of the wrist rest's upper arms, and the tops of its
+  lower arms, flat wherever support touched them. They slide 0.3 mm from the
+  rail faces.
 - Sand support scars on the palm bolster, heel deck and finger pocket smooth.
 
 ## Frame joint

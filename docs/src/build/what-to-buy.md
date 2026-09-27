@@ -4,7 +4,7 @@
 | --- | --- | --- |
 | 2 | M8 × 60 bolt | Steel |
 | 4 | M8 washer | Ø16 × 1.6 mm (DIN 125) |
-| 2 | M8 nyloc nut | |
+| 2 | M8 nyloc nut | DIN 985, ≤ 8 mm thick |
 | 4 | M5 × 35 socket-head screw | Steel, ISO 4762, head ≤ Ø8.5 × 5 mm |
 | 4 | M5 nyloc nut | DIN 985, 8 mm across flats, ≤ 5 mm thick |
 | 2 | Push-button ball-lock pin | Ø6 mm, 60 mm grip length, head ≤ Ø18 × 8 mm, rated ≥ 1 kN double shear |

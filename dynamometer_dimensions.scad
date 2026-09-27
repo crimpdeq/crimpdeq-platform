@@ -197,9 +197,11 @@ frame_palm_post_outer_x = frame_palm_post_inner_x + frame_palm_post_t;
 palm_grip_center_x = (frame_palm_post_inner_x + frame_palm_post_outer_x) / 2;
 
 // Four integral corner feet support the fixed frame on a flat bench. Their
-// soles sit below the nuts and both wrist-pin tips, even at full travel.
+// soles sit below the nuts and both wrist-pin tips, even at full travel. The
+// M8 x 60 bolts pass through their DIN 985 nyloc nuts and keep at least 5 mm.
 loadcell_washer_t = 1.6;
-loadcell_nut_h = 6.5;
+loadcell_nut_h = 8;
+loadcell_bolt_l = is_undef(loadcell_bolt_l) ? 60 : loadcell_bolt_l;
 support_foot_w_x = 12;
 support_foot_w_y = 12;
 support_foot_clearance = is_undef(support_foot_clearance) ? 6 : support_foot_clearance;
@@ -280,6 +282,9 @@ wrist_pin_access_d = wrist_quick_pin_head_d + 2;
 wrist_pin_tip_low_z = wrist_rest_z_max - wrist_quick_pin_grip_l
     - wrist_quick_pin_lock_ball_d / 2 - 0.2 - wrist_quick_pin_tip_l;
 loadcell_nut_low_z = frame_z_min - loadcell_washer_t - loadcell_nut_h;
+// The bolt head's underside seats on the upper washer.
+loadcell_bolt_tip_z = frame_z_max + loadcell_washer_t - loadcell_bolt_l;
+loadcell_bolt_protrusion = loadcell_nut_low_z - loadcell_bolt_tip_z;
 support_foot_bottom_z = min(wrist_pin_tip_low_z, loadcell_nut_low_z)
     - support_foot_clearance;
 
@@ -634,8 +639,12 @@ assert(support_foot_w_x <= min(frame_left_post_t, frame_palm_post_t) - 4 &&
 assert(support_foot_x_right - support_foot_w_x / 2 >
     wrist_pad_center_x + wrist_adjust_range + wrist_pad_t_x / 2,
     "Right-hand feet obstruct the palm at maximum travel.");
-assert(support_foot_bottom_z + 5 <= min(wrist_pin_tip_low_z, loadcell_nut_low_z),
+assert(support_foot_bottom_z + 5
+        <= min(wrist_pin_tip_low_z, loadcell_nut_low_z, loadcell_bolt_tip_z),
     "Fasteners must remain at least 5 mm above the support plane.");
+// Two 1.25 mm M8 threads past the nyloc nut.
+assert(loadcell_bolt_protrusion >= 2 * 1.25,
+    "The M8 bolts must pass fully through their nyloc nuts.");
 assert(wrist_mount_y_top - wrist_pin_access_d / 2 > wrist_pad_y_max &&
     wrist_mount_y_bottom + wrist_pin_access_d / 2 < wrist_pad_y_min,
     "Keep pin heads and their extraction paths outside the contact saddle.");

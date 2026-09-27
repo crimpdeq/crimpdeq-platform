@@ -40,7 +40,7 @@ A floating-regions warning means something is missing support.
 
 ## E. Plate 1: clevis cheek (left half, about 35–45 mm)
 
-Step up until the cheek with the Ø17 hole first appears.
+Step up until the clevis cheek with the Ø12.9 mm sleeve hole first appears.
 
 - [ ] Its first layer sits entirely on support interface, with no edge in free
       air, including the outer corner.

@@ -27,7 +27,8 @@ faces.
 
 The runner then exports each load-bearing part and uses
 `check-stl-components.py` to confirm that each is exactly one connected
-component. The stoppers are unloaded separate bodies and are not included. Finally, it confirms that every unsafe parameter override listed in
+component. The stoppers are unloaded and export together, so they must be
+exactly two components, one per stopper. Finally, it confirms that every unsafe parameter override listed in
 the script is rejected by an assertion. OpenSCAD errors and warnings fail the
 run, even when the resulting intersection is empty.
 
