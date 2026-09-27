@@ -48,7 +48,13 @@ CRIMPDEQ_CASE_DIR=../crimpdeq-case/case bash check-real-case.sh
 
 `.github/workflows/ci.yml` runs `check-collisions.sh`, runs `check-real-case.sh`
 against the `main` branch of crimpdeq-case, and builds this book on every
-push to `main` and every pull request.
+push to `main` and every pull request. These checks and the release export
+use the OpenSCAD development snapshot pinned in
+`.github/actions/setup-openscad/action.yml`. Its Manifold backend runs the
+collision checks in seconds rather than the quarter of an hour the CGAL-only
+2021.01 release needs, so `.github/workflows/compat.yml` checks 2021.01
+weekly instead of on every change. Bump the pin deliberately, after the
+checks pass locally on the new snapshot.
 
 Digital checks do not validate strength, fit on printed parts, comfort, or
 calibration; those still require physical testing.
