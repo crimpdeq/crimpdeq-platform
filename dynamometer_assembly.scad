@@ -53,7 +53,8 @@ assert(pose == "unloaded" || pose == "rated" || pose == "exploded",
 
 // Stopper indices in the pocket (bottom first) and in the storage well.
 stoppers_in_pocket = [for (i = [0 : stopper_count - 1])
-    if (pocket_stoppers == "both" || str(stopper_t_list[i]) == pocket_stoppers) i];
+    // The Customizer passes 5 and 10 as numbers; -D may pass strings.
+    if (pocket_stoppers == "both" || str(stopper_t_list[i]) == str(pocket_stoppers)) i];
 stoppers_stored = [for (i = [0 : stopper_count - 1])
     if (len(search(i, stoppers_in_pocket)) == 0) i];
 assert(pocket_stoppers == "none" || len(stoppers_in_pocket) > 0,
