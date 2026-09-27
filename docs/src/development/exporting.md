@@ -24,7 +24,11 @@ openscad -D 'part="frame_left"' -o /tmp/dynamometer_frame_left.stl dynamometer_a
 arguments) as `crimpdeq-platform-<part>.stl` into `exports/`, which is ignored
 by Git. `EXPORT_DIR`, `EXPORT_JOBS`, and `OPENSCAD_RENDER_FN` override the
 output directory, parallel jobs, and tessellation. The release workflow runs
-the same script and attaches the files to each GitHub release.
+the same script, checks that each load-bearing part is one body and the
+stoppers two, and attaches the files to each GitHub release. Run it from the
+Actions tab (**Release Crimpdeq Platform → Run workflow**) for a dry run: it
+builds and checks the files and keeps them as a run artifact, without
+publishing anything.
 
 ## Preview options
 
