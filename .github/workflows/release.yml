@@ -16,10 +16,8 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v6
 
-            - name: Install OpenSCAD (CLI)
-              run: |
-                  sudo apt-get update
-                  sudo apt-get install -y openscad
+            - name: Install OpenSCAD
+              uses: ./.github/actions/setup-openscad
 
             - name: Build STL files
               run: EXPORT_DIR=artifacts bash export-parts.sh
