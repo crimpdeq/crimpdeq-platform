@@ -406,7 +406,7 @@ if (mode == "frame_case") {
         adjustable_wrist_rest();
     }
 } else if (mode == "wrist_bolster_height") {
-    // No part of the saddle rises above the bolster's 12 mm top.
+    // No part of the saddle rises above the bolster top.
     intersection() {
         adjustable_wrist_rest();
         translate([wrist_arm_x_min - 1, wrist_mount_y_bottom - wrist_arm_h_y,
@@ -486,7 +486,7 @@ if (mode == "frame_case") {
         }
     }
 } else if (mode == "pocket_floor") {
-    // The old cutter extended 0.1 mm below the nominal 20 mm floor.
+    // The pocket cutter must stop at the nominal floor, not below it.
     intersection() {
         moving_finger_grip();
         translate([(hangboard_opening_x_min + hangboard_opening_x_max) / 2,

@@ -254,7 +254,8 @@ module hangboard_rim_section(angle) {
 
 module hangboard_pocket_cut() {
     hull() {
-        // Exact 20 mm floor datum; draft leaves 18 x 64.6 mm at the floor.
+        // Exact floor datum; the draft narrows the floor by hangboard_draft
+        // on every side.
         dyno_rounded_prism_xy(
             hangboard_opening_x_min + hangboard_draft,
             hangboard_opening_x_max - hangboard_draft,
@@ -705,8 +706,8 @@ module pocket_stoppers_print_layout() {
 }
 
 module wrist_rest_print_layout() {
-    // Print upright on the two flat mounting arms; support the overhanging
-    // deck from below, away from the new palm-contact channel and rounded rim.
+    // Print upright on the two flat lower arms; support the overhanging deck
+    // and outer upper arms from below; the deck and bolster tops print last.
     translate([0, 0, -wrist_rest_z_min])
         adjustable_wrist_rest();
 }
