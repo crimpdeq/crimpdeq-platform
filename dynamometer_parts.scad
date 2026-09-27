@@ -597,8 +597,9 @@ module pin_hardware_model(x_pos, x_offset = 0, z_offset = 0) {
     nut_d = 14.4;
 
     color("silver") {
-        translate([x_pos + x_offset, dyno_eye_y, bushing_center_z + z_offset])
-            cylinder(d = pin_nominal_d, h = frame_depth_z + 2 * washer_t, center = true);
+        // Full-length shank, from the head through the nut to its tip.
+        translate([x_pos + x_offset, dyno_eye_y, loadcell_bolt_tip_z + z_offset])
+            cylinder(d = pin_nominal_d, h = loadcell_bolt_l);
         translate([
             x_pos + x_offset,
             dyno_eye_y,
