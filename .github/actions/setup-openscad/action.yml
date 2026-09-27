@@ -34,5 +34,22 @@ runs:
               # Extract instead of mounting: the runner has no FUSE 2.
               cd "$RUNNER_TEMP"
               "$appimage" --appimage-extract >/dev/null
-              sudo ln -sf "$RUNNER_TEMP/squashfs-root/AppRun" /usr/local/bin/openscad
+
+              # AppImages leave the OpenGL/EGL libraries to the host.
+              sudo apt-get update -q
+              sudo apt-get install -y -q --no-install-recommends \
+                  libegl1 libgl1 libopengl0
+
+              # Name every library still missing, not just the first one.
+              root="$RUNNER_TEMP/squashfs-root"
+              libdirs="$(find "$root" -name '*.so*' -printf '%h\n' | sort -u | paste -sd:)"
+              missing="$(LD_LIBRARY_PATH="$libdirs" ldd "$root/usr/bin/openscad" \
+                  | grep 'not found' || true)"
+              if [[ -n "$missing" ]]; then
+                  echo "::error::OpenSCAD ${OPENSCAD_VERSION} needs host libraries:"
+                  echo "$missing"
+                  exit 1
+              fi
+
+              sudo ln -sf "$root/AppRun" /usr/local/bin/openscad
               openscad --version
