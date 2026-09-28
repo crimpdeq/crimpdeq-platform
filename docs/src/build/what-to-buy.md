@@ -40,4 +40,4 @@ clevises before manufacture.
 
 - 4 mm hex key for the M5 screws, and 13 mm spanners for the M8 nuts
 - Sandpaper, 220–400 grit, for support scars and tight holes
-- Filament for both plates (see [Printing](printing.md))
+- Filament for all three plates (see [Printing](printing.md))

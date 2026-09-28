@@ -24,8 +24,10 @@ not fit together.
 > [!NOTE]
 > The frame comes as two halves because the full frame is 343.9 mm long and
 > does not fit a 256 mm bed, even diagonally. The left half is 210.1 mm long
-> and the right half 181.8 mm. Both are 124 mm wide, too wide to share a
-> plate, so each gets its own.
+> and the right half 181.8 mm. Both are 124 mm wide, 134 mm with the 5 mm
+> brim, so each gets its own plate. Without the brim they would just fit on
+> one plate, but these tall parts need it to avoid lifting at the corners:
+> the lap faces must stay flat to mate.
 
 All parts are exported already oriented for printing. Don't rotate them or
 use "Lay on face".
