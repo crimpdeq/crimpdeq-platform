@@ -45,7 +45,7 @@ assembling anything.
 
 ## Phone
 
-- [ ] Your phone, in its case, drops into the slot at the far end of the
+- [ ] Your phone, in its case, drops into the slot in the stand at the far end of the
       front half and leans back against its outer face.
 
 Sand tight fits lightly; don't enlarge them past a sliding fit. Never sand

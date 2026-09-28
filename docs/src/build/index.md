@@ -28,7 +28,7 @@ Two **eye clips** (yellow) snap round the lugs and hold the load cell down.
 The **palm rest** (orange) slides on a rail on the rear half and is locked in
 one of nine positions by two **index keys** (green). Two **pocket stoppers**
 (teal) drop into the pocket, alone or stacked, for 20, 15 and 10 mm edges,
-and are stored in a well beside the case. A tilted slot at the far end holds
+and are stored in a well beside the case. A raised stand at the far end holds
 a phone running the Crimpdeq app. The USB port and switch face the open side
 of the base.
 

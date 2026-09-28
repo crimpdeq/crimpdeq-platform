@@ -269,11 +269,18 @@ module stopper_well_cut() {
 
 // --- Phone slot ----------------------------------------------------------
 
+module phone_stand() {
+    // Solid stand rising from the deck; the slot is cut from its top.
+    dyno_rounded_prism_xy(base_x_min, phone_stand_x_max,
+        -phone_stand_half_w_y, phone_stand_half_w_y,
+        deck_z - 1, phone_stand_top_z, 3);
+}
+
 module phone_slot_cut() {
     // Leans toward -X so the screen faces the user; the flat floor holds the
     // phone's lower edge. Open at both sides for long phones.
     intersection() {
-        translate([phone_slot_x_top, -base_half_w_y - 1, deck_z])
+        translate([phone_slot_x_top, -base_half_w_y - 1, phone_stand_top_z])
             rotate([0, -phone_slot_tilt, 0])
                 translate([-phone_slot_w, 0, -2 * phone_slot_depth_z])
                     cube([phone_slot_w, 2 * base_half_w_y + 2, 4 * phone_slot_depth_z]);
@@ -291,9 +298,9 @@ module phone_reference(portrait = false, drop = 0) {
     gap = (phone_slot_w - phone_probe_t) / 2;
     // Lowest (-X) bottom corner sits on the slot floor.
     corner_x = -phone_slot_w + gap;
-    z0 = (phone_slot_z_min - deck_z - corner_x * sin(phone_slot_tilt))
+    z0 = (phone_slot_z_min - phone_stand_top_z - corner_x * sin(phone_slot_tilt))
         / cos(phone_slot_tilt);
-    translate([phone_slot_x_top, -width / 2, deck_z - drop])
+    translate([phone_slot_x_top, -width / 2, phone_stand_top_z - drop])
         rotate([0, -phone_slot_tilt, 0])
             translate([corner_x, 0, z0])
                 cube([phone_probe_t, width, height]);
@@ -394,6 +401,7 @@ module base_front() {
                 base_split_region();
             }
             joint_tongues();
+            phone_stand();
         }
         anchor_pocket_cut();
         grip_trench_cut();

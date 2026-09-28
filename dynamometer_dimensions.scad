@@ -205,16 +205,22 @@ stopper_well_center_y = (stopper_well_y_min + stopper_well_y_max) / 2;
 stopper_well_depth_z = stopper_stack_h + 1;
 stopper_well_z_min = deck_z - stopper_well_depth_z;
 
-// Tilted phone slot across the -X end of the base, outside the load path.
-// It leans toward -X so the screen faces the user; its floor is flat.
+// Tilted phone slot in a stand across the -X end of the base, outside the
+// load path. The slot floor sits above the case top, so the case never hides
+// the screen; the slot leans toward -X so the screen faces the user.
 phone_slot_w = is_undef(phone_slot_w) ? 14 : phone_slot_w;
 phone_slot_depth_z = is_undef(phone_slot_depth_z) ? 16 : phone_slot_depth_z;
 phone_slot_tilt = is_undef(phone_slot_tilt) ? 15 : phone_slot_tilt;
 phone_slot_inner_wall_x = 4;
 phone_slot_outer_wall_x = 5;
-phone_slot_z_min = deck_z - phone_slot_depth_z;
-// The slot's +X face meets the deck here and leans toward -X.
-phone_slot_x_top = min(stopper_well_x_min, anchor_pocket_x_min)
+phone_slot_z_min = is_undef(phone_slot_z_min) ? case_z_max + 2 : phone_slot_z_min;
+phone_stand_top_z = phone_slot_z_min + phone_slot_depth_z;
+phone_stand_half_w_y = is_undef(phone_stand_half_w_y) ? 45 : phone_stand_half_w_y;
+// Finger room between the stand and the stopper well's pull tabs.
+phone_stand_clear_x = is_undef(phone_stand_clear_x) ? 6 : phone_stand_clear_x;
+phone_stand_x_max = min(stopper_well_x_min, anchor_pocket_x_min) - phone_stand_clear_x;
+// The slot's +X face meets the stand top here and leans toward -X.
+phone_slot_x_top = phone_stand_x_max
     - phone_slot_inner_wall_x - phone_slot_depth_z * tan(phone_slot_tilt);
 phone_slot_top_w_x = phone_slot_w / cos(phone_slot_tilt);
 // Largest phone, in its case, checked in the slot in either orientation.
@@ -444,9 +450,11 @@ assert(base_split_x >= trench_x_max + 6,
 assert(base_split_x + joint_tongue_len_x + 3 < key_x(-rest_adjust_range) - key_t_x / 2,
     "Base joint sockets must clear the first key slot.");
 assert(phone_slot_w >= 13 && phone_slot_w <= 16 &&
-    phone_slot_depth_z >= 12 && phone_slot_tilt >= 5 && phone_slot_tilt <= 25 &&
-    phone_slot_z_min >= base_z_min + 6,
-    "Phone slot must fit a phone in its case, lean it back, and keep a solid floor.");
+    phone_slot_depth_z >= 12 && phone_slot_tilt >= 5 && phone_slot_tilt <= 25,
+    "Phone slot must fit a phone in its case and lean it back.");
+assert(phone_slot_z_min >= case_z_max && phone_stand_clear_x >= 5 &&
+    phone_stand_half_w_y >= phone_probe_w / 2 + 2,
+    "The phone stand must lift the slot floor above the case top, leave finger room by the stopper well, and span a phone in portrait.");
 assert(stopper_well_y_max < case_y_min - 3 && stopper_well_x_min > base_x_min + 2 &&
     stopper_well_z_min > base_z_min + 5,
     "The stopper well must stay clear of the case and keep solid walls and floor.");

@@ -33,7 +33,7 @@ All values are at the 981 N design target.
 Each index key is screened for the **entire** palm force. Both keys must
 still be fitted; the one-key calculation does not authorise using one.
 The base joint is in compression under load and is not screened. The
-clips, stoppers, grip guides, stopper well and phone slot are outside the
+clips, stoppers, grip guides, stopper well and phone stand are outside the
 load path.
 
 ## The eye lugs

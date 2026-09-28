@@ -15,7 +15,7 @@ not fit together.
 
 | File | Contents | Plate |
 |---|---|---|
-| `crimpdeq-platform-base_front.stl` | Front base half: phone slot, anchor pocket, stopper well, grip trench, joint tongues | 1 |
+| `crimpdeq-platform-base_front.stl` | Front base half: phone stand, anchor pocket, stopper well, grip trench, joint tongues | 1 |
 | `crimpdeq-platform-grip.stl` | Finger grip with its eye lug | 1 |
 | `crimpdeq-platform-anchor.stl` | Anchor block with its eye lug | 1 |
 | `crimpdeq-platform-clips.stl` | Two identical eye clips | 1 |
@@ -25,9 +25,10 @@ not fit together.
 | `crimpdeq-platform-rest.stl` | Palm rest | 2 |
 
 > [!NOTE]
-> The base comes as two halves because it is 322 mm long and does not fit a
-> 256 mm bed, even diagonally. The front half is 217 mm long and the rear
-> half 116 mm; both are 122 mm wide.
+> The base comes as two halves because it is 328 mm long and does not fit a
+> 256 mm bed, even diagonally. The front half is 223 mm long and the rear
+> half 116 mm; both are 122 mm wide. The phone stand makes the front half
+> 75 mm tall at one end, the tallest part on the plates.
 
 All parts are exported already oriented for printing. Don't rotate them or
 use "Lay on face". The keys print on their sides on purpose: they are then

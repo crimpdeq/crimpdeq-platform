@@ -12,7 +12,8 @@ the other on a four-finger hangboard grip that the fingers pull toward the
 palm. The case itself floats clear of the base and never carries load.
 Drop-in stoppers give 25, 20, 15 and 10 mm edges, the palm rest slides on a
 rail and locks with two printed keys into one of nine hand openings, and a
-tilted slot at the far end holds a phone running the Crimpdeq app.
+raised stand at the far end holds a phone running the Crimpdeq app above
+the case.
 
 The project is standalone: it carries its own
 simplified reference of the Crimpdeq case interface and does not need the

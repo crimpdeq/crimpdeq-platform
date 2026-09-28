@@ -77,14 +77,16 @@ stopper on the pocket floor, its tab stands 6 mm above the grip.
 When not in use, the stoppers stack in a 16 mm-deep well in the deck, on the
 −Y side next to the case.
 
-## Phone slot
+## Phone stand
 
-A slot across the far (−X) end of the base holds a phone running the
-Crimpdeq app. It is 14 mm wide, for a phone up to about 13 mm thick in its
-case, and 16 mm deep with a flat floor. It leans 15° away from the user, so
-the screen faces the hand, and runs across the full base width, so a phone
-fits in portrait or landscape. It is beyond the anchor block and the stopper
-well, away from the hand and the grip, and carries no load.
+A 52 mm-tall stand across the far (−X) end of the base holds a phone running
+the Crimpdeq app. Its slot floor is 2 mm above the top of the case, so the
+case never hides the bottom of the screen. The slot is 14 mm wide, for a
+phone up to about 13 mm thick in its case, and 16 mm deep with a flat floor.
+It leans 15° away from the user, so the screen faces the hand, and is open at
+both sides, so a phone fits in portrait or landscape. The stand is 90 mm
+wide, beyond the anchor block, with 6 mm of finger room before the stopper
+well. It is away from the hand and the grip, and carries no load.
 
 ## Grip guides
 
@@ -118,9 +120,9 @@ These are setup guides, not ergonomic prescriptions.
 
 ## Base
 
-The base is 322 mm long, 122 mm wide and 22.6 mm tall below the deck, so it
-is printed as two halves that each fit a 256 mm bed: a 217 mm front half
-with the phone slot, anchor pocket, stopper well and grip trench, and a
+The base is 328 mm long, 122 mm wide and 22.6 mm tall below the deck, so it
+is printed as two halves that each fit a 256 mm bed: a 223 mm front half
+with the phone stand, anchor pocket, stopper well and grip trench, and a
 116 mm rear half with the rail and key slots. Two vertical dovetail tongues on the front half
 drop into sockets in the rear half. Under load the anchor pushes the front
 half toward the rest and the rest pushes the rear half back, so the butt

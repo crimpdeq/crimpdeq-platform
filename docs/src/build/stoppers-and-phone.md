@@ -24,9 +24,10 @@ When not in use, stack both stoppers in the well beside the case, tabs up.
 
 ![Phone in its slot](../images/phone.png)
 
-Stand your phone, in its case, in the slot at the far end of the base, in
-portrait or landscape. It leans back 15° so the screen faces you while you
-pull. The slot takes phones up to about 13 mm thick.
+Stand your phone, in its case, in the slot on top of the stand at the far
+end of the base, in portrait or landscape. The slot sits above the case, so
+the whole screen stays in view, and leans back 15° so the screen faces you
+while you pull. It takes phones up to about 13 mm thick.
 
 ## Check
 

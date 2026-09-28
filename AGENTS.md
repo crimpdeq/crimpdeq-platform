@@ -49,8 +49,9 @@
   (Bambu Lab A1), joined by vertical dovetails with the joint faces in
   compression under load.
 - Preserve switch and USB access on the open +Y side of the base.
-- Keep the tilted phone slot across the far (-X) end of the base, outside the
-  load path and clear of the hand at every rest position.
+- Keep the tilted phone slot in its stand at the far (-X) end of the base,
+  with the slot floor above the case top, finger room by the stopper well,
+  outside the load path and clear of the hand at every rest position.
 - Keep every part printable without supports.
 - Keep the base, anchor, grip, clips, rest, keys, phone and case collision-free
   except for explicitly modelled contact surfaces.
@@ -60,7 +61,7 @@
 - `dynamometer_dimensions.scad`: shared parameters, derived dimensions, and
   structural assertions.
 - `dynamometer_parts.scad`: printable base, anchor, grip, clip, rest, key
-  and stopper modules, and the phone slot, without top-level geometry.
+  and stopper modules, and the phone stand, without top-level geometry.
 - `dynamometer_assembly.scad`: preview and STL export entry point.
 - `crimpdeq_reference.scad`: self-contained crimpdeq-case `v2.0.0`
   interface snapshot.
