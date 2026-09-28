@@ -198,7 +198,7 @@ echo "STL connectivity checks passed."
 
 # CSG export can exit successfully on assertion failure; inspect diagnostics.
 invalid_parameters=(
-    'loadcell_rated_kg=60'
+    'platform_rated_kg=60'
     'structural_safety_factor=1.5'
     'u_slot_clear=0.5'
     'lug_fit=0.5'

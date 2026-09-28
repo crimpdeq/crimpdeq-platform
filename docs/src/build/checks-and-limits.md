@@ -90,7 +90,7 @@ Copy this table into a comment or a new note.
 >   a clip that clicks on too easily or not at all needs reprinting.
 
 Loading requires a separately approved, guarded validation setup that never
-exceeds the 50 kg load-cell rating. Stop for any unexpected motion or case
+exceeds the platform's 50 kg limit. Stop for any unexpected motion or case
 contact. Retire printed load-bearing parts after any overload, drop,
 cracking, whitening, or permanent deformation, and never apply load unless
 both clips and both keys are fitted.

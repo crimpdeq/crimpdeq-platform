@@ -7,7 +7,7 @@ portable force sensor into an isometric finger dynamometer, printed
 entirely in plastic with no hardware to buy. The Crimpdeq case
 ([crimpdeq-case v2.0.0](https://github.com/crimpdeq/crimpdeq-case/tree/v2.0.0))
 lies flat on a printed base, and printed lugs rise through the slots in the
-case into the two eyes of its 50 kg load cell: one on a fixed anchor block,
+case into the two eyes of its load cell: one on a fixed anchor block,
 the other on a four-finger hangboard grip that the fingers pull toward the
 palm. The case itself floats clear of the base and never carries load.
 Drop-in stoppers give 25, 20, 15 and 10 mm edges, the palm rest slides on a

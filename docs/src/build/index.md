@@ -10,7 +10,8 @@ is printed; there is nothing to buy apart from filament.
 > **The design has not been load-tested.** Physical validation of the fit and
 > of the printed load path, especially the lugs in the load-cell eyes, is
 > still pending. Do not pull on the device outside a separately approved,
-> guarded validation setup, and never load the sensor above its 50 kg rating.
+> guarded validation setup, and never load the platform above its 50 kg
+> rating, even though the Crimpdeq itself is rated to 150 kg.
 
 ## What you are building
 

@@ -12,9 +12,10 @@
 
 ## Design invariants
 
-- The load cell is rated for 50 kg (approximately 490 N).
+- The platform is rated for 50 kg (approximately 490 N). The Crimpdeq itself
+  is rated to 1500 N (about 150 kg); the printed lugs set the lower limit.
 - The printed structure is sized with a 2.0 structural safety factor, but the
-  sensor must never be tested above its 50 kg rating.
+  platform must never be tested above its 50 kg rating.
 - Keep every part 3D-printed; do not add bolts, pins, inserts or other
   purchased hardware.
 - The Crimpdeq case lies flat, lid up, and floats at least 1 mm above the

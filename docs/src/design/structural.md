@@ -3,12 +3,13 @@
 `dynamometer_dimensions.scad` derives the structural checks from the shared
 parameters and fails with an assertion when a parameter change makes a
 section, clearance, or material limit unsafe. The default structural inputs
-are a 50 kg (490 N) load-cell rating and a 2.0 structural design factor,
-giving a 981 N design target.
+are a 50 kg (490 N) platform rating and a 2.0 structural design factor,
+giving a 981 N design target. The Crimpdeq itself is rated to 1500 N
+(about 150 kg); the printed lugs, not the sensor, limit the platform.
 
 The design factor sets the analytical target; it is not a demonstrated safety
 factor, does not establish a safe working load for a printed assembly, and
-never permits loading the sensor above 50 kg. Never proof-load the installed
+never permits loading the platform above 50 kg. Never proof-load the installed
 sensor to the design target.
 
 ## What is screened
@@ -53,7 +54,7 @@ instead of a long pin.
 Eye bearing on printed plastic is the governing assumption of the design.
 `allowable_lug_bearing_mpa` (20 MPa by default, about 40% of PETG's
 compressive yield) is for conformal contact between the metal eye and a
-solid, 100%-infill lug. At the sensor's 490 N rating the bearing stress is
+solid, 100%-infill lug. At the platform's 490 N rating the bearing stress is
 half the screened value, 7.4 MPa. The anchor block and grip print upright, so
 the lug and tongue roots are screened against the cross-layer tension limit,
 and lug shear against half of it.
