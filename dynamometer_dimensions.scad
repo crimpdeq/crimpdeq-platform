@@ -130,7 +130,9 @@ grip_guide_gap_z = is_undef(grip_guide_gap_z) ? 0.3 : grip_guide_gap_z;
 grip_guide_bearing_y = is_undef(grip_guide_bearing_y) ? 4 : grip_guide_bearing_y;
 grip_side_gap_y = 3;
 trench_x_min = grip_x_min - 1;
-trench_x_max = grip_x_max + 4;
+// Free travel for the grip in the pull direction (+X).
+grip_pull_gap_x = is_undef(grip_pull_gap_x) ? 8 : grip_pull_gap_x;
+trench_x_max = grip_x_max + grip_pull_gap_x;
 trench_half_w_y = grip_half_w_y + grip_side_gap_y;
 trench_floor_z = grip_z_min - 1.5;
 grip_guide_z_max = grip_z_min - grip_guide_gap_z;
@@ -291,7 +293,7 @@ key_shank_l = rest_wing_top_z - key_bottom_z;
 // Two-piece base for a 256 mm bed (Bambu Lab A1). Two vertical dovetail
 // tongues on the front half drop into sockets in the rear half. Under load
 // the butt faces are in compression.
-base_split_x = is_undef(base_split_x) ? 104 : base_split_x;
+base_split_x = is_undef(base_split_x) ? 108 : base_split_x;
 base_split_bed_max = is_undef(base_split_bed_max) ? 240 : base_split_bed_max;
 print_bed_size = is_undef(print_bed_size) ? 256 : print_bed_size;
 base_x_min = phone_slot_x_top - phone_slot_top_w_x - phone_slot_outer_wall_x;
@@ -413,6 +415,8 @@ assert(stopper_tab_rise >= 4 && stopper_tab_rise <= 10 &&
     stopper_tab_slot_w_x <= stopper_x_max - stopper_x_min - 2 * stopper_r &&
     stopper_tab_slot_skin_y >= 1.8,
     "Stopper pull tabs must stand proud, fit the straight ends, and leave 1.8 mm of pocket end wall behind their slots.");
+assert(grip_pull_gap_x >= 5 * (lug_fit + anchor_play_x + rated_preview_deflection),
+    "The grip needs free travel in the pull direction of at least five times its play and rated deflection.");
 assert(grip_guide_gap_z > 0 && grip_guide_gap_z <= 0.5 && grip_guide_bearing_y >= 3 &&
     trench_floor_z > base_z_min + 5,
     "Grip guides need a small Z gap, a real bearing width and a solid trench floor.");

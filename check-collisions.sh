@@ -213,6 +213,7 @@ invalid_parameters=(
     'hangboard_lip_radius=3'
     'grip_guide_gap_z=0'
     'grip_guide_gap_z=1'
+    'grip_pull_gap_x=3'
     'stopper_clearance=0.1'
     'stopper_t_list=[3,10]'
     'stopper_t_list=[10,10]'

@@ -91,8 +91,11 @@ well. It is away from the hand and the grip, and carries no load.
 
 ## Grip guides
 
-The grip hangs from the load cell and does not touch the base. Its trench has
-two ledges that run under the grip's side walls, 0.3 mm below them. If the
+The grip hangs from the load cell and does not touch the base. Its trench
+leaves it 8 mm of free travel in the pull direction, 1 mm behind and 3 mm at
+each side. Pulling takes up at most about 1 mm of that: the lug's clearance
+in the eye, the anchor block's play in its pocket and the load cell's
+stretch. Two ledges run under the grip's side walls, 0.3 mm below them. If the
 grip tilts, they catch it and keep its top level, but they leave it free
 along X. They only touch the grip once it has dropped onto them, and friction
 there then affects readings; see
@@ -122,9 +125,9 @@ These are setup guides, not ergonomic prescriptions.
 ## Base
 
 The base is 328 mm long, 122 mm wide and 22.6 mm tall below the deck, so it
-is printed as two halves that each fit a 256 mm bed: a 223 mm front half
+is printed as two halves that each fit a 256 mm bed: a 227 mm front half
 with the phone stand, anchor pocket, stopper well and grip trench, and a
-116 mm rear half with the rail and key slots. Two vertical dovetail tongues on the front half
+112 mm rear half with the rail and key slots. Two vertical dovetail tongues on the front half
 drop into sockets in the rear half. Under load the anchor pushes the front
 half toward the rest and the rest pushes the rear half back, so the butt
 faces of the joint are in compression. The dovetails only keep the halves
