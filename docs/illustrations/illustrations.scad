@@ -19,9 +19,10 @@ c_grip = [0.20, 0.45, 0.78];
 c_rest = [0.95, 0.55, 0.15];
 c_case = [0.12, 0.20, 0.32, 0.55];
 c_loadcell = [0.75, 0.75, 0.78];
-c_keeper = [0.92, 0.76, 0.20];
+c_clip = [0.92, 0.76, 0.20];
 c_key = [0.45, 0.80, 0.45];
 c_stopper = [0.20, 0.62, 0.58];
+c_phone = [0.10, 0.10, 0.12, 0.75];
 c_arrow = [0.90, 0.10, 0.10];
 c_plate = [0.66, 0.67, 0.70];
 // Mid-grey text and translucent ghosts read on both light and dark pages.
@@ -56,7 +57,7 @@ module base_halves(gap = 0) {
 
 module anchor(dz = 0) { color(c_anchor) translate([0, 0, dz]) render() anchor_block(); }
 module grip(dx = 0, dz = 0, c = c_grip) { color(c) translate([dx, 0, dz]) render() finger_grip(); }
-module keepers(dy = 0) { color(c_keeper) translate([0, dy, 0]) tab_keepers(); }
+module clips() { color(c_clip) render() eye_clips(); }
 module rest(offset = 0, dx = 0) { color(c_rest) translate([dx, 0, 0]) render() palm_rest(offset); }
 module keys(offset = 0, lift = 0) { color(c_key) index_keys(offset, lift); }
 module stored_stoppers() { color(c_stopper) stored_pocket_stoppers(); }
@@ -65,7 +66,7 @@ module full_assembly(offset = 0) {
     base_halves();
     anchor();
     grip();
-    keepers();
+    clips();
     case_model();
     rest(offset);
     keys(offset);
@@ -130,15 +131,15 @@ module flat_arrow(from, to, w = 1.6) {
 if (view == "overview") {
     full_assembly(0);
 } else if (view == "plate1") {
-    build_plate("Plate 1: front base half and small parts");
+    build_plate("Plate 1: front base half, grip and small parts");
     plate_part("base_front", c_base);
     plate_part("grip", c_grip);
     plate_part("anchor", c_anchor);
-    plate_part("keepers", c_keeper);
+    plate_part("clips", c_clip);
     plate_part("keys", c_key);
-    plate_part("stoppers", c_stopper);
 } else if (view == "plate2") {
-    build_plate("Plate 2: rear base half and palm rest");
+    build_plate("Plate 2: rear base half, palm rest and stoppers");
+    plate_part("stoppers", c_stopper);
     plate_part("base_rear", c_base_b);
     plate_part("rest", c_rest);
 } else if (view == "join_base") {
@@ -161,44 +162,48 @@ if (view == "overview") {
     for (x_pos = [dyno_eye_x_left, dyno_eye_x_right])
         arrow([x_pos, -50, 60], [x_pos, -50, 30], 3);
     case_model(ghost = true);
-} else if (view == "keepers_in") {
-    // Keepers slide across the tabs in their grooves.
+} else if (view == "clips_in") {
+    // Each clip drops into its U-slot beside the lug, then slides in until
+    // it snaps round the neck.
     base_halves();
     anchor();
     grip();
     case_model();
-    color(c_keeper) {
-        tab_keeper("left");
-        translate([0, -70, 0]) tab_keeper("right");
+    color(c_clip) {
+        render() eye_clip("left");
+        translate([0, 0, 30]) render() eye_clip("right", dx = clip_install_travel);
     }
-    arrow([(keeper_x_min + end_wall_x) / 2, -105, 16],
-          [(keeper_x_min + end_wall_x) / 2, -60, 16], 3);
+    x_drop = dyno_eye_x_right + clip_install_travel + clip_tail_x / 2;
+    arrow([x_drop, 0, 75], [x_drop, 0, 58], 3);
+    arrow([x_drop + 6, 0, 45], [dyno_eye_x_right + clip_tail_x / 2 + 2, 0, 45], 3);
 } else if (view == "lug_section") {
-    // Section through the load-cell axis: lugs, keepers and floating case.
+    // Section through the load-cell axis: lugs, clips and floating case.
     x0 = anchor_x_min - 4;
-    x1 = end_wall_x + 14;
+    x1 = grip_body_x_min + 14;
     sec(c_base, 0, x0, x1) base_front();
     sec(c_anchor, 0, x0, x1) anchor_block();
     sec(c_grip, 0, x0, x1) finger_grip();
-    // The case is cut beside its eye tunnels so its walls show.
-    sec([0.55, 0.62, 0.72], 8, x0, x1) crimpdeq_case_reference();
+    // The case is cut beside its U-slots so its walls show.
+    sec([0.55, 0.62, 0.72], 14, x0, x1) crimpdeq_case_reference();
     sec(c_loadcell, 0, x0, x1, 0.5) loadcell_reference();
-    sec(c_keeper, 0, x0, x1, 1) tab_keepers();
+    sec(c_clip, 0, x0, x1, 1) eye_clips();
     lx = x1 + 8;
-    label([lx, 38], "Crimpdeq case", [case_x_half - 1, case_z_max - 6]);
-    label([lx, 28], "Grip end wall", [end_wall_x + 6, end_wall_top_z - 1]);
-    label([lx, 18], "Keeper", [keeper_x_min + 2, keeper_z_max - 1]);
-    label([lx, 8], "Printed lug in the eye", [lug_face_x + 2, lug_top_z - 1]);
-    label([lx, -2], "Load cell", [dyno_eye_x_right + eye_d / 2 + 3, loadcell_center_z]);
-    label([lx, -12], "1 mm gap under the case", [case_x_half - 8, case_z_min - case_float_gap / 2]);
-    label([lx, -22], "Grip", [end_wall_x + 8, grip_z_min + 4]);
-    label([lx, -32], "Base", [x1 - 4, base_z_min + 3]);
+    c = dyno_eye_x_right;
+    label([lx, 40], "Crimpdeq case", [case_x_half - 1, case_z_max - 6]);
+    label([lx, 30], "Clip fin", [c + clip_tail_x - 1.5, clip_fin_top_z - 3]);
+    label([lx, 20], "Lug head", [c + 6, lug_top_z - 1.5]);
+    label([lx, 10], "Clip", [c + 11, loadcell_top_z + clip_t / 2]);
+    label([lx, 0], "Printed lug in the eye", [c + 5, loadcell_center_z]);
+    label([lx, -10], "Tongue in the U-slot", [c + 10, -3]);
+    label([lx, -20], "1 mm gap under the case", [4, case_z_min - case_float_gap / 2]);
+    label([lx, -30], "Grip", [grip_body_x_min + 6, grip_z_min + 6]);
+    label([lx, -40], "Base", [x1 - 4, base_z_min + 3]);
     color(c_text) translate([0, 0, 3]) linear_extrude(0.5) {
         translate([x0, base_z_min - 10])
             text("Anchor block", size = 4, font = "Liberation Sans");
     }
-    flat_arrow([x1 + 2, -44], [x1 + 30, -44]);
-    color(c_text) translate([x1 + 34, -44, 3]) linear_extrude(0.5)
+    flat_arrow([x1 + 2, -54], [x1 + 30, -54]);
+    color(c_text) translate([x1 + 34, -54, 3]) linear_extrude(0.5)
         text("Finger pull", size = 3.6, valign = "center", font = "Liberation Sans");
 } else if (view == "rest_on") {
     // The palm rest slides onto the rail from the rear end, then the keys
@@ -206,7 +211,7 @@ if (view == "overview") {
     base_halves();
     anchor();
     grip();
-    keepers();
+    clips();
     case_model();
     rest(0, 70);
     keys(0, 45);
@@ -223,13 +228,16 @@ if (view == "overview") {
     base_halves();
     anchor();
     grip();
-    keepers();
+    clips();
     case_model();
     color(c_stopper) {
         pocket_stopper(0);
         translate([0, 0, 45]) pocket_stopper(1);
     }
     arrow([stopper_center_x + 32, 0, 80], [stopper_center_x + 32, 0, 50], 4);
+} else if (view == "phone") {
+    full_assembly(0);
+    color(c_phone) phone_reference();
 } else {
     assert(false, str("Unknown view: ", view));
 }

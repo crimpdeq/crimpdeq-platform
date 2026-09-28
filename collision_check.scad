@@ -46,8 +46,19 @@ if (mode == "anchor_case") {
         union() { base_front(); base_rear(); }
         translate([0, 0, -case_float_gap + 0.1]) crimpdeq_case_reference();
     }
-} else if (mode == "keepers_case") {
-    intersection() { tab_keepers(); crimpdeq_case_reference(); }
+} else if (mode == "clips_case") {
+    intersection() { eye_clips(); crimpdeq_case_reference(); }
+} else if (mode == "case_drop") {
+    // The case, with its load cell, lowers onto both lugs from above
+    // without touching the tongues or lugs.
+    intersection() {
+        union() { anchor_block(); finger_grip(); }
+        for (dz = [0.01, 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20])
+            translate([0, 0, dz]) {
+                crimpdeq_case_reference();
+                loadcell_reference();
+            }
+    }
 } else if (mode == "anchor_base") {
     intersection() { lifted() anchor_block(); union() { base_front(); base_rear(); } }
 } else if (mode == "anchor_seated") {
@@ -95,34 +106,57 @@ if (mode == "anchor_case") {
         intersection() { translate([shift, 0, 0.01]) loadcell_reference(); anchor_block(); }
     else
         intersection() { lifted() loadcell_reference(); translate([shift, 0, 0]) finger_grip(); }
-} else if (mode == "keeper_parts") {
+} else if (mode == "clip_parts") {
     intersection() {
-        lifted() tab_keepers();
+        lifted() eye_clips();
         union() { anchor_block(); finger_grip(); loadcell_reference(); }
     }
-} else if (mode == "keeper_clamp") {
-    // Each keeper presses on its tab.
-    assert(test_position < 2, "Keeper index must be 0-1.");
+} else if (mode == "clip_clamp") {
+    // Each clip presses on its end of the load cell.
+    assert(test_position < 2, "Clip index must be 0-1.");
     intersection() {
-        lifted(-0.02) tab_keeper(test_position == 0 ? "left" : "right");
+        lifted(-0.02) eye_clip(test_position == 0 ? "left" : "right");
         loadcell_reference();
     }
-} else if (mode == "keeper_retained") {
-    // Lifting a keeper, or pulling it away from its wall, engages its groove.
-    assert(test_position < 4, "Keeper index must be 0-3.");
+} else if (mode == "clip_retained") {
+    // Lifted (0-1), a clip catches its lug head; pulled outboard (2-3), its
+    // fork snaps against the neck.
+    assert(test_position < 4, "Clip index must be 0-3.");
     side = test_position % 2 == 0 ? "left" : "right";
-    away = side == "left" ? 1 : -1;
     intersection() {
-        translate(test_position < 2 ? [0, 0, keeper_fit + 0.05]
-                  : [away * (keeper_catch_travel + 0.05), 0, 0.01])
-            tab_keeper(side);
+        if (test_position < 2)
+            translate([0, 0, clip_head_gap + 0.05]) eye_clip(side);
+        else
+            eye_clip(side, dx = 1);
         if (side == "left") anchor_block(); else finger_grip();
+    }
+} else if (mode == "clip_path") {
+    // Each clip drops into its U-slot beside the lug head, then slides in
+    // over the load cell. Only the snap at the neck may touch on the way.
+    assert(test_position < 2, "Clip index must be 0-1.");
+    side = test_position == 0 ? "left" : "right";
+    x_eye = test_position == 0 ? dyno_eye_x_left : dyno_eye_x_right;
+    intersection() {
+        union() {
+            for (dz = [0.01, 2, 5, 10, 15, 20, 25])
+                translate([0, 0, dz]) eye_clip(side, dx = clip_install_travel);
+            for (dx = [0 : 1 : clip_install_travel])
+                lifted() eye_clip(side, dx = dx);
+        }
+        difference() {
+            union() {
+                crimpdeq_case_reference(); anchor_block(); finger_grip();
+                loadcell_reference();
+            }
+            translate([x_eye, dyno_eye_y, loadcell_top_z - 0.1])
+                cylinder(r = lug_neck_r + 0.01, h = lug_head_z_min - loadcell_top_z + 0.1);
+        }
     }
 } else if (mode == "service_path") {
     intersection() {
         service_probe();
         union() {
-            fixed_parts(); finger_grip(); tab_keepers();
+            fixed_parts(); finger_grip(); eye_clips();
             palm_rest(-rest_adjust_range); index_keys(-rest_adjust_range);
             stored_pocket_stoppers();
         }
@@ -140,7 +174,7 @@ if (mode == "anchor_case") {
     o = rest_offset(test_position);
     intersection() {
         lifted() palm_rest(o);
-        union() { fixed_parts(); finger_grip(); tab_keepers(); crimpdeq_case_reference(); }
+        union() { fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference(); }
     }
     intersection() {
         lifted() index_keys(o);
@@ -155,9 +189,9 @@ if (mode == "anchor_case") {
     intersection() { translate([shift, 0, 0.02]) index_keys(o); palm_rest(o); }
 } else if (mode == "rest_retained") {
     // Lifted off the deck at its least-engaged position, the rest's groove
-    // catches the rail.
+    // tongue catches the groove.
     intersection() {
-        translate([0, 0, rail_catch_travel + 0.05]) palm_rest(rest_adjust_range);
+        translate([0, 0, rest_catch_travel + 0.05]) palm_rest(rest_adjust_range);
         base_rear();
     }
 } else if (mode == "rest_slide_on") {
@@ -181,7 +215,7 @@ if (mode == "anchor_case") {
             hangboard_opening_r - hangboard_draft
         );
         union() {
-            fixed_parts(); finger_grip(); tab_keepers();
+            fixed_parts(); finger_grip(); eye_clips();
             palm_rest(-rest_adjust_range); index_keys(-rest_adjust_range);
             crimpdeq_case_reference();
         }
@@ -266,9 +300,24 @@ if (mode == "anchor_case") {
     intersection() {
         lifted() stored_pocket_stoppers();
         union() {
-            fixed_parts(); finger_grip(); tab_keepers(); crimpdeq_case_reference();
+            fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference();
         }
     }
+} else if (mode == "phone_slot") {
+    // The largest phone clears everything in either orientation.
+    intersection() {
+        union() {
+            phone_reference(portrait = false, drop = -0.02);
+            phone_reference(portrait = true, drop = -0.02);
+        }
+        union() {
+            fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference();
+            palm_rest(-rest_adjust_range); index_keys(-rest_adjust_range);
+            stored_pocket_stoppers();
+        }
+    }
+} else if (mode == "phone_seated") {
+    intersection() { base_front(); phone_reference(drop = 0.02); }
 } else if (mode == "stopper_stored_seated") {
     intersection() { base_front(); lifted(-0.02) stored_pocket_stoppers(); }
 } else {

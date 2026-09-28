@@ -26,7 +26,8 @@ checks=(
     "anchor_case empty"
     "grip_case empty"
     "base_case empty"
-    "keepers_case empty"
+    "clips_case empty"
+    "case_drop empty"
     "anchor_base empty"
     "anchor_seated nonempty"
     "anchor_bears nonempty"
@@ -38,9 +39,11 @@ checks=(
     "lug_clear empty"
     "lug_bearing_0 nonempty"
     "lug_bearing_1 nonempty"
-    "keeper_parts empty"
-    "keeper_clamp_0 nonempty"
-    "keeper_clamp_1 nonempty"
+    "clip_parts empty"
+    "clip_clamp_0 nonempty"
+    "clip_clamp_1 nonempty"
+    "clip_path_0 empty"
+    "clip_path_1 empty"
     "service_path empty"
     "base_halves_overlap empty"
     "base_joint_locked nonempty"
@@ -49,6 +52,8 @@ checks=(
     "rest_slide_on empty"
     "finger_entry empty"
     "pocket_floor nonempty"
+    "phone_slot empty"
+    "phone_seated nonempty"
     "stopper_stored empty"
     "stopper_stored_seated nonempty"
 )
@@ -56,7 +61,7 @@ for index in {0..8}; do
     checks+=("rest_position_${index} empty")
 done
 for index in {0..3}; do
-    checks+=("keeper_retained_${index} nonempty")
+    checks+=("clip_retained_${index} nonempty")
     checks+=("rest_locked_${index} nonempty")
 done
 for index in {0..1}; do
@@ -93,7 +98,7 @@ check_mode() {
     local status_file="$tmp_dir/${mode}.status"
     local error_file="$tmp_dir/${mode}.error"
     local result log_text exit_code=0 scad_mode="$mode" test_position=0
-    if [[ "$mode" =~ ^(grip_guide_support|tab_seated|lug_bearing|keeper_clamp|keeper_retained|rest_position|rest_locked|stopper_pocket|stopper_seated|stopper_located|stopper_stack_pocket|stopper_stack_contact|stopper_stack_located|stopper_tab_proud|stopper_finger_width)_([0-8])$ ]]; then
+    if [[ "$mode" =~ ^(grip_guide_support|tab_seated|lug_bearing|clip_clamp|clip_retained|clip_path|rest_position|rest_locked|stopper_pocket|stopper_seated|stopper_located|stopper_stack_pocket|stopper_stack_contact|stopper_stack_located|stopper_tab_proud|stopper_finger_width)_([0-8])$ ]]; then
         scad_mode="${BASH_REMATCH[1]}"
         test_position="${BASH_REMATCH[2]}"
     fi
@@ -170,7 +175,7 @@ echo "Collision checks passed."
 
 # Each single part must be one body; the paired parts export as two bodies.
 single_parts=(base_front base_rear anchor grip rest)
-paired_parts=(keepers keys stoppers)
+paired_parts=(clips keys stoppers)
 for part in "${single_parts[@]}" "${paired_parts[@]}"; do
     log_file="$tmp_dir/export_${part}.log"
     if ! openscad -D "render_fn=${render_fn}" -D "part=\"${part}\"" \
@@ -195,12 +200,13 @@ echo "STL connectivity checks passed."
 invalid_parameters=(
     'loadcell_rated_kg=60'
     'structural_safety_factor=1.5'
-    'pod_clear_x=0.8'
-    'anchor_play_x=0.5'
+    'u_slot_clear=0.5'
     'lug_fit=0.5'
+    'lug_neck_r=7.5'
     'allowable_lug_bearing_mpa=12'
+    'clip_snap=0.8'
+    'clip_fin_top_z=26'
     'case_float_gap=0.5'
-    'end_wall_top_z=9'
     'hangboard_pocket_depth_z=24'
     'hangboard_opening_w_y=76'
     'hangboard_front_z=20'
@@ -219,8 +225,11 @@ invalid_parameters=(
     'key_t_x=4'
     'key_y=45'
     'base_z_min=-24'
-    'base_split_x=80'
-    'base_split_x=140'
+    'base_split_x=95'
+    'base_split_x=150'
+    'phone_slot_w=11'
+    'phone_slot_tilt=40'
+    'phone_slot_depth_z=10'
 )
 for parameter in "${invalid_parameters[@]}"; do
     log_file="$tmp_dir/invalid.log"

@@ -6,7 +6,7 @@
 //   openscad -D 'part="base_front"' -o /tmp/dyno-base-front.stl dynamometer_assembly.scad
 //   openscad -D 'part="grip"' -D on_plate=true -o /tmp/dyno-grip.stl dynamometer_assembly.scad
 //
-// Parts: base_front, base_rear, anchor, grip, keepers, keys, rest, stoppers.
+// Parts: base_front, base_rear, anchor, grip, clips, keys, rest, stoppers.
 // The view options below are literals so that OpenSCAD's Customizer
 // (Window > Customizer) lists them; -D still overrides them.
 //
@@ -17,7 +17,7 @@ include <dynamometer_dimensions.scad>
 
 /* [View] */
 // Part to preview or export
-part = "assembly"; // [assembly, base_front, base_rear, anchor, grip, keepers, keys, rest, stoppers]
+part = "assembly"; // [assembly, base_front, base_rear, anchor, grip, clips, keys, rest, stoppers]
 // Preview pose; rated exaggerates the grip displacement
 pose = "unloaded"; // [unloaded, rated, exploded]
 // Export the part at its place on the print plate instead of the origin
@@ -33,6 +33,8 @@ show_rest = true;
 show_stoppers = true;
 // Stoppers fitted in the finger pocket, by thickness in mm
 pocket_stoppers = "none"; // [none, 5, 10, both]
+// Largest supported phone in its slot
+show_phone = false;
 
 /* [Hidden] */
 render_fn = is_undef(render_fn) ? 96 : render_fn;
@@ -69,7 +71,7 @@ module dynamometer_complete() {
     color([0.58, 0.60, 0.64]) translate([30 * explode, 0, 0]) base_rear();
     color([0.85, 0.35, 0.20]) translate([0, 0, 30 * explode]) anchor_block();
     color([0.20, 0.45, 0.78]) translate([grip_preview_offset, 0, 30 * explode]) finger_grip();
-    color([0.95, 0.80, 0.25]) translate([0, 0, 90 * explode]) tab_keepers();
+    color([0.95, 0.80, 0.25]) translate([0, 0, 90 * explode]) eye_clips();
 
     if (show_case)
         translate([grip_preview_offset / 2, 0, 60 * explode]) {
@@ -84,6 +86,9 @@ module dynamometer_complete() {
             color([0.45, 0.80, 0.45])
                 translate([0, 0, 30 * explode]) index_keys(rest_x_offset);
         }
+
+    if (show_phone)
+        color([0.1, 0.1, 0.1, 0.6]) phone_reference();
 
     if (show_stoppers)
         color([0.2, 0.6, 0.55]) {

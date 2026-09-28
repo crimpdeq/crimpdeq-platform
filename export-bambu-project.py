@@ -41,10 +41,9 @@ PROCESS_OVERRIDES = {
     "top_shell_layers": "6",
     "bottom_shell_layers": "6",
     "sparse_infill_density": "50%",
-    "enable_support": "1",
-    "support_type": "tree(auto)",
-    "support_threshold_angle": "30",
-    "support_on_build_plate_only": "0",
+    # No part needs support; the joint sockets and the rest's rail groove are
+    # bridged, and support in the groove would scar a sliding face.
+    "enable_support": "0",
     "brim_type": "outer_only",
     "brim_width": "5",
 }
@@ -53,10 +52,12 @@ SOLID = {"sparse_infill_density": "100%"}
 # Bambu Studio drops plate names containing any of ILLEGAL_NAME_CHARS.
 PLATES = [
     ("Front base and small parts", [
-        ("base_front", {}), ("grip", SOLID), ("anchor", SOLID), ("keepers", SOLID),
-        ("keys", SOLID), ("stoppers", SOLID),
+        ("base_front", {}), ("grip", SOLID), ("anchor", SOLID), ("clips", SOLID),
+        ("keys", SOLID),
     ]),
-    ("Rear base and palm rest", [("base_rear", {}), ("rest", SOLID)]),
+    ("Rear base, palm rest and stoppers", [
+        ("stoppers", SOLID), ("base_rear", {}), ("rest", SOLID),
+    ]),
 ]
 ILLEGAL_NAME_CHARS = '<>:/\\|?*"'
 # Minimum gap between parts that share a plate (docs/src/build/printing.md).

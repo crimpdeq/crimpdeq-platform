@@ -16,9 +16,9 @@ openscad -D 'part="grip"' -o /tmp/dynamometer_grip.stl dynamometer_assembly.scad
 | --- | --- |
 | `assembly` | Full preview (default) |
 | `base_front`, `base_rear` | Base halves, joined by vertical dovetails |
-| `anchor` | Anchor block with the left eye lug, on its side |
-| `grip` | Finger grip with the right eye lug, on its side |
-| `keepers` | Two tab keepers, flat |
+| `anchor` | Anchor block with the left eye lug |
+| `grip` | Finger grip with the right eye lug |
+| `clips` | Two eye clips, flat |
 | `keys` | Two index keys, on their sides |
 | `rest` | Palm rest |
 | `stoppers` | Two stackable pocket stoppers, laid out flat |
@@ -44,7 +44,7 @@ The printer, process and filament presets and the setting overrides are at
 the top of the script.
 
 The release workflow runs both scripts, checks that each single part is one
-body and the keepers, keys and stoppers two, and attaches the STL files and the project to
+body and the clips, keys and stoppers two, and attaches the STL files and the project to
 each GitHub release. It uses the Bambu Studio version pinned in
 `.github/actions/setup-bambu-studio/action.yml`. That Linux build can't render
 plate thumbnails without a display, so the release project has none; Bambu
@@ -70,6 +70,7 @@ openscad -D 'pocket_stoppers="both"' dynamometer_assembly.scad
 The rated pose exaggerates displacement for visualisation and does not change
 exported parts. `rest_position` previews the nearest physical index from `-1`
 (smallest opening) to `1` (largest opening). `show_case`, `show_internals`,
-`show_rest` and `show_stoppers` toggle the corresponding preview geometry. `pocket_stoppers` fits the
+`show_rest`, `show_stoppers` and `show_phone` (off by default) toggle the
+corresponding preview geometry. `pocket_stoppers` fits the
 5 mm stopper, the 10 mm stopper, or both stacked in the finger pocket
 (`"none"`, `"5"`, `"10"`, `"both"`); the others stay in their storage well.

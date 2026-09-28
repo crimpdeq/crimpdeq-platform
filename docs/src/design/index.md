@@ -2,10 +2,12 @@
 
 ![Section through the load-cell axis](../images/lug_section.png)
 
-The device is isometric and fully printed. The Crimpdeq case lies flat, lid
-up, in the middle of a printed base. The load cell's two ends stick out of
-the case's side walls, and each end has a Ø17 mm eye that is half outside
-the case. Printed lugs sit in the outer halves of those eyes:
+The device is isometric and fully printed. It holds the
+[crimpdeq-case v2.0.0](https://github.com/crimpdeq/crimpdeq-case/tree/v2.0.0)
+enclosure, which lies flat, lid up, in the middle of a printed base. The
+case encloses the whole load cell. Each Ø17 mm eye is reached through a
+vertical U-slot, Ø22 mm round the eye and open to the case end, through the
+full height of the case. Printed lugs rise through those slots into the eyes:
 
 - the **anchor block** holds the left eye and bears on the base
 - the **finger grip** holds the right eye and carries the hangboard pocket
@@ -14,31 +16,37 @@ When the fingers pull the grip toward the palm (+X), the outer rim of each
 eye presses on its lug. The force passes from the grip, through the load
 cell, into the anchor block, and from there through the base to the palm
 rest. It never passes through the case: the case floats 1 mm above the deck
-and stays at least 1 mm from every printed part. Its shell, lid and screws
+and the printed parts keep at least 1 mm from it. Its shell, lid and screws
 carry no load.
 
 ## Eye lugs
 
-Each lug is a D-shaped stub rising 5.5 mm from its seat through the outer
-half of an eye. Its round side matches the eye with 0.25 mm clearance. Its
-flat side stays 1.2 mm outside the case, so it clears the case's carabiner
-tunnels. The eye bears on it across a 16.4 mm chord and the full 4 mm
-thickness of the load cell. The top has a 1 mm chamfer so the eye drops on
-easily. The load cell's ends rest on flat seats level with the lug roots.
+A narrow tongue rises from the anchor block and from the grip through each
+U-slot, keeping 1 mm from the case, up to the load cell's underside. The load
+cell rests on the tongues. On each tongue, a round lug fills the eye with
+0.25 mm clearance, and the eye bears on it across its full 16.5 mm diameter
+and the load cell's 4 mm thickness.
 
-The lugs are part of the anchor block and the grip. Both parts are printed
-on their sides, so the lug's bending plane lies in the print layers rather
-than across them.
+Above the load cell the lug narrows to a Ø12 mm neck, then widens to a head
+with a 1 mm lead-in chamfer, so the eye still drops over it. The neck and head
+are cut flat on their inboard side, 1 mm clear of the battery walls that the
+case lid drops into the inboard edge of each U-slot. Only the outboard side of
+the lug carries load.
 
-## Tab keepers
+The anchor block and the grip print upright. The lug is short and round, so
+even loaded across the layers its root stays at 4.4 MPa bending at the design
+target.
 
-Two printed keepers slide across the load-cell ends, beside the eyes, and
-clamp them onto their seats. Each keeper has a half-dovetail tongue that runs
-in a groove across the end wall of the anchor block or the grip. The tongue's
-flat underside is the clamp face. Its sloping top flank stops the keeper from
-lifting and from pulling away from the wall; it can move at most 0.3 mm
-before the flank catches. The keepers carry no measured load. They hold the
-load cell, and with it the grip, level. Sliding them out frees the case.
+## Eye clips
+
+Two identical printed clips hold the load cell down on its tongues, under the
+lug heads, so the grip hangs from the load cell. Each clip is a flat fork
+that lies on the load cell round a lug's neck, with a fin at its outboard end.
+It drops into the U-slot beside the lug, then slides in until its fork snaps
+round the neck: the fork's mouth is 0.3 mm narrower than the neck on each
+side. The head stops it lifting and the snap stops it sliding out. The
+clips carry no measured load. Pulling the fins releases them and frees the
+case.
 
 ## Finger pocket
 
@@ -68,6 +76,15 @@ stopper on the pocket floor, its tab stands 6 mm above the grip.
 
 When not in use, the stoppers stack in a 16 mm-deep well in the deck, on the
 −Y side next to the case.
+
+## Phone slot
+
+A slot across the far (−X) end of the base holds a phone running the
+Crimpdeq app. It is 14 mm wide, for a phone up to about 13 mm thick in its
+case, and 16 mm deep with a flat floor. It leans 15° away from the user, so
+the screen faces the hand, and runs across the full base width, so a phone
+fits in portrait or landscape. It is beyond the anchor block and the stopper
+well, away from the hand and the grip, and carries no load.
 
 ## Grip guides
 
@@ -101,10 +118,10 @@ These are setup guides, not ergonomic prescriptions.
 
 ## Base
 
-The base is 271 mm long, 122 mm wide and 22.6 mm tall below the deck, so it
-is printed as two halves that each fit a 256 mm bed: a 168 mm front half
-with the anchor pocket, grip trench and stopper well, and a 116 mm rear half
-with the rail and key slots. Two vertical dovetail tongues on the front half
+The base is 322 mm long, 122 mm wide and 22.6 mm tall below the deck, so it
+is printed as two halves that each fit a 256 mm bed: a 217 mm front half
+with the phone slot, anchor pocket, stopper well and grip trench, and a
+116 mm rear half with the rail and key slots. Two vertical dovetail tongues on the front half
 drop into sockets in the rear half. Under load the anchor pushes the front
 half toward the rest and the rest pushes the rear half back, so the butt
 faces of the joint are in compression. The dovetails only keep the halves

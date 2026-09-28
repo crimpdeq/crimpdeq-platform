@@ -29,14 +29,33 @@ mode = is_undef(mode) ? "base" : mode;
 index = is_undef(index) ? 0 : index;
 assert(index >= 0 && index < rest_index_count && index == floor(index));
 module real_case() { main_part(); lid_part(); }
-intersection() {
+if (mode == "drop") {
+    // The real case lowers onto both lugs without touching them.
+    intersection() {
+        union() { anchor_block(); finger_grip(); }
+        for (dz = [0.01, 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20])
+            translate([0, 0, dz]) real_case();
+    }
+} else if (mode == "clip_path") {
+    // Both clips drop in beside their lugs and slide in without touching it.
+    intersection() {
+        for (side = ["left", "right"]) {
+            for (dz = [0.01, 2, 5, 10, 15, 20, 25])
+                translate([0, 0, dz]) eye_clip(side, dx = clip_install_travel);
+            for (dx = [0 : 1 : clip_install_travel])
+                translate([0, 0, 0.01]) eye_clip(side, dx = dx);
+        }
+        real_case();
+    }
+} else intersection() {
     if (mode == "base") { base_front(); base_rear(); }
     else if (mode == "anchor") anchor_block();
     else if (mode == "grip") {
         finger_grip();
         translate([rated_preview_deflection, 0, 0]) finger_grip();
     }
-    else if (mode == "keepers") tab_keepers();
+    else if (mode == "clips") eye_clips();
+    else if (mode == "phone") { phone_reference(); phone_reference(portrait = true); }
     else if (mode == "stoppers") stored_pocket_stoppers();
     else if (mode == "rest") {
         palm_rest(rest_offset(index));
@@ -52,7 +71,7 @@ render_fn="${OPENSCAD_RENDER_FN:-24}"
     echo 'OPENSCAD_RENDER_FN must be an integer >= 3' >&2
     exit 1
 }
-for mode in base anchor grip keepers stoppers rest; do
+for mode in base anchor grip clips stoppers phone drop clip_path rest; do
     for index in $(if [[ "$mode" == rest ]]; then seq 0 8; else echo 0; fi); do
         log="$tmp_dir/$mode-$index.log"
         code=0

@@ -5,8 +5,9 @@
 - This is a standalone OpenSCAD project; do not add runtime dependencies on
   [crimpdeq-case](https://github.com/crimpdeq/crimpdeq-case);
   `check-real-case.sh` is the only optional integration check against it.
-- `crimpdeq_reference.scad` is a local fit/collision reference, not a
-  replacement enclosure design.
+- `crimpdeq_reference.scad` is a local fit/collision reference of
+  crimpdeq-case `v2.0.0`, not a replacement enclosure design; run
+  `check-real-case.sh` against that tag.
 - Keep all dimensions in millimetres and forces in newtons.
 
 ## Design invariants
@@ -19,12 +20,14 @@
 - The Crimpdeq case lies flat, lid up, and floats at least 1 mm above the
   deck and clear of every printed part; its shell, lid and screws are never
   load-bearing members.
-- Route hand force through the printed D-shaped lugs in the outer halves of
-  both Ø17 mm load-cell eyes: the anchor block's lug and the grip's lug. Keep
-  the lugs solid, outside the case, and loaded along their print layers
-  (anchor block and grip printed on their sides).
-- Keep both slide-in tab keepers clamping the load-cell ends, retained by
-  half-dovetail grooves, and outside the load path.
+- Route hand force through the printed round lugs in both Ø17 mm load-cell
+  eyes: the anchor block's lug and the grip's lug, each on a tongue rising
+  through the case's eye U-slot at least 1 mm from the case and its lid
+  battery walls. Keep the lugs solid, and screen the lug and tongue roots
+  across the layers (anchor block and grip printed upright).
+- Keep both snap-on eye clips holding the load cell down under the lug heads,
+  fitted by dropping into the U-slot and sliding onto the neck, and outside
+  the load path.
 - Keep the four-finger hangboard pocket exactly 25 mm deep with at least an
   80 mm-wide opening, 6 mm back wall, and 8 mm loading lip, its `+Z` opening
   clear, and every edge's mid-depth within 5 mm of the load-cell plane.
@@ -46,18 +49,21 @@
   (Bambu Lab A1), joined by vertical dovetails with the joint faces in
   compression under load.
 - Preserve switch and USB access on the open +Y side of the base.
-- Keep the base, anchor, grip, keepers, rest, keys and case collision-free
+- Keep the tilted phone slot across the far (-X) end of the base, outside the
+  load path and clear of the hand at every rest position.
+- Keep every part printable without supports.
+- Keep the base, anchor, grip, clips, rest, keys, phone and case collision-free
   except for explicitly modelled contact surfaces.
 
 ## File responsibilities
 
 - `dynamometer_dimensions.scad`: shared parameters, derived dimensions, and
   structural assertions.
-- `dynamometer_parts.scad`: printable base, anchor, grip, keeper, rest, key
-  and stopper modules without top-level geometry.
+- `dynamometer_parts.scad`: printable base, anchor, grip, clip, rest, key
+  and stopper modules, and the phone slot, without top-level geometry.
 - `dynamometer_assembly.scad`: preview and STL export entry point.
-- `crimpdeq_reference.scad`: self-contained Crimpdeq compact-pod interface
-  snapshot.
+- `crimpdeq_reference.scad`: self-contained crimpdeq-case `v2.0.0`
+  interface snapshot.
 - `collision_check.scad`: individual intersection probes selected by `mode`.
 - `check-collisions.sh`: complete geometry and STL connectivity validation.
 - `check-stl-components.py`: connected-component check used by

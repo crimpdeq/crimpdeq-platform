@@ -20,7 +20,7 @@ jobs:
               run: CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash check-collisions.sh
 
     real-case:
-        name: Clearance against crimpdeq-case
+        name: Clearance against crimpdeq-case v2.0.0
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -29,6 +29,8 @@ jobs:
               uses: actions/checkout@v6
               with:
                   repository: crimpdeq/crimpdeq-case
+                  # The case release crimpdeq_reference.scad snapshots.
+                  ref: v2.0.0
                   path: crimpdeq-case
             - name: Install OpenSCAD
               uses: ./.github/actions/setup-openscad

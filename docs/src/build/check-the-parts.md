@@ -5,10 +5,10 @@ assembling anything.
 
 ## Clean up
 
-- Remove supports and brims. Trim any elephant's foot (the flared first layer)
-  on the base halves with a knife, especially along the joint faces.
-- Sand the round side of each lug smooth where its support touched it.
-- Sand support scars on the palm bolster, heel deck and finger pocket smooth.
+- Remove the brims. Trim any elephant's foot (the flared first layer) on the
+  base halves with a knife, especially along the joint faces, and on the palm
+  rest's sole.
+- Scrape any bridge sag out of the palm rest's rail groove.
 
 ## Base joint
 
@@ -16,14 +16,13 @@ assembling anything.
       and the joint faces meet with no visible gap.
 - [ ] The decks of both halves are flush across the joint.
 
-## Lugs and keepers
+## Lugs and clips
 
-- [ ] With the case open or closed, each load-cell eye drops over its lug on
-      the anchor block and on the grip without force, and the load cell lies
-      flat on the seat.
-- [ ] Each keeper slides through the groove in the anchor block's end wall and
-      in the grip's end wall with light friction, and doesn't fall out when
-      the part is turned over.
+- [ ] With the case closed, each load-cell eye drops over its lug on the
+      anchor block and on the grip without force, and the load cell lies flat
+      on the tongue.
+- [ ] Each clip, laid flat, pushes onto a lug's neck with a light click and
+      stays there, and pulls off again by its fin.
 
 ## Anchor block and grip
 
@@ -43,6 +42,11 @@ assembling anything.
 - [ ] Each stopper drops flat onto the floor of the finger pocket without
       force, and doesn't rattle sideways, alone or stacked on the other.
 - [ ] Both stack in the well in the front half, below the deck.
+
+## Phone
+
+- [ ] Your phone, in its case, drops into the slot at the far end of the
+      front half and leans back against its outer face.
 
 Sand tight fits lightly; don't enlarge them past a sliding fit. Never sand
 the lugs' round sides to make an eye fit: reprint instead, so the eye still

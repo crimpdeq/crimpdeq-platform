@@ -1,4 +1,6 @@
-# Stoppers
+# Stoppers and phone
+
+## Stoppers
 
 ![Fitting the stoppers](../images/stoppers.png)
 
@@ -18,8 +20,17 @@ remove a stopper, pinch its tab and pull it straight up.
 
 When not in use, stack both stoppers in the well beside the case, tabs up.
 
+## Phone
+
+![Phone in its slot](../images/phone.png)
+
+Stand your phone, in its case, in the slot at the far end of the base, in
+portrait or landscape. It leans back 15° so the screen faces you while you
+pull. The slot takes phones up to about 13 mm thick.
+
 ## Check
 
 - [ ] Each stopper, and both stacked, lie flat and stay put under the
       fingers.
 - [ ] The tabs don't catch your index or little finger above the grip.
+- [ ] Your phone stays put in the slot while you pull on the grip.

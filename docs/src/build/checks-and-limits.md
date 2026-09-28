@@ -2,9 +2,10 @@
 
 ## Assembly checks
 
-- [ ] **Case clearance:** the case touches only the two lugs and seats, never
-      the deck, the anchor block, the grip or the keepers.
-- [ ] **Keepers:** both are centred and don't slide out when you tap the base.
+- [ ] **Case clearance:** only the load cell touches the printed parts; the
+      case never touches the deck, the anchor block, the grip or the clips.
+- [ ] **Clips:** both are snapped round their lugs' necks and don't come off
+      when you tap the base.
 - [ ] **Grip level:** the grip's top is level. Note whether it hangs free or
       rests on the guide ledges.
 - [ ] **All nine positions:** the keys go in and come out easily each time,
@@ -13,6 +14,8 @@
 - [ ] **Base joint:** no visible gap or step between the halves.
 - [ ] **Stoppers:** each one, and both stacked, sit flat in the pocket, stay
       put under the fingers, and lift out by their tabs.
+- [ ] **Phone:** your phone, in its case, stands in the slot and stays put
+      while you pull on the grip.
 - [ ] **Tabletop:** the base stands flat without rocking.
 
 Tare the instrument unloaded before any measurement.
@@ -40,11 +43,12 @@ Copy this table into a comment or a new note.
 | Printer, material, settings | |
 | Parts that needed reprinting | |
 | Eye fit on the lugs (tight / good / loose) | |
-| Keeper fit (tight / good / loose) | |
+| Clip snap (tight / good / loose) | |
 | Base joint fit (tight / good / loose) | |
 | Key and rail fit (tight / good / loose) | |
 | Grip level (level / on the ledges / tilted) | |
 | Stopper fit and removal | |
+| Phone model and fit in the slot | |
 | USB and switch access | |
 | Bolster height (lower / good / higher) | |
 | Bolster and deck edge comfort | |
@@ -57,7 +61,7 @@ Copy this table into a comment or a new note.
 ## Taking it apart
 
 1. Lift out both keys and slide the palm rest off the rear end of the rail.
-2. Slide out both keepers and lift the case off the lugs.
+2. Pull both clips out by their fins and lift the case off the lugs.
 3. Lift out the grip and the anchor block.
 4. Lift the rear base half off the front half.
 
@@ -82,11 +86,11 @@ Copy this table into a comment or a new note.
 >   load-cell plane, not on it, so the pull tilts the grip slightly. The
 >   tilt shows up as ledge contact or as bending of the load cell; compare
 >   readings between edges against a reference.
-> - **Keepers are friction-fit.** They can't lift or pull away from their
->   walls, but can slide out sideways if knocked.
+> - **Clips are snap-fit.** Their 0.3 mm snap relies on PETG's flexibility;
+>   a clip that clicks on too easily or not at all needs reprinting.
 
 Loading requires a separately approved, guarded validation setup that never
 exceeds the 50 kg load-cell rating. Stop for any unexpected motion or case
 contact. Retire printed load-bearing parts after any overload, drop,
 cracking, whitening, or permanent deformation, and never apply load unless
-both keepers and both keys are fitted.
+both clips and both keys are fitted.
