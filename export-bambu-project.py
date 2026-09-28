@@ -6,9 +6,7 @@ ON_PLATE=true), checks the plate layout, lets the Bambu Studio CLI assemble
 the three plates with the print settings from docs/src/build/printing.md, and
 slices the project to confirm that every plate is printable.
 
-Usage: python3 export-bambu-project.py [--output FILE.3mf] [--stl-dir DIR]
-                                      [--skip-slice]
---stl-dir uses parts already exported with ON_PLATE=true instead.
+Usage: python3 export-bambu-project.py [--output FILE.3mf] [--skip-slice]
 BAMBU_STUDIO names the Bambu Studio executable (default: bambu-studio on PATH,
 then the macOS application); BAMBU_STUDIO_PROFILES its profiles directory.
 OPENSCAD_RENDER_FN and EXPORT_JOBS are passed to export-parts.sh.
@@ -24,7 +22,6 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import zipfile
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -203,24 +200,10 @@ def run_bambu(bambu_studio: Path, args: list[str], out_dir: Path) -> None:
         sys.exit(f"Bambu Studio failed ({proc.returncode}): {result.get('error_string', 'no result')}")
 
 
-def check_thumbnails(project: Path) -> None:
-    # Bambu Studio skips the plate previews, without failing, when it can't
-    # create an OpenGL context.
-    with zipfile.ZipFile(project) as archive:
-        names = set(archive.namelist())
-    missing = [f"plate_{i}.png" for i in range(1, len(PLATES) + 1)
-               if f"Metadata/plate_{i}.png" not in names]
-    if missing:
-        sys.exit("Bambu Studio wrote no plate thumbnails (" + ", ".join(missing)
-                 + "); check its OpenGL errors above")
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--output", type=Path,
                         default=PROJECT_ROOT / "exports" / "crimpdeq-platform.3mf")
-    parser.add_argument("--stl-dir", type=Path,
-                        help="use these parts exported with ON_PLATE=true")
     parser.add_argument("--skip-slice", action="store_true",
                         help="don't slice the project to check it")
     args = parser.parse_args()
@@ -230,11 +213,8 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory() as tmp:
         work = Path(tmp)
-        if args.stl_dir:
-            stl_dir = args.stl_dir.resolve()
-        else:
-            stl_dir = work / "stl"
-            export_parts(stl_dir)
+        stl_dir = work / "stl"
+        export_parts(stl_dir)
         check_layout(stl_dir, bed_size(presets))
 
         machine, process, filament = write_settings(presets, work)
@@ -267,7 +247,6 @@ def main() -> int:
             "--load-assemble-list", str(assemble_path),
             "--export-3mf", project.name,
         ], project.parent)
-        check_thumbnails(project)
         if not args.skip_slice:
             run_bambu(bambu_studio, ["--slice", "0", str(project)], work / "slice")
             print("Sliced every plate without errors")

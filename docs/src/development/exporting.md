@@ -34,9 +34,7 @@ that each part and its brim stay on the bed and that parts sharing a plate
 are at least 15 mm apart, and has the Bambu Studio command-line interface lay
 out the three plates with the settings from [Printing](../build/printing.md).
 It then slices every plate to confirm that the project is printable
-(`--skip-slice` skips this), and fails if Bambu Studio wrote no plate
-thumbnails. `--stl-dir` uses parts already exported with `ON_PLATE=true`
-instead of exporting them. It needs Bambu Studio: the macOS application is
+(`--skip-slice` skips this). It needs Bambu Studio: the macOS application is
 found automatically; elsewhere put `bambu-studio` on `PATH` or set
 `BAMBU_STUDIO`, and `BAMBU_STUDIO_PROFILES` if its profiles aren't found.
 The printer, process and filament presets and the setting overrides are at
@@ -44,10 +42,10 @@ the top of the script.
 
 The release workflow runs both scripts, checks that each load-bearing part is
 one body and the stoppers two, and attaches the STL files and the project to
-each GitHub release. It exports the parts on Linux and builds the project on
-macOS, with the Bambu Studio version pinned in
-`.github/actions/setup-bambu-studio/action.yml`: the Linux build of Bambu
-Studio can't render the plate thumbnails without a display. Run it from the Actions tab
+each GitHub release. It uses the Bambu Studio version pinned in
+`.github/actions/setup-bambu-studio/action.yml`. That Linux build can't render
+plate thumbnails without a display, so the release project has none; Bambu
+Studio draws the plates when it opens the project. Run it from the Actions tab
 (**Release Crimpdeq Platform → Run workflow**) for a dry run: it builds and
 checks the files and keeps them as a run artifact, without publishing
 anything.

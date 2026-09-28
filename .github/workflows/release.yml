@@ -34,55 +34,19 @@ jobs:
                   python3 check-stl-components.py --expect 2 \
                       artifacts/crimpdeq-platform-stoppers.stl
 
-            - name: Build on-plate STL files
-              run: ON_PLATE=true EXPORT_DIR=plate-stl bash export-parts.sh
+            - name: Install Bambu Studio
+              uses: ./.github/actions/setup-bambu-studio
+
+            - name: Build Bambu Studio project
+              run: python3 export-bambu-project.py --output artifacts/crimpdeq-platform.3mf
 
             - name: Upload platform release files
               uses: actions/upload-artifact@v6
               with:
                   name: release-platform-files
-                  path: artifacts/*.stl
-                  if-no-files-found: error
-                  compression-level: 0
-
-            - name: Upload on-plate STL files
-              uses: actions/upload-artifact@v6
-              with:
-                  name: plate-stl
-                  path: plate-stl/*.stl
-                  if-no-files-found: error
-
-    bambu-project:
-        name: Build Bambu Studio project
-        # The Linux Bambu Studio can't render plate thumbnails headless, and
-        # the Apple silicon runners have no accelerated OpenGL for them.
-        runs-on: macos-15-intel
-        needs:
-            - parts
-
-        steps:
-            - name: Checkout
-              uses: actions/checkout@v6
-
-            - name: Download on-plate STL files
-              uses: actions/download-artifact@v6
-              with:
-                  name: plate-stl
-                  path: plate-stl
-
-            - name: Install Bambu Studio
-              uses: ./.github/actions/setup-bambu-studio
-
-            - name: Build Bambu Studio project
-              run: >
-                  python3 export-bambu-project.py --stl-dir plate-stl
-                  --output artifacts/crimpdeq-platform.3mf
-
-            - name: Upload Bambu Studio project
-              uses: actions/upload-artifact@v6
-              with:
-                  name: release-bambu-project
-                  path: artifacts/crimpdeq-platform.3mf
+                  path: |
+                      artifacts/*.stl
+                      artifacts/*.3mf
                   if-no-files-found: error
                   compression-level: 0
 
@@ -92,7 +56,6 @@ jobs:
         runs-on: ubuntu-latest
         needs:
             - parts
-            - bambu-project
         permissions:
             contents: write
 
@@ -103,18 +66,12 @@ jobs:
                   name: release-platform-files
                   path: release-assets/platform
 
-            - name: Download Bambu Studio project
-              uses: actions/download-artifact@v6
-              with:
-                  name: release-bambu-project
-                  path: release-assets/bambu
-
             - name: Verify release assets exist
               run: |
                   for part in frame_left frame_right grip wrist_rest stoppers; do
                       test -f "release-assets/platform/crimpdeq-platform-${part}.stl"
                   done
-                  test -f release-assets/bambu/crimpdeq-platform.3mf
+                  test -f release-assets/platform/crimpdeq-platform.3mf
 
             - name: Upload release assets
               uses: svenstaro/upload-release-action@v2
