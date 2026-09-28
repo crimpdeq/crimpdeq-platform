@@ -25,16 +25,23 @@ printf 'include <%s/dynamometer_dimensions.scad>\n' "$root" >>"$scad"
 cat >>"$scad" <<'SCAD'
 render_fn = is_undef(render_fn) ? 24 : render_fn;
 $fn = render_fn;
-mode = is_undef(mode) ? "frame" : mode;
+mode = is_undef(mode) ? "base" : mode;
 index = is_undef(index) ? 0 : index;
-assert(index >= 0 && index < wrist_index_count && index == floor(index));
+assert(index >= 0 && index < rest_index_count && index == floor(index));
 module real_case() { main_part(); lid_part(); }
 intersection() {
-    if (mode == "frame") fixed_frame();
-    else if (mode == "grip") moving_finger_grip();
-    else if (mode == "bushings") dynamometer_bushings();
-    else if (mode == "wrist")
-        adjustable_wrist_rest(x_offset = -wrist_adjust_range + index * wrist_index_pitch);
+    if (mode == "base") { base_front(); base_rear(); }
+    else if (mode == "anchor") anchor_block();
+    else if (mode == "grip") {
+        finger_grip();
+        translate([rated_preview_deflection, 0, 0]) finger_grip();
+    }
+    else if (mode == "keepers") tab_keepers();
+    else if (mode == "stoppers") stored_pocket_stoppers();
+    else if (mode == "rest") {
+        palm_rest(rest_offset(index));
+        index_keys(rest_offset(index));
+    }
     else assert(false, str("Unknown mode ", mode));
     real_case();
 }
@@ -45,8 +52,8 @@ render_fn="${OPENSCAD_RENDER_FN:-24}"
     echo 'OPENSCAD_RENDER_FN must be an integer >= 3' >&2
     exit 1
 }
-for mode in frame grip bushings wrist; do
-    for index in $(if [[ "$mode" == wrist ]]; then seq 0 8; else echo 0; fi); do
+for mode in base anchor grip keepers stoppers rest; do
+    for index in $(if [[ "$mode" == rest ]]; then seq 0 8; else echo 0; fi); do
         log="$tmp_dir/$mode-$index.log"
         code=0
         openscad -D "render_fn=$render_fn" -D "mode=\"$mode\"" -D "index=$index" \

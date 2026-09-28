@@ -4,7 +4,7 @@
 
 Download the STL files from the latest
 [release](https://github.com/crimpdeq/crimpdeq-platform/releases), or export
-them into `exports/` from the repository root (this takes a few minutes):
+them into `exports/` from the repository root:
 
 ```bash
 bash export-parts.sh
@@ -15,54 +15,47 @@ not fit together.
 
 | File | Contents | Plate |
 |---|---|---|
-| `crimpdeq-platform-frame_left.stl` | Left frame half (fixed clevis, stopper well, phone slot, USB window, upper lap tongues) | 1 |
-| `crimpdeq-platform-frame_right.stl` | Right frame half (index holes, grip guides, palm post, lower lap tongues) | 2 |
-| `crimpdeq-platform-wrist_rest.stl` | Wrist rest with palm bolster | 3 |
-| `crimpdeq-platform-grip.stl` | Finger grip | 3 |
-| `crimpdeq-platform-stoppers.stl` | Two stackable pocket stoppers, 5 and 10 mm thick | 3 |
+| `crimpdeq-platform-base_front.stl` | Front base half: anchor pocket, grip trench, stopper well, joint tongues | 1 |
+| `crimpdeq-platform-grip.stl` | Finger grip with its eye lug, printed on its side | 1 |
+| `crimpdeq-platform-anchor.stl` | Anchor block with its eye lug, printed on its side | 1 |
+| `crimpdeq-platform-keepers.stl` | Two identical tab keepers | 1 |
+| `crimpdeq-platform-keys.stl` | Two identical index keys, printed on their sides | 1 |
+| `crimpdeq-platform-stoppers.stl` | Two stackable pocket stoppers, 5 and 10 mm thick | 1 |
+| `crimpdeq-platform-base_rear.stl` | Rear base half: rest rail, key slots, joint sockets | 2 |
+| `crimpdeq-platform-rest.stl` | Palm rest | 2 |
 
 > [!NOTE]
-> The frame comes as two halves because the full frame is 343.9 mm long and
-> does not fit a 256 mm bed, even diagonally. The left half is 210.1 mm long
-> and the right half 181.8 mm. Both are 124 mm wide, 134 mm with the 5 mm
-> brim, so each gets its own plate. Without the brim they would just fit on
-> one plate, but these tall parts need it to avoid lifting at the corners:
-> the lap faces must stay flat to mate.
+> The base comes as two halves because it is 271 mm long and does not fit a
+> 256 mm bed, even diagonally. The front half is 168 mm long and the rear
+> half 116 mm; both are 122 mm wide.
 
 All parts are exported already oriented for printing. Don't rotate them or
-use "Lay on face".
+use "Lay on face". The anchor block, grip and keys print on their sides on
+purpose: the lugs and keys are then loaded along their layers instead of
+across them.
 
 ## Ready-made Bambu Studio project
 
 Each release also includes `crimpdeq-platform.3mf`, a Bambu Studio project
-with the three plates below already laid out and the
-[print settings](#print-settings) applied, including the 100% infill for the
-wrist rest, grip and stoppers. It's set up for a Bambu Lab A1 with a 0.4 mm
-nozzle, Generic PETG, the textured PEI plate, and 50% infill for the frame
-halves.
+with both plates already laid out and the [print settings](#print-settings)
+applied, including 100% infill for every part except the base halves. It's
+set up for a Bambu Lab A1 with a 0.4 mm nozzle, Generic PETG, the textured
+PEI plate, and 50% infill for the base halves.
 
 1. Open it with **File → Open Project**.
 2. Select your printer, filament and plate. Changing the printer can reset
    process settings, so compare them with the tables below afterwards.
 3. Do the [slicer checks](slicer-checks.md) before printing.
 
-## Plates 1 and 2: frame halves
+## Plate 1: front base half and small parts
 
 ![Plate 1 layout](../images/plate1.png)
 
+## Plate 2: rear base half and palm rest
+
 ![Plate 2 layout](../images/plate2.png)
 
-- One frame half per plate, centred, with the long sides along Y.
-- Both halves print upside down: the flat rail faces on the bed and the feet
-  pointing up. The stopper well and phone slot of the left half open onto
-  the bed.
-
-## Plate 3: wrist rest, grip and stoppers
-
-![Plate 3 layout](../images/plate3.png)
-
-Keep the parts at least 15–20 mm apart. **Print Plate 3 first.** It's
-shorter, and it lets you check support removal before the long frame prints.
+Keep the parts at least 15 mm apart.
 
 ## Print settings
 
@@ -73,40 +66,33 @@ Use one global process profile, then override per object where listed.
 | Layer height | 0.2 mm |
 | Walls | 6 |
 | Top/bottom layers | 6 |
-| Infill | 40–60% for the frame halves |
+| Infill | 40–60% for the base halves |
 | Supports | On, **Global**, type **tree(auto)**, threshold 30° |
-| On build plate only | **Off** (the grip cheek needs support from the part) |
 | Brim | Outer brim only, 5 mm |
 
 Per-object override (select the object, switch Process to **Objects**):
 
 | Object | Override |
 |---|---|
-| `grip`, `wrist_rest`, `stoppers` | 100% infill |
+| `grip`, `anchor`, `keepers`, `keys`, `rest`, `stoppers` | 100% infill |
 
-PETG or ASA print well on the A1 and are enough to check fit and comfort.
-PA-CF or PET-CF may be candidates for structural evaluation, but a filament
-name or infill setting does not establish strength. Validate coupons in the
-intended print orientation.
+The lugs must be solid: the load cell's eyes bear on them directly. PETG
+prints well on the A1 and is what the structural screens assume, but a
+filament name or infill setting does not establish strength. Validate
+coupons in the intended print orientation.
 
 ## Where supports are needed
 
 | Part | Supported area |
 |---|---|
-| Right frame half | Underside of both lap tongues, about 22.5 mm up |
-| Right frame half | Grip-guide ledges on the rail inner faces, about 31 mm up |
-| Right frame half | Bridge over the palm-deck channel at the closed end |
-| Left frame half | Clevis cheek with the Ø12.9 mm sleeve hole, about 35–45 mm up |
-| Wrist rest | Underside of the overhanging heel deck and outer upper arms |
-| Grip | Underside of the upper clevis cheek and pocket body |
+| Grip | Underside of the eye lug, which sticks out sideways about 36–52 mm up |
+| Anchor block | Underside of the eye lug, which sticks out sideways about 18–34 mm up |
 
-Nothing else needs support: the index holes are self-supporting, the screw
-counterbores, stopper well and phone slot of the left half bridge over their
-openings, the nut pockets of the right half open upwards, and the stoppers
-print flat with their pull tabs standing upright.
+Nothing else needs support. The base halves print flat with every pocket,
+trench, well and slot open upward; the rear half's joint sockets and the
+palm rest's rail groove are closed by short bridges. The keepers print flat
+on their clamp faces, the keys stand on their sides, and the stoppers print
+flat with their pull tabs upright.
 
-The right half's lap faces bear the rail load. Remove their support
-carefully and sand them flat, without rounding the edges. The grip rests on
-the top faces of the guide ledges: sand those smooth and flat too. The wrist
-rest's upper arms slide just above the rail tops and its lower arms just
-below them, so sand support scars on those faces flat as well.
+Remove the lug supports carefully and sand the round side of each lug
+smooth, without flattening it: that is where the load-cell eye bears.

@@ -1,46 +1,49 @@
 # Check the parts
 
-Check that the printed parts fit the hardware before assembling anything.
+Check that the printed parts fit each other and the Crimpdeq before
+assembling anything.
 
 ## Clean up
 
 - Remove supports and brims. Trim any elephant's foot (the flared first layer)
-  on the frame halves with a knife.
-- Sand the right half's lap faces flat where their support was.
-- Sand the tops of the right half's grip-guide ledges smooth and flat where
-  their support was.
-- Sand the undersides of the wrist rest's upper arms, and the tops of its
-  lower arms, flat wherever support touched them. They slide 0.3 mm from the
-  rail faces.
+  on the base halves with a knife, especially along the joint faces.
+- Sand the round side of each lug smooth where its support touched it.
 - Sand support scars on the palm bolster, heel deck and finger pocket smooth.
 
-## Frame joint
+## Base joint
 
-- [ ] Each M5 screw passes through its hole in both halves with no force, and
-      its head sits below the top face of the left half.
-- [ ] Each M5 nyloc nut drops into its hex pocket under the right half's lap
-      tongues without turning.
-- [ ] Laid together on a flat table, the halves' lap faces meet with no
-      visible gap and the rail tops line up.
+- [ ] The rear half drops onto the front half's two dovetail tongues by hand,
+      and the joint faces meet with no visible gap.
+- [ ] The decks of both halves are flush across the joint.
 
-## Load-cell joints
+## Lugs and keepers
 
-- [ ] Each steel sleeve slides through both clevis cheeks of the frame and of
-      the grip with no force.
-- [ ] Each M8 bolt slides through a sleeve with no force.
-- [ ] The collar halves fit the real load-cell eyes, through the Ø18 mm access
-      holes of the closed case.
+- [ ] With the case open or closed, each load-cell eye drops over its lug on
+      the anchor block and on the grip without force, and the load cell lies
+      flat on the seat.
+- [ ] Each keeper slides through the groove in the anchor block's end wall and
+      in the grip's end wall with light friction, and doesn't fall out when
+      the part is turned over.
 
-## Wrist pins
+## Anchor block and grip
 
-- [ ] Each ball-lock pin passes through an index hole in the right frame half
-      and a wrist-arm hole with no force.
+- [ ] The anchor block drops into its pocket in the front half and sits flat
+      on the pocket floor.
+- [ ] The grip drops into its trench and rests on both guide ledges, level.
+
+## Palm rest and keys
+
+- [ ] The palm rest slides the full length of the rail on the rear half with
+      no force and no rocking.
+- [ ] Each key drops through a rest wing into a deck slot at every position,
+      and its head sits flat on the wing.
 
 ## Stoppers
 
 - [ ] Each stopper drops flat onto the floor of the finger pocket without
       force, and doesn't rattle sideways, alone or stacked on the other.
-- [ ] Both stack in the well at the left end of the frame half, just below
-      its top face.
+- [ ] Both stack in the well in the front half, below the deck.
 
-Sand tight holes lightly; don't enlarge them past a sliding fit.
+Sand tight fits lightly; don't enlarge them past a sliding fit. Never sand
+the lugs' round sides to make an eye fit: reprint instead, so the eye still
+bears on the whole lug.

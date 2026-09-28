@@ -30,7 +30,7 @@ fi
 
 parts=("$@")
 if (( ${#parts[@]} == 0 )); then
-    parts=(frame_left frame_right grip wrist_rest stoppers)
+    parts=(base_front base_rear anchor grip keepers keys rest stoppers)
 fi
 
 mkdir -p "$out_dir"

@@ -3,7 +3,7 @@
 
 Exports every part at its place on its print plate (export-parts.sh with
 ON_PLATE=true), checks the plate layout, lets the Bambu Studio CLI assemble
-the three plates with the print settings from docs/src/build/printing.md, and
+the two plates with the print settings from docs/src/build/printing.md, and
 slices the project to confirm that every plate is printable.
 
 Usage: python3 export-bambu-project.py [--output FILE.3mf] [--skip-slice]
@@ -52,9 +52,11 @@ SOLID = {"sparse_infill_density": "100%"}
 
 # Bambu Studio drops plate names containing any of ILLEGAL_NAME_CHARS.
 PLATES = [
-    ("Left frame half", [("frame_left", {})]),
-    ("Right frame half", [("frame_right", {})]),
-    ("Wrist rest, grip and stoppers", [("wrist_rest", SOLID), ("grip", SOLID), ("stoppers", SOLID)]),
+    ("Front base and small parts", [
+        ("base_front", {}), ("grip", SOLID), ("anchor", SOLID), ("keepers", SOLID),
+        ("keys", SOLID), ("stoppers", SOLID),
+    ]),
+    ("Rear base and palm rest", [("base_rear", {}), ("rest", SOLID)]),
 ]
 ILLEGAL_NAME_CHARS = '<>:/\\|?*"'
 # Minimum gap between parts that share a plate (docs/src/build/printing.md).

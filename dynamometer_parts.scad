@@ -1,5 +1,5 @@
 //
-// Native parametric parts for the standalone Crimpdeq hand dynamometer.
+// Printable parts of the all-printed Crimpdeq finger dynamometer.
 // No top-level geometry: use dynamometer_assembly.scad for preview/export.
 //
 
@@ -42,204 +42,97 @@ module dyno_rounded_box_xyz(center_v, size_v, r) {
                         sphere(r = rr);
 }
 
-module clevis_cheek_pair(x_min, x_max) {
-    dyno_rounded_prism_xy(
-        x_min, x_max,
-        -clevis_width_y / 2, clevis_width_y / 2,
-        frame_z_min, frame_z_min + clevis_plate_t,
-        min(4, clevis_end_r)
-    );
-    dyno_rounded_prism_xy(
-        x_min, x_max,
-        -clevis_width_y / 2, clevis_width_y / 2,
-        frame_z_max - clevis_plate_t, frame_z_max,
-        min(4, clevis_end_r)
-    );
+// Extrudes an XZ profile along Y, centred on y = 0.
+module xz_profile_along_y(length) {
+    rotate([90, 0, 0])
+        linear_extrude(height = length, center = true)
+            children();
 }
 
-module vertical_pin_bore(x_pos) {
-    translate([x_pos, dyno_eye_y, frame_z_min - 0.1])
-        cylinder(d = pin_hole_d, h = frame_depth_z + 0.2, center = false);
-}
+// --- Eye lugs and keepers (modelled on the +X side, mirrored for the anchor)
 
-module wrist_index_bores() {
-    for (y_pos = [wrist_mount_y_bottom, wrist_mount_y_top])
-        for (index = [0 : wrist_index_count - 1])
-            translate([
-                wrist_mount_x - wrist_adjust_range + index * wrist_index_pitch,
-                y_pos,
-                frame_z_min - 0.1
-            ])
-                cylinder(
-                    d = wrist_index_hole_d,
-                    h = frame_depth_z + 0.2,
-                    center = false
-                );
-}
-
-module fixed_frame_body() {
-    union() {
-        dyno_rounded_prism_xy(
-            frame_x_min, frame_palm_post_outer_x,
-            frame_inner_y_max, frame_outer_y_max,
-            frame_z_min, frame_z_max,
-            frame_corner_r
-        );
-        dyno_rounded_prism_xy(
-            frame_x_min, frame_palm_post_outer_x,
-            frame_outer_y_min, frame_inner_y_min,
-            frame_z_min, frame_z_max,
-            frame_corner_r
-        );
-        // Left anchor post plus the unloaded accessory block outboard of it.
-        dyno_rounded_prism_xy(
-            frame_x_min, frame_left_post_inner_x,
-            frame_outer_y_min, frame_outer_y_max,
-            frame_z_min, frame_z_max,
-            frame_corner_r
-        );
-        dyno_rounded_prism_xy(
-            frame_palm_post_inner_x, frame_palm_post_outer_x,
-            frame_outer_y_min, frame_outer_y_max,
-            frame_z_min, frame_z_max,
-            frame_corner_r
-        );
-    }
-}
-
-module frame_support_feet() {
-    for (x_pos = [support_foot_x_left, support_foot_x_right])
-        for (y_pos = [support_foot_y_bottom, support_foot_y_top])
-            dyno_rounded_prism_xy(
-                x_pos - support_foot_w_x / 2, x_pos + support_foot_w_x / 2,
-                y_pos - support_foot_w_y / 2, y_pos + support_foot_w_y / 2,
-                support_foot_bottom_z, support_foot_top_z, 2
-            );
-}
-
-module service_tunnel_cut() {
-    translate([
-        0,
-        (service_tunnel_y_min + service_tunnel_y_max) / 2,
-        (service_tunnel_z_min + service_tunnel_z_max) / 2
-    ])
-        cube([
-            service_tunnel_w,
-            service_tunnel_y_max - service_tunnel_y_min,
-            service_tunnel_z_max - service_tunnel_z_min
-        ], center = true);
-}
-
-module wrist_post_channel_cut() {
-    // Only the middle of the right-hand closing post is relieved. The fixed
-    // side rails and the lower post stay continuous across all nine settings.
-    dyno_rounded_box_xyz(
-        [(frame_palm_post_inner_x + frame_palm_post_outer_x) / 2,
-         (wrist_post_channel_y_min + wrist_post_channel_y_max) / 2,
-         (wrist_post_channel_z_min + frame_z_max + 2) / 2],
-        [frame_palm_post_t + 8,
-         wrist_post_channel_y_max - wrist_post_channel_y_min,
-         frame_z_max + 2 - wrist_post_channel_z_min], 2
-    );
-}
-
-module grip_guides() {
-    // Ledges on both rail inner faces under the grip's side walls.
-    for (side = [[frame_inner_y_min - 1, frame_inner_y_min + grip_guide_w_y],
-                 [frame_inner_y_max - grip_guide_w_y, frame_inner_y_max + 1]])
-        dyno_rounded_prism_xy(
-            grip_guide_x_min, grip_guide_x_max,
-            side[0], side[1],
-            grip_guide_z_min, grip_guide_z_max, 1
-        );
-}
-
-module stopper_well_cut() {
-    dyno_rounded_prism_xy(
-        stopper_well_x_min, stopper_well_x_max,
-        stopper_well_y_min, stopper_well_y_max,
-        stopper_well_z_min, frame_z_max + 0.1,
-        stopper_r + stopper_well_clearance
-    );
-    // Room for the pull tabs at both ends.
-    stopper_tab_slots((stopper_well_x_min + stopper_well_x_max) / 2, stopper_well_z_min);
-}
-
-module phone_slot_cut() {
-    // Leans toward -X so the screen faces the user; the flat floor holds the
-    // phone's lower edge. Open at both rail ends for long phones.
+module eye_lug() {
+    // D-shaped stub through the outer half of the right eye, rooted 1 mm
+    // into its seat, with a chamfered lead-in at the top.
+    root_z = loadcell_bottom_z - 1;
     intersection() {
-        translate([phone_slot_x_top, frame_outer_y_min - 1, frame_z_max])
-            rotate([0, -phone_slot_tilt, 0])
-                translate([-phone_slot_w, 0, -2 * phone_slot_depth_z])
-                    cube([phone_slot_w,
-                          frame_outer_y_max - frame_outer_y_min + 2,
-                          4 * phone_slot_depth_z]);
-        translate([frame_x_min - 1, frame_outer_y_min - 2, phone_slot_z_min])
-            cube([frame_accessory_len_x + 2,
-                  frame_outer_y_max - frame_outer_y_min + 4,
-                  phone_slot_depth_z + 1]);
+        translate([dyno_eye_x_right, dyno_eye_y, 0])
+            union() {
+                translate([0, 0, root_z])
+                    cylinder(r = lug_r, h = lug_top_z - lug_chamfer - root_z);
+                translate([0, 0, lug_top_z - lug_chamfer])
+                    cylinder(r1 = lug_r, r2 = lug_r - lug_chamfer, h = lug_chamfer);
+            }
+        translate([lug_face_x, -lug_r - 1, root_z - 1])
+            cube([2 * lug_r, 2 * lug_r + 2, lug_top_z - root_z + 2]);
     }
 }
 
-module fixed_frame() {
+module keeper_tongue_2d(grow = 0) {
+    // XZ profile: flat clamp face at the bottom, top flank rising into the
+    // end wall so the tongue cannot pull out toward -X.
+    x_tip = end_wall_x + keeper_tongue_depth;
+    x_start = grow > 0 ? end_wall_x - 1 : keeper_x_max - 0.01;
+    offset(delta = grow)
+        polygon([
+            [x_start, keeper_z_min],
+            [x_tip, keeper_z_min],
+            [x_tip, keeper_tongue_root_top_z],
+            [end_wall_x, keeper_tongue_face_top_z],
+            [x_start, keeper_tongue_face_top_z]
+        ]);
+}
+
+module keeper_groove(length) {
+    xz_profile_along_y(length + 2)
+        keeper_tongue_2d(keeper_fit);
+}
+
+module tab_keeper_right() {
+    // Clamps the right tab onto its seat, outboard of the eye.
+    union() {
+        translate([keeper_x_min, -keeper_len_y / 2, keeper_z_min])
+            cube([keeper_x_max - keeper_x_min, keeper_len_y,
+                  keeper_z_max - keeper_z_min]);
+        xz_profile_along_y(keeper_len_y)
+            keeper_tongue_2d();
+    }
+}
+
+module tab_keeper(side = "right") {
+    if (side == "right")
+        tab_keeper_right();
+    else
+        mirror([1, 0, 0]) tab_keeper_right();
+}
+
+module tab_keepers() {
+    tab_keeper("left");
+    tab_keeper("right");
+}
+
+// --- Anchor block --------------------------------------------------------
+
+module anchor_block_right() {
     difference() {
         union() {
-            fixed_frame_body();
-            frame_support_feet();
-            clevis_cheek_pair(fixed_clevis_x_min, fixed_clevis_x_max);
-            grip_guides();
+            // Seat under the tab, down into the base pocket.
+            translate([lug_face_x, -seat_half_w_y, anchor_z_min])
+                cube([end_wall_x - lug_face_x + 0.01, 2 * seat_half_w_y,
+                      loadcell_bottom_z - anchor_z_min]);
+            dyno_rounded_prism_xy(end_wall_x, end_wall_x + anchor_wall_t,
+                -seat_half_w_y, seat_half_w_y, anchor_z_min, end_wall_top_z, 3);
+            eye_lug();
         }
-        vertical_pin_bore(dyno_eye_x_left);
-        wrist_index_bores();
-        wrist_post_channel_cut();
-        service_tunnel_cut();
-        frame_split_bolt_cuts();
-        stopper_well_cut();
-        phone_slot_cut();
+        keeper_groove(2 * seat_half_w_y);
     }
 }
 
-module frame_split_bolt_cuts() {
-    // Through holes with top-face head counterbores and lower-face hex nut
-    // pockets. The pocket corners point along the rail (X).
-    for (x_pos = frame_split_bolt_x)
-        for (y_pos = frame_split_bolt_y)
-            translate([x_pos, y_pos, 0]) {
-                translate([0, 0, frame_z_min - 0.1])
-                    cylinder(d = frame_split_bolt_hole_d, h = frame_depth_z + 0.2);
-                translate([0, 0, frame_split_bolt_head_z])
-                    cylinder(d = frame_split_bolt_cbore_d,
-                        h = frame_z_max - frame_split_bolt_head_z + 0.1);
-                translate([0, 0, frame_z_min - 0.1])
-                    cylinder(d = frame_split_nut_pocket_af / cos(30),
-                        h = frame_split_nut_pocket_depth + 0.1, $fn = 6);
-            }
+module anchor_block() {
+    mirror([1, 0, 0]) anchor_block_right();
 }
 
-module frame_split_left_region(grow = 0) {
-    // Everything left of the lap, plus the upper tongue across it. A positive
-    // grow enlarges the region, a negative one shrinks it (probes only).
-    big = 1000;
-    translate([frame_split_x_min + grow - big, -big / 2, -big / 2])
-        cube(big);
-    translate([frame_split_x_max + grow - big, -big / 2, frame_split_lap_z - grow])
-        cube(big);
-}
-
-module fixed_frame_half(side = "left") {
-    // The halves meet on the half-lap faces of both rails.
-    if (side == "left")
-        intersection() {
-            fixed_frame();
-            frame_split_left_region();
-        }
-    else
-        difference() {
-            fixed_frame();
-            frame_split_left_region();
-        }
-}
+// --- Finger grip ---------------------------------------------------------
 
 module hangboard_rim_section(angle) {
     // Quarter-circle on the loaded +X edge. Other walls stay full thickness.
@@ -254,8 +147,7 @@ module hangboard_rim_section(angle) {
 
 module hangboard_pocket_cut() {
     hull() {
-        // Exact floor datum; the draft narrows the floor by hangboard_draft
-        // on every side.
+        // Exact floor datum; the draft narrows the floor on every side.
         dyno_rounded_prism_xy(
             hangboard_opening_x_min + hangboard_draft,
             hangboard_opening_x_max - hangboard_draft,
@@ -280,188 +172,33 @@ module hangboard_pocket_cut() {
     );
 }
 
-module moving_finger_grip() {
+module stopper_tab_slots(x_center = stopper_center_x, z_min = hangboard_pocket_back_z,
+        z_max = hangboard_front_z) {
+    // Vertical slots in both pocket end walls, from the floor to the top.
+    for (y_span = [[stopper_tab_slot_y_min, stopper_y_min + 1],
+                   [stopper_y_max - 1, stopper_tab_slot_y_max]])
+        translate([x_center - stopper_tab_slot_w_x / 2, y_span[0], z_min])
+            cube([stopper_tab_slot_w_x, y_span[1] - y_span[0], z_max + 0.1 - z_min]);
+}
+
+module finger_grip() {
     difference() {
         union() {
-            // Four-finger body surrounding a recessed hangboard-style pocket.
-            dyno_rounded_prism_xy(
-                hangboard_body_x_min,
-                hangboard_body_x_max,
-                hangboard_body_y_min,
-                hangboard_body_y_max,
-                hangboard_back_z,
-                hangboard_front_z,
-                8
-            );
-
-            // Full-depth left wall joins the pocket body to both clevis cheeks
-            // while leaving the +Z finger opening unobstructed.
-            dyno_rounded_prism_xy(
-                hangboard_body_x_min,
-                hangboard_opening_x_min,
-                -finger_yoke_spine_y / 2, finger_yoke_spine_y / 2,
-                frame_z_min, frame_z_max,
-                2
-            );
-
-            clevis_cheek_pair(moving_clevis_x_min, moving_clevis_x_max);
+            dyno_rounded_prism_xy(grip_x_min, grip_x_max,
+                -grip_half_w_y, grip_half_w_y, grip_z_min, hangboard_front_z, 4);
         }
-
-        vertical_pin_bore(dyno_eye_x_right);
+        // Tab seat: the jaw ends at the load-cell underside.
+        translate([grip_x_min - 1, -grip_half_w_y - 1, loadcell_bottom_z])
+            cube([end_wall_x - grip_x_min + 1, 2 * grip_half_w_y + 2,
+                  hangboard_front_z]);
+        keeper_groove(2 * grip_half_w_y);
         hangboard_pocket_cut();
         stopper_tab_slots();
     }
+    eye_lug();
 }
 
-module wrist_side_arms(z_min, z_max, x_max = wrist_arm_x_max) {
-    top_y_min = wrist_pad_y_max - wrist_arm_pad_overlap_y;
-    top_y_max = wrist_mount_y_top + wrist_arm_h_y / 2;
-    bottom_y_min = wrist_mount_y_bottom - wrist_arm_h_y / 2;
-    bottom_y_max = wrist_pad_y_min + wrist_arm_pad_overlap_y;
-
-    difference() {
-        union() {
-            dyno_rounded_prism_xy(
-                wrist_arm_x_min, x_max,
-                top_y_min, top_y_max,
-                z_min, z_max,
-                4
-            );
-            dyno_rounded_prism_xy(
-                wrist_arm_x_min, x_max,
-                bottom_y_min, bottom_y_max,
-                z_min, z_max,
-                4
-            );
-        }
-
-        for (y_pos = [wrist_mount_y_bottom, wrist_mount_y_top])
-            translate([wrist_mount_x, y_pos, z_min - 0.1])
-                cylinder(d = wrist_mount_hole_d, h = z_max - z_min + 0.2);
-
-        // Tie each pin lanyard through the pad so neither pin can be lost.
-        for (y_pos = [wrist_lanyard_y_bottom, wrist_lanyard_y_top])
-            translate([wrist_lanyard_x, y_pos, z_min - 0.1])
-                cylinder(d = wrist_lanyard_hole_d, h = z_max - z_min + 0.2);
-    }
-}
-
-module wrist_palm_face_clear_cut() {
-    // Across the pad width, the upper arms may not project ahead of the palm
-    // face or through the bolster's rear radius; the bolster is their root.
-    for (x_span = [[wrist_arm_x_min - 1, wrist_saddle_x_min],
-                   [wrist_palm_bolster_x_max - wrist_palm_bolster_rear_r - 1,
-                    wrist_upper_arm_x_max + 1]])
-        translate([x_span[0], wrist_pad_y_min - 0.01, wrist_saddle_z_min])
-            cube([x_span[1] - x_span[0],
-                  wrist_pad_y_max - wrist_pad_y_min + 0.02,
-                  wrist_plate_z_max_2 + 1 - wrist_saddle_z_min]);
-}
-
-module palm_bolster() {
-    // Straight full-width bolster with a nearly flat top and large rolled
-    // long edges. The flat -X face is coplanar with the palm face below it.
-    shoulder_z = wrist_palm_bolster_z_max
-        - max(wrist_palm_bolster_front_r, wrist_palm_bolster_rear_r);
-    hull() {
-        dyno_rounded_prism_xy(
-            wrist_palm_bolster_x_min, wrist_palm_bolster_x_max,
-            wrist_pad_y_min, wrist_pad_y_max,
-            wrist_palm_bolster_z_min, shoulder_z, wrist_pad_corner_r
-        );
-        for (edge = [[wrist_palm_bolster_x_min + wrist_palm_bolster_front_r,
-                      wrist_palm_bolster_front_r],
-                     [wrist_palm_bolster_x_max - wrist_palm_bolster_rear_r,
-                      wrist_palm_bolster_rear_r]])
-            for (y_pos = [wrist_pad_y_min + edge[1], wrist_pad_y_max - edge[1]])
-                translate([edge[0], y_pos, wrist_palm_bolster_z_max - edge[1]])
-                    sphere(r = edge[1], $fn = max(render_fn, 32));
-    }
-}
-
-module palm_bolster_fillet() {
-    // Concave fillet from the bolster's rear face and rear corners into the
-    // deck, approximated by tapered offsets of the bolster plan outline.
-    r = wrist_palm_bolster_fillet_r;
-    steps = max(4, ceil(render_fn / 6));
-    function run(h) = r - sqrt(r * r - (r - h) * (r - h));
-    intersection() {
-        for (i = [0 : steps - 1])
-            hull()
-                for (h = [r * i / steps, r * (i + 1) / steps])
-                    translate([0, 0, wrist_saddle_z_max - 0.01 + h])
-                        linear_extrude(height = 0.01)
-                            offset(delta = run(h))
-                                dyno_rounded_rect_2d(
-                                    wrist_palm_bolster_x_min, wrist_palm_bolster_x_max,
-                                    wrist_pad_y_min, wrist_pad_y_max, wrist_pad_corner_r
-                                );
-        translate([wrist_palm_bolster_x_min,
-                   wrist_pad_y_min + wrist_cradle_edge_radius,
-                   wrist_saddle_z_max - 1])
-            cube([wrist_saddle_depth_x,
-                  wrist_pad_y_max - wrist_pad_y_min - 2 * wrist_cradle_edge_radius,
-                  r + 2]);
-    }
-}
-
-module rounded_palm_cradle() {
-    // Low side lips and one straight palm bolster on the finger-facing (-X)
-    // edge. The open palm/heel contact surface is not hollowed or pierced.
-    for (y_pos = [wrist_pad_y_min + wrist_cradle_edge_w / 2,
-                  wrist_pad_y_max - wrist_cradle_edge_w / 2])
-        dyno_rounded_box_xyz(
-            [(wrist_saddle_x_min + wrist_saddle_x_max) / 2,
-             y_pos, (wrist_cradle_z_min + wrist_cradle_z_max) / 2],
-            [wrist_saddle_depth_x, wrist_cradle_edge_w,
-             wrist_cradle_z_max - wrist_cradle_z_min], wrist_cradle_edge_radius
-        );
-    palm_bolster();
-    palm_bolster_fillet();
-}
-
-module adjustable_wrist_rest(x_offset = 0) {
-    translate([x_offset, 0, 0])
-        union() {
-            wrist_side_arms(wrist_plate_z_min_1, wrist_plate_z_max_1);
-            difference() {
-                wrist_side_arms(wrist_plate_z_min_2, wrist_plate_z_max_2,
-                    wrist_upper_arm_x_max);
-                wrist_palm_face_clear_cut();
-            }
-
-            // Continuous upright palm face. Its upper end shares the deck's
-            // top datum and edge radius, avoiding a groove at the transition.
-            dyno_rounded_box_xyz(
-                [
-                    wrist_pad_center_x,
-                    (wrist_pad_y_min + wrist_pad_y_max) / 2,
-                    (wrist_rest_z_min + wrist_saddle_z_max) / 2
-                ],
-                [
-                    wrist_pad_t_x,
-                    wrist_pad_y_max - wrist_pad_y_min,
-                    wrist_saddle_z_max - wrist_rest_z_min
-                ],
-                wrist_pad_corner_r
-            );
-
-            // Broad, unperforated heel deck extending away from the fingers.
-            // It travels WITH the palm face; no rail holes, seams or pin heads
-            // interrupt the skin-contact area. The underside clears the frame.
-            dyno_rounded_box_xyz(
-                [
-                    (wrist_saddle_x_min + wrist_saddle_x_max) / 2,
-                    (wrist_pad_y_min + wrist_pad_y_max) / 2,
-                    (wrist_saddle_z_min + wrist_saddle_z_max) / 2
-                ],
-                [wrist_saddle_depth_x, wrist_pad_y_max - wrist_pad_y_min, wrist_saddle_t],
-                wrist_pad_corner_r
-            );
-
-            rounded_palm_cradle();
-        }
-}
+// --- Pocket stoppers -----------------------------------------------------
 
 module stopper_tab(i) {
     // Pull tab with a rounded top, standing proud of the grip top when the
@@ -478,8 +215,7 @@ module stopper_tab(i) {
 }
 
 module pocket_stopper(i) {
-    // Stopper i on the pocket floor; its top face becomes the new edge. The
-    // tab sits outside the plate, on its end face.
+    // Stopper i on the pocket floor; its top face becomes the new edge.
     t = stopper_t_list[i];
     end_y = i == 0 ? stopper_y_min : stopper_y_max;
     union() {
@@ -495,14 +231,6 @@ module pocket_stopper(i) {
     }
 }
 
-module stopper_tab_slots(x_center = stopper_center_x, z_min = hangboard_pocket_back_z) {
-    for (y_span = [[stopper_tab_slot_y_min, stopper_y_min + 1],
-                   [stopper_y_max - 1, stopper_tab_slot_y_max]])
-        translate([x_center - stopper_tab_slot_w_x / 2, y_span[0], z_min])
-            cube([stopper_tab_slot_w_x, y_span[1] - y_span[0],
-                  frame_z_max + 0.1 - z_min]);
-}
-
 module stacked_pocket_stoppers(bottom = 0, dz_top = 0) {
     // Both stoppers in the pocket, stopper `bottom` on the floor.
     pocket_stopper(bottom);
@@ -510,240 +238,284 @@ module stacked_pocket_stoppers(bottom = 0, dz_top = 0) {
         pocket_stopper(1 - bottom);
 }
 
+module stopper_well_transform() {
+    // From the pocket frame into the storage well, long side along X.
+    translate([stopper_well_center_x, stopper_well_center_y,
+               stopper_well_z_min - hangboard_pocket_back_z])
+        rotate([0, 0, 90])
+            translate([-stopper_center_x, 0, 0])
+                children();
+}
+
 module stored_pocket_stoppers() {
-    // Both stoppers stacked in the frame's storage well.
-    translate([
-        (stopper_well_x_min + stopper_well_x_max) / 2 - stopper_center_x,
-        0,
-        stopper_well_z_min - hangboard_pocket_back_z
-    ])
-        stacked_pocket_stoppers();
+    stopper_well_transform() stacked_pocket_stoppers();
 }
 
-module phone_reference(portrait = false, drop = 0) {
-    // Largest supported phone in its case, resting on the slot floor and
-    // leaning against the slot's outer (-X) face.
-    height = portrait ? phone_probe_l : phone_probe_w;
-    width = portrait ? phone_probe_w : phone_probe_l;
-    gap = (phone_slot_w - phone_probe_t) / 2;
-    // Lowest (-X) bottom corner sits on the slot floor.
-    corner_x = -phone_slot_w + gap;
-    z0 = (phone_slot_z_min - frame_z_max - corner_x * sin(phone_slot_tilt))
-        / cos(phone_slot_tilt);
-    translate([phone_slot_x_top, frame_center_y - width / 2, frame_z_max - drop])
-        rotate([0, -phone_slot_tilt, 0])
-            translate([corner_x, 0, z0])
-                cube([phone_probe_t, width, height]);
-}
-
-module pin_spacer() {
-    difference() {
-        cylinder(d = bushing_core_od, h = bushing_length, center = true);
-        cylinder(d = bushing_id, h = bushing_length + 0.2, center = true);
+module stopper_well_cut() {
+    c = stopper_well_clearance;
+    stopper_well_transform() {
+        dyno_rounded_prism_xy(
+            stopper_x_min - c, stopper_x_max + c, stopper_y_min - c, stopper_y_max + c,
+            hangboard_pocket_back_z, hangboard_pocket_back_z + stopper_well_depth_z + 0.1,
+            stopper_r + c
+        );
+        stopper_tab_slots(stopper_center_x, hangboard_pocket_back_z,
+            hangboard_pocket_back_z + stopper_well_depth_z);
     }
 }
 
-module eye_collar_half() {
+// --- Base ----------------------------------------------------------------
+
+module base_slab() {
+    dyno_rounded_prism_xy(base_x_min, base_x_max, -base_half_w_y, base_half_w_y,
+        base_z_min, deck_z, base_corner_r);
+}
+
+module joint_tongue_2d(grow = 0) {
+    offset(delta = grow)
+        polygon([
+            [base_split_x - 1, -joint_tongue_neck_w / 2],
+            [base_split_x, -joint_tongue_neck_w / 2],
+            [base_split_x + joint_tongue_len_x, -joint_tongue_head_w / 2],
+            [base_split_x + joint_tongue_len_x, joint_tongue_head_w / 2],
+            [base_split_x, joint_tongue_neck_w / 2],
+            [base_split_x - 1, joint_tongue_neck_w / 2]
+        ]);
+}
+
+module joint_tongues(grow = 0) {
+    for (y_pos = [-joint_tongue_y, joint_tongue_y])
+        translate([0, y_pos, base_z_min - (grow > 0 ? 0.1 : 0)])
+            linear_extrude(height = joint_tongue_z_max + grow - base_z_min
+                    + (grow > 0 ? 0.1 : 0))
+                joint_tongue_2d(grow);
+}
+
+module base_split_region(grow = 0) {
+    // Everything at or before the split plane.
+    big = 1000;
+    translate([base_split_x + grow - big, -big / 2, -big / 2]) cube(big);
+}
+
+module anchor_pocket_cut() {
+    translate([anchor_pocket_x_min, -anchor_pocket_half_w_y, anchor_z_min])
+        cube([anchor_pocket_x_max - anchor_pocket_x_min, 2 * anchor_pocket_half_w_y,
+              deck_z - anchor_z_min + 0.1]);
+}
+
+module grip_trench_cut() {
+    // Ledges under the grip side walls, a deeper floor between them.
+    translate([trench_x_min, -trench_half_w_y, grip_guide_z_max])
+        cube([trench_x_max - trench_x_min, 2 * trench_half_w_y,
+              deck_z - grip_guide_z_max + 0.1]);
+    translate([trench_x_min, -grip_guide_inner_y, trench_floor_z])
+        cube([trench_x_max - trench_x_min, 2 * grip_guide_inner_y,
+              deck_z - trench_floor_z + 0.1]);
+}
+
+module rest_rail_2d(grow = 0) {
+    // YZ profile of the dovetail rail, flaring upward.
+    offset(delta = grow)
+        polygon([
+            [-rail_root_w / 2, deck_z - 1],
+            [rail_root_w / 2, deck_z - 1],
+            [rail_root_w / 2, deck_z],
+            [rail_top_w / 2, rail_top_z],
+            [-rail_top_w / 2, rail_top_z],
+            [-rail_root_w / 2, deck_z]
+        ]);
+}
+
+module rest_rail(x_min, x_max, grow = 0) {
+    translate([x_min, 0, 0])
+        rotate([90, 0, 90])
+            linear_extrude(height = x_max - x_min)
+                rest_rail_2d(grow);
+}
+
+module key_slot(x_pos, y_pos, z_min, z_max) {
+    translate([x_pos - (key_t_x + key_fit) / 2, y_pos - (key_w_y + key_fit) / 2, z_min])
+        cube([key_t_x + key_fit, key_w_y + key_fit, z_max - z_min]);
+}
+
+module base_key_slots() {
+    for (i = [0 : rest_index_count - 1])
+        for (y_pos = [-key_y, key_y])
+            key_slot(key_x(rest_offset(i)), y_pos, key_slot_z_min, deck_z + 0.1);
+}
+
+module base_front() {
     difference() {
         union() {
-            translate([0, 0, -bushing_eye_collar_body_h / 2])
-                cylinder(d = bushing_od, h = bushing_eye_collar_body_h, center = true);
-            translate([0, 0, bushing_eye_collar_flange_t / 2])
-                cylinder(
-                    d = bushing_eye_collar_flange_od,
-                    h = bushing_eye_collar_flange_t,
-                    center = true
-                );
+            intersection() {
+                base_slab();
+                base_split_region();
+            }
+            joint_tongues();
         }
-        translate([0, 0, -bushing_eye_collar_body_h / 2])
-            cylinder(
-                d = bushing_collar_id,
-                h = bushing_eye_collar_body_h + 2 * bushing_eye_collar_flange_t + 0.2,
-                center = true
-            );
+        anchor_pocket_cut();
+        grip_trench_cut();
+        stopper_well_cut();
     }
 }
 
-module eye_interface_at(x_pos, x_offset = 0, z_offset = 0, contact_relief = 0) {
-    translate([x_pos + x_offset, dyno_eye_y, bushing_center_z + z_offset])
-        pin_spacer();
-    translate([x_pos + x_offset, dyno_eye_y, loadcell_top_z + z_offset + contact_relief])
-        eye_collar_half();
-    translate([x_pos + x_offset, dyno_eye_y, loadcell_bottom_z + z_offset - contact_relief])
-        rotate([180, 0, 0])
-            eye_collar_half();
-}
-
-module dynamometer_bushings(right_x_offset = 0, exploded_z = 0, contact_relief = 0) {
-    eye_interface_at(
-        dyno_eye_x_left,
-        z_offset = -exploded_z,
-        contact_relief = contact_relief
-    );
-    eye_interface_at(
-        dyno_eye_x_right,
-        x_offset = right_x_offset,
-        z_offset = exploded_z,
-        contact_relief = contact_relief
-    );
-}
-
-module pin_hardware_model(x_pos, x_offset = 0, z_offset = 0) {
-    bolt_head_h = 5.3;
-    bolt_head_d = 13;
-    washer_t = loadcell_washer_t;
-    washer_d = 16;
-    nut_h = loadcell_nut_h;
-    nut_d = 14.4;
-
-    color("silver") {
-        // Full-length shank, from the head through the nut to its tip.
-        translate([x_pos + x_offset, dyno_eye_y, loadcell_bolt_tip_z + z_offset])
-            cylinder(d = pin_nominal_d, h = loadcell_bolt_l);
-        translate([
-            x_pos + x_offset,
-            dyno_eye_y,
-            frame_z_max + washer_t + bolt_head_h / 2 + z_offset
-        ])
-            cylinder(d = bolt_head_d, h = bolt_head_h, center = true);
-        translate([x_pos + x_offset, dyno_eye_y, frame_z_max + washer_t / 2 + z_offset])
-            cylinder(d = washer_d, h = washer_t, center = true);
-        translate([x_pos + x_offset, dyno_eye_y, frame_z_min - washer_t / 2 + z_offset])
-            cylinder(d = washer_d, h = washer_t, center = true);
-        translate([
-            x_pos + x_offset,
-            dyno_eye_y,
-            frame_z_min - washer_t - nut_h / 2 + z_offset
-        ])
-            cylinder(d = nut_d, h = nut_h, center = true, $fn = 6);
+module base_rear() {
+    difference() {
+        union() {
+            difference() {
+                base_slab();
+                base_split_region();
+            }
+            rest_rail(base_split_x, base_x_max - 1);
+        }
+        joint_tongues(joint_fit);
+        base_key_slots();
     }
 }
 
-module dynamometer_hardware(right_x_offset = 0, exploded_z = 0) {
-    pin_hardware_model(dyno_eye_x_left, z_offset = -exploded_z);
-    pin_hardware_model(dyno_eye_x_right, x_offset = right_x_offset, z_offset = exploded_z);
+module base() {
+    base_front();
+    base_rear();
 }
 
-module ball_lock_pin_model() {
-    // Push-button ball-lock pin with the head's underside at the origin.
-    lock_ball_z = -wrist_quick_pin_grip_l - wrist_quick_pin_lock_ball_d / 2 - 0.2;
-    pin_bottom_z = lock_ball_z - wrist_quick_pin_tip_l;
+// --- Palm rest and keys --------------------------------------------------
 
-    translate([0, 0, pin_bottom_z])
-        cylinder(d = wrist_quick_pin_d, h = -pin_bottom_z);
-    cylinder(d = wrist_quick_pin_head_d, h = wrist_quick_pin_head_h);
-    translate([0, 0, wrist_quick_pin_head_h])
-        cylinder(d = wrist_quick_pin_button_d, h = wrist_quick_pin_button_h);
-    for (angle = [0, 180])
-        translate([0, 0, lock_ball_z])
-            rotate([0, 0, angle])
-                translate([wrist_quick_pin_d / 2, 0, 0])
-                    sphere(d = wrist_quick_pin_lock_ball_d);
+module palm_bolster(face_x) {
+    // Full-width bolster with a nearly flat top and rolled long edges. Its
+    // -X face continues the palm face.
+    x_max = face_x + rest_bolster_depth_x;
+    shoulder_z = rest_bolster_z_max - max(rest_bolster_front_r, rest_bolster_rear_r);
+    hull() {
+        dyno_rounded_prism_xy(face_x, x_max, -rest_half_w_y, rest_half_w_y,
+            rest_deck_z - rest_bolster_embed, shoulder_z, rest_corner_r);
+        for (edge = [[face_x + rest_bolster_front_r, rest_bolster_front_r],
+                     [x_max - rest_bolster_rear_r, rest_bolster_rear_r]])
+            for (y_pos = [-rest_half_w_y + edge[1], rest_half_w_y - edge[1]])
+                translate([edge[0], y_pos, rest_bolster_z_max - edge[1]])
+                    sphere(r = edge[1], $fn = max(render_fn, 32));
+    }
 }
 
-module wrist_rest_hardware_model(x_offset = 0) {
-    // Both pins inserted from +Z.
-    color("silver")
-        for (y_pos = [wrist_mount_y_bottom, wrist_mount_y_top])
-            translate([wrist_mount_x + x_offset, y_pos, wrist_rest_z_max])
-                ball_lock_pin_model();
-}
-
-module frame_split_bolt_model() {
-    // M5 socket-head screw with the head's underside at the origin.
-    cylinder(d = frame_split_bolt_head_d, h = frame_split_bolt_head_h);
-    translate([0, 0, -frame_split_bolt_l])
-        cylinder(d = frame_split_bolt_d, h = frame_split_bolt_l + 0.01);
-}
-
-module frame_split_nut_model() {
-    // M5 nyloc nut with its bearing face at the origin, corners along X.
-    translate([0, 0, -frame_split_nut_h])
-        difference() {
-            cylinder(d = frame_split_nut_af / cos(30), h = frame_split_nut_h, $fn = 6);
-            translate([0, 0, -0.1])
-                cylinder(d = frame_split_bolt_d, h = frame_split_nut_h + 0.2);
+module palm_rest(offset = 0) {
+    face_x = rest_face_x(offset);
+    difference() {
+        union() {
+            // Solid heel deck with rounded top edges and a flat sole.
+            intersection() {
+                dyno_rounded_box_xyz(
+                    [face_x + rest_depth_x / 2, 0,
+                     (rest_z_min - rest_corner_r + rest_deck_z) / 2],
+                    [rest_depth_x, 2 * rest_half_w_y,
+                     rest_deck_z - rest_z_min + rest_corner_r],
+                    rest_corner_r);
+                translate([face_x - 1, -rest_half_w_y - 1, rest_z_min])
+                    cube([rest_depth_x + 2, 2 * rest_half_w_y + 2,
+                          rest_deck_z - rest_z_min + 1]);
+            }
+            palm_bolster(face_x);
+            // Key wings outside the palm area.
+            for (s = [-1, 1])
+                dyno_rounded_prism_xy(face_x, face_x + rest_wing_len_x,
+                    s > 0 ? rest_half_w_y - 4 : -rest_wing_y_max,
+                    s > 0 ? rest_wing_y_max : -rest_half_w_y + 4,
+                    rest_z_min, rest_wing_top_z, 3);
         }
+        rest_rail(face_x - 1, face_x + rest_depth_x + 1, rail_fit);
+        for (y_pos = [-key_y, key_y])
+            key_slot(key_x(offset), y_pos, rest_z_min - 0.1, rest_wing_top_z + 0.1);
+    }
 }
 
-module frame_split_hardware_model(bolt_dz = 0, nut_dz = 0) {
-    color("silver")
-        for (x_pos = frame_split_bolt_x)
-            for (y_pos = frame_split_bolt_y)
-                translate([x_pos, y_pos, 0]) {
-                    translate([0, 0, frame_split_bolt_head_z + bolt_dz])
-                        frame_split_bolt_model();
-                    translate([0, 0, frame_split_nut_top_z - nut_dz])
-                        frame_split_nut_model();
-                }
+module index_key(offset = 0, y_pos = key_y) {
+    // Shank through the rest wing into a base slot; the head sits on the
+    // wing and extends away from the fingers.
+    x0 = key_x(offset) - key_t_x / 2;
+    translate([x0, y_pos - key_w_y / 2, key_bottom_z])
+        cube([key_t_x, key_w_y, rest_wing_top_z - key_bottom_z + 0.01]);
+    translate([x0, y_pos - key_w_y / 2, rest_wing_top_z])
+        dyno_rounded_prism_xy(0, key_head_x, 0, key_w_y, 0, key_head_h, 2);
 }
 
-module fixed_frame_half_print_layout(side = "left") {
-    // The flat upper rail faces rest on the bed and the two feet build upward.
-    // The right half's lower lap tongues need support under their lap faces.
-    x_mid = side == "left"
-        ? (frame_x_min + frame_split_x_max) / 2
-        : (frame_split_x_min + frame_palm_post_outer_x) / 2;
-    translate([-x_mid, 0, frame_z_max])
-        rotate([180, 0, 0])
-            fixed_frame_half(side);
+module index_keys(offset = 0, lift = 0) {
+    for (y_pos = [-key_y, key_y])
+        translate([0, 0, lift]) index_key(offset, y_pos);
 }
 
-module moving_finger_grip_print_layout() {
-    translate([0, 0, -frame_z_min])
-        moving_finger_grip();
-}
+// --- Print layouts -------------------------------------------------------
 
-module pocket_stoppers_print_layout() {
-    // Side by side, flat on the bed.
-    pitch = stopper_x_max - stopper_x_min + 8;
-    for (i = [0 : stopper_count - 1])
-        translate([
-            (i - (stopper_count - 1) / 2) * pitch - stopper_center_x,
-            -frame_center_y,
-            -hangboard_pocket_back_z
-        ])
-            pocket_stopper(i);
-}
-
-module wrist_rest_print_layout() {
-    // Print upright on the two flat lower arms; support the overhanging deck
-    // and outer upper arms from below; the deck and bolster tops print last.
-    translate([0, 0, -wrist_rest_z_min])
-        adjustable_wrist_rest();
+module on_side_layout(y_max) {
+    // Lay the part on its +Y face so X and Z, the lug's bending plane, lie
+    // in the layers.
+    translate([0, 0, y_max])
+        rotate([-90, 0, 0])
+            children();
 }
 
 module print_layout(part) {
-    if (part == "frame_left" || part == "frame_right")
-        fixed_frame_half_print_layout(part == "frame_left" ? "left" : "right");
+    if (part == "base_front")
+        translate([-(base_x_min + base_split_x) / 2, 0, -base_z_min]) base_front();
+    else if (part == "base_rear")
+        translate([-(base_split_x + base_x_max) / 2, 0, -base_z_min]) base_rear();
+    else if (part == "anchor")
+        on_side_layout(seat_half_w_y)
+            translate([(anchor_x_min + anchor_x_max) / 2 * -1, 0, 0]) anchor_block();
     else if (part == "grip")
-        moving_finger_grip_print_layout();
-    else if (part == "wrist_rest")
-        wrist_rest_print_layout();
+        on_side_layout(grip_half_w_y)
+            translate([-(grip_x_min + grip_x_max) / 2, 0, 0]) finger_grip();
+    else if (part == "keepers")
+        // Flat on their clamp faces, side by side.
+        for (i = [0, 1])
+            translate([-(keeper_x_min + end_wall_x) / 2 + (i - 0.5) * 14, 0,
+                       -keeper_z_min])
+                tab_keeper_right();
+    else if (part == "keys")
+        // On their sides, heads toward +X.
+        for (i = [0, 1])
+            translate([(i - 0.5) * 24, 0, 0])
+                on_side_layout(key_w_y / 2)
+                    translate([-key_x(0), -key_y, -key_bottom_z])
+                        index_key();
+    else if (part == "rest")
+        translate([-rest_face_x() - rest_depth_x / 2, 0, -rest_z_min]) palm_rest();
     else if (part == "stoppers")
-        pocket_stoppers_print_layout();
+        for (i = [0 : stopper_count - 1])
+            translate([(i - (stopper_count - 1) / 2) * (stopper_x_max - stopper_x_min + 8)
+                       - stopper_center_x, 0, -hangboard_pocket_back_z])
+                pocket_stopper(i);
     else
         assert(false, str("Unknown part: ", part));
 }
 
-// Moves a part's print layout to its place on the print plate, origin at
-// the front-left bed corner. Plates 1 and 2 hold one frame half each,
-// centred with the long sides along Y; plate 3 holds the rest. Shared by
-// the book's plate images and the Bambu Studio project.
+// Minimum X/Y corner of each print layout.
+function print_layout_min(part) =
+    part == "base_front" ? [(base_x_min - base_split_x) / 2, -base_half_w_y]
+    : part == "base_rear" ? [-(base_x_max - base_split_x) / 2, -base_half_w_y]
+    : part == "anchor" ? [-(anchor_x_max - anchor_x_min) / 2, anchor_z_min]
+    : part == "grip" ? [-(grip_x_max - grip_x_min) / 2, grip_z_min]
+    : part == "keepers" ? [(keeper_x_min - end_wall_x) / 2 - 7, -keeper_len_y / 2]
+    : part == "keys" ? [-12 - key_t_x / 2, 0]
+    : part == "stoppers" ? [-(stopper_x_max - stopper_x_min) - 4, stopper_tab_y_min(0)]
+    : part == "rest" ? [-rest_depth_x / 2, -rest_wing_y_max]
+    : undef;
+
+// Front-left corner of each part on its plate, origin at the front-left bed
+// corner. Plate 1 holds the front base half and the small parts, plate 2 the
+// rear base half and the palm rest. Shared by the book's plate images and
+// the Bambu Studio project.
+function print_plate_corner(part) =
+    part == "base_front" ? [10, 10]
+    : part == "stoppers" ? [197, 10]
+    : part == "grip" ? [10, 150]
+    : part == "anchor" ? [80, 150]
+    : part == "keepers" ? [125, 150]
+    : part == "keys" ? [165, 150]
+    : part == "base_rear" ? [10, 67]
+    : part == "rest" ? [145, 67]
+    : undef;
+
 module print_plate_placement(part) {
-    if (part == "frame_left" || part == "frame_right")
-        translate([print_bed_size / 2, print_bed_size / 2, 0])
-            rotate([0, 0, 90])
-                children();
-    else if (part == "wrist_rest")
-        translate([15 - wrist_arm_x_min, print_bed_size / 2 - frame_center_y, 0])
-            children();
-    else if (part == "grip")
-        translate([115 - moving_clevis_x_min, 190 - frame_center_y, 0])
-            children();
-    else if (part == "stoppers")
-        translate([150, 70, 0])
-            children();
-    else
-        assert(false, str("Unknown part: ", part));
+    corner = print_plate_corner(part);
+    assert(!is_undef(corner), str("Unknown part: ", part));
+    translate(concat(corner - print_layout_min(part), [0]))
+        children();
 }

@@ -11,20 +11,17 @@ mkdir -p "$out"
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
-all_views="overview plate1 plate2 plate3 slide_rest join_frame frame_joint case_in
-grip_in bolt_stack bolt_done wrist_pin position_min position_max stoppers phone"
+all_views="overview plate1 plate2 join_base anchor_in case_in keepers_in lug_section
+rest_on position_min position_max stoppers"
 
 # view -> "rx,ry,rz" (auto-framed) or "tx,ty,tz,rx,ry,rz,distance"
 camera() {
     case "$1" in
-        overview) echo "62,0,28" ;;
-        slide_rest) echo "58,0,32" ;;
-        join_frame) echo "58,0,28" ;;
-        case_in | grip_in) echo "58,0,25" ;;
+        overview | position_min | position_max) echo "58,0,28" ;;
+        join_base | anchor_in | rest_on) echo "58,0,32" ;;
+        case_in | keepers_in) echo "55,0,25" ;;
         stoppers) echo "50,0,20" ;;
-        phone) echo "68,0,62" ;;
-        plate1 | plate2 | plate3 | frame_joint | bolt_stack | bolt_done | wrist_pin | \
-            position_min | position_max) echo "0,0,0" ;;
+        plate1 | plate2 | lug_section) echo "0,0,0" ;;
         *) echo "Unknown view: $1" >&2; return 1 ;;
     esac
 }

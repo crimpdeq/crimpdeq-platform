@@ -11,7 +11,7 @@ colour; use `c_ghost` rather than the `%` modifier for see-through context.
 
 ```bash
 bash docs/illustrations/render-illustrations.sh             # all views
-bash docs/illustrations/render-illustrations.sh join_frame case_in  # selected views
+bash docs/illustrations/render-illustrations.sh join_base case_in  # selected views
 python3 docs/illustrations/make-legend.py                   # colour key
 ```
 
