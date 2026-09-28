@@ -22,6 +22,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import zipfile
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -200,6 +201,18 @@ def run_bambu(bambu_studio: Path, args: list[str], out_dir: Path) -> None:
         sys.exit(f"Bambu Studio failed ({proc.returncode}): {result.get('error_string', 'no result')}")
 
 
+def check_thumbnails(project: Path) -> None:
+    # Bambu Studio skips the plate previews, without failing, when it can't
+    # create an OpenGL context.
+    with zipfile.ZipFile(project) as archive:
+        names = set(archive.namelist())
+    missing = [f"plate_{i}.png" for i in range(1, len(PLATES) + 1)
+               if f"Metadata/plate_{i}.png" not in names]
+    if missing:
+        sys.exit("Bambu Studio wrote no plate thumbnails (" + ", ".join(missing)
+                 + "); check its OpenGL errors above")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--output", type=Path,
@@ -247,6 +260,7 @@ def main() -> int:
             "--load-assemble-list", str(assemble_path),
             "--export-3mf", project.name,
         ], project.parent)
+        check_thumbnails(project)
         if not args.skip_slice:
             run_bambu(bambu_studio, ["--slice", "0", str(project)], work / "slice")
             print("Sliced every plate without errors")
