@@ -22,6 +22,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import zipfile
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -138,6 +139,32 @@ def write_settings(presets: Presets, work: Path) -> tuple[Path, Path, Path]:
     return paths[0], paths[1], paths[2]
 
 
+def list_changed_settings(project: Path, presets: Presets) -> None:
+    """Record the process overrides in the project's different_settings_to_system.
+
+    When Bambu Studio opens a project whose preset inherits a system preset,
+    it keeps only the settings listed there and resets the rest to the system
+    values. The CLI leaves the list empty, which would drop every override.
+    """
+    system = presets.flattened("process", PROCESS)
+    changed = sorted(key for key, value in PROCESS_OVERRIDES.items()
+                     if system.get(key) not in (value, [value]))
+    name = "Metadata/project_settings.config"
+    with zipfile.ZipFile(project) as archive:
+        entries = [(info, archive.read(info)) for info in archive.infolist()]
+    with zipfile.ZipFile(project, "w") as archive:
+        for info, data in entries:
+            if info.filename == name:
+                settings = json.loads(data)
+                missing = [key for key in changed if settings.get(key) != PROCESS_OVERRIDES[key]]
+                if missing:
+                    sys.exit(f"Bambu Studio did not keep the process overrides: {missing}")
+                # Process first, then the filament and printer presets.
+                settings["different_settings_to_system"][0] = ";".join(changed)
+                data = json.dumps(settings, indent=4).encode("utf-8")
+            archive.writestr(info, data)
+
+
 def bed_size(presets: Presets) -> tuple[float, float]:
     corners = [
         tuple(float(v) for v in corner.split("x"))
@@ -247,6 +274,7 @@ def main() -> int:
             "--load-assemble-list", str(assemble_path),
             "--export-3mf", project.name,
         ], project.parent)
+        list_changed_settings(project, presets)
         if not args.skip_slice:
             run_bambu(bambu_studio, ["--slice", "0", str(project)], work / "slice")
             print("Sliced every plate without errors")
