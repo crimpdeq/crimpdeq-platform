@@ -49,14 +49,13 @@ PROCESS_OVERRIDES = {
 }
 SOLID = {"sparse_infill_density": "100%"}
 
+# Bambu Studio drops plate names containing any of ILLEGAL_NAME_CHARS.
 PLATES = [
-    ("Plate 1: left frame half", [("frame_left", {})]),
-    ("Plate 2: right frame half", [("frame_right", {})]),
-    (
-        "Plate 3: wrist rest, grip and stoppers",
-        [("wrist_rest", SOLID), ("grip", SOLID), ("stoppers", SOLID)],
-    ),
+    ("Left frame half", [("frame_left", {})]),
+    ("Right frame half", [("frame_right", {})]),
+    ("Wrist rest, grip and stoppers", [("wrist_rest", SOLID), ("grip", SOLID), ("stoppers", SOLID)]),
 ]
+ILLEGAL_NAME_CHARS = '<>:/\\|?*"'
 # Minimum gap between parts that share a plate (docs/src/build/printing.md).
 MIN_PART_GAP = 15.0
 
@@ -160,7 +159,8 @@ def stl_path(stl_dir: Path, part: str) -> Path:
 def check_layout(stl_dir: Path, bed: tuple[float, float]) -> None:
     read_stl = load_stl_reader()
     margin = float(PROCESS_OVERRIDES["brim_width"])
-    errors = []
+    errors = [f"plate name {plate!r} contains one of {ILLEGAL_NAME_CHARS}"
+              for plate, _ in PLATES if any(c in ILLEGAL_NAME_CHARS for c in plate)]
     for plate, objects in PLATES:
         boxes = {}
         for part, _ in objects:
@@ -191,11 +191,12 @@ def run_bambu(bambu_studio: Path, args: list[str], out_dir: Path) -> None:
         [str(bambu_studio), "--debug", "1", *args, "--outputdir", str(out_dir)],
         cwd=out_dir, capture_output=True, text=True,
     )
+    # At --debug 1 Bambu Studio logs only errors, such as skipped thumbnails.
+    sys.stdout.write(proc.stdout[-8000:])
+    sys.stderr.write(proc.stderr[-8000:])
     result_path = out_dir / "result.json"
     result = json.loads(result_path.read_text()) if result_path.exists() else {}
     if proc.returncode != 0 or result.get("return_code", 0) != 0:
-        sys.stdout.write(proc.stdout[-8000:])
-        sys.stderr.write(proc.stderr[-8000:])
         sys.exit(f"Bambu Studio failed ({proc.returncode}): {result.get('error_string', 'no result')}")
 
 
