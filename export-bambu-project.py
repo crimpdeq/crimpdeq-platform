@@ -6,7 +6,9 @@ ON_PLATE=true), checks the plate layout, lets the Bambu Studio CLI assemble
 the three plates with the print settings from docs/src/build/printing.md, and
 slices the project to confirm that every plate is printable.
 
-Usage: python3 export-bambu-project.py [--output FILE.3mf] [--skip-slice]
+Usage: python3 export-bambu-project.py [--output FILE.3mf] [--stl-dir DIR]
+                                      [--skip-slice]
+--stl-dir uses parts already exported with ON_PLATE=true instead.
 BAMBU_STUDIO names the Bambu Studio executable (default: bambu-studio on PATH,
 then the macOS application); BAMBU_STUDIO_PROFILES its profiles directory.
 OPENSCAD_RENDER_FN and EXPORT_JOBS are passed to export-parts.sh.
@@ -217,6 +219,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--output", type=Path,
                         default=PROJECT_ROOT / "exports" / "crimpdeq-platform.3mf")
+    parser.add_argument("--stl-dir", type=Path,
+                        help="use these parts exported with ON_PLATE=true")
     parser.add_argument("--skip-slice", action="store_true",
                         help="don't slice the project to check it")
     args = parser.parse_args()
@@ -226,8 +230,11 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory() as tmp:
         work = Path(tmp)
-        stl_dir = work / "stl"
-        export_parts(stl_dir)
+        if args.stl_dir:
+            stl_dir = args.stl_dir.resolve()
+        else:
+            stl_dir = work / "stl"
+            export_parts(stl_dir)
         check_layout(stl_dir, bed_size(presets))
 
         machine, process, filament = write_settings(presets, work)

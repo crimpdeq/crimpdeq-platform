@@ -1,27 +1,27 @@
 name: Set up Bambu Studio
 description: >
-    Install the pinned Bambu Studio AppImage as `bambu-studio`, run under a
-    headless Wayland compositor with software OpenGL, for building the
-    release project file.
+    Install the pinned Bambu Studio macOS application and point BAMBU_STUDIO
+    at its executable, for building the release project file. It runs on
+    macOS because the Linux AppImage can't render plate thumbnails headless.
 
 inputs:
     version:
         description: Bambu Studio release tag on github.com/bambulab/BambuStudio
         default: v02.08.02.61
     asset:
-        description: Ubuntu 24.04 AppImage asset of that release
-        default: BambuStudio_ubuntu24.04-v02.08.02.61-20260820225108.AppImage
+        description: macOS disk image asset of that release
+        default: Bambu_Studio_mac-v02.08.02.61-20260820225108.dmg
     sha256:
-        description: SHA-256 of the AppImage
-        default: d501b103fac5424513ec0e8d6bc145fb30719de2c7d94d7320d723740c81a7fd
+        description: SHA-256 of the disk image
+        default: cf648a95858fb630e1353c4987038df60d6caab693f18411fb95fb809f2d6926
 
 runs:
     using: composite
     steps:
-        - name: Cache the AppImage
+        - name: Cache the disk image
           uses: actions/cache@v6
           with:
-              path: ${{ runner.temp }}/bambu-studio-appimage
+              path: ${{ runner.temp }}/bambu-studio-dmg
               key: bambu-studio-${{ inputs.asset }}
 
         - name: Install Bambu Studio
@@ -30,99 +30,26 @@ runs:
               BAMBU_VERSION: ${{ inputs.version }}
               BAMBU_ASSET: ${{ inputs.asset }}
               BAMBU_SHA256: ${{ inputs.sha256 }}
-              APPIMAGE_DIR: ${{ runner.temp }}/bambu-studio-appimage
+              DMG_DIR: ${{ runner.temp }}/bambu-studio-dmg
           run: |
               set -euo pipefail
-              appimage="$APPIMAGE_DIR/$BAMBU_ASSET"
-              if [[ ! -f "$appimage" ]]; then
-                  mkdir -p "$APPIMAGE_DIR"
-                  curl -fsSL --retry 3 -o "$appimage" \
+              dmg="$DMG_DIR/$BAMBU_ASSET"
+              if [[ ! -f "$dmg" ]]; then
+                  mkdir -p "$DMG_DIR"
+                  curl -fsSL --retry 3 -o "$dmg" \
                       "https://github.com/bambulab/BambuStudio/releases/download/${BAMBU_VERSION}/${BAMBU_ASSET}"
               fi
-              echo "$BAMBU_SHA256  $appimage" | sha256sum -c -
-              chmod +x "$appimage"
-              # Extract instead of mounting: the runner has no FUSE 2.
-              mkdir -p "$RUNNER_TEMP/bambu-studio"
-              cd "$RUNNER_TEMP/bambu-studio"
-              "$appimage" --appimage-extract >/dev/null
-              root="$RUNNER_TEMP/bambu-studio/squashfs-root"
+              echo "$BAMBU_SHA256  $dmg" | shasum -a 256 -c -
 
-              # The AppImage leaves GTK, WebKit, GStreamer and OpenGL to the
-              # host. The CLI renders plate thumbnails in an OSMesa context
-              # through GLFW, which the AppImage builds for Wayland only, so it
-              # needs a compositor.
-              sudo apt-get update -q
-              sudo apt-get install -y -q --no-install-recommends \
-                  weston xvfb xauth gcc libgtk-3-0t64 libwebkit2gtk-4.1-0 \
-                  libgstreamer1.0-0 libgstreamer-plugins-base1.0-0 \
-                  libegl1 libgl1 libglu1-mesa libopengl0 libosmesa6
+              mount="$RUNNER_TEMP/bambu-studio-mount"
+              hdiutil attach -nobrowse -readonly -mountpoint "$mount" "$dmg" >/dev/null
+              app="$RUNNER_TEMP/BambuStudio.app"
+              cp -R "$mount/BambuStudio.app" "$app"
+              hdiutil detach "$mount" >/dev/null
 
-              # Name every library still missing, not just the first one.
-              libdirs="$(find "$root" -name '*.so*' -printf '%h\n' | sort -u | paste -sd:)"
-              missing="$(find "$root" -maxdepth 2 -type f -name 'bambu-studio' \
-                  -exec env LD_LIBRARY_PATH="$libdirs" ldd {} \; | grep 'not found' || true)"
-              if [[ -n "$missing" ]]; then
-                  echo "::error::Bambu Studio ${BAMBU_VERSION} needs host libraries:"
-                  echo "$missing"
-                  exit 1
-              fi
-
-              # Its GLEW is a GLX build: it looks up GL functions with
-              # glXGetProcAddress and wants a GLX display, neither of which
-              # sees the OSMesa context. Preload OSMesa's GL entry points and
-              # a shim that answers from OSMesa, with an Xvfb display for GLEW.
-              cat >"$root/osmesa-glx-shim.c" <<'EOF'
-              #include <dlfcn.h>
-              #include <stddef.h>
-              typedef void (*gl_proc)(void);
-              gl_proc glXGetProcAddressARB(const unsigned char *name) {
-                  static gl_proc (*get_proc)(const char *);
-                  if (!get_proc)
-                      get_proc = (gl_proc (*)(const char *))dlsym(
-                          dlopen("libOSMesa.so.8", RTLD_NOW | RTLD_GLOBAL),
-                          "OSMesaGetProcAddress");
-                  return get_proc((const char *)name);
-              }
-              gl_proc glXGetProcAddress(const unsigned char *name) {
-                  return glXGetProcAddressARB(name);
-              }
-              void *glXGetCurrentDisplay(void) {
-                  static void *display;
-                  if (!display) {
-                      void *(*open_display)(const char *) = (void *(*)(const char *))dlsym(
-                          dlopen("libX11.so.6", RTLD_NOW), "XOpenDisplay");
-                      display = open_display(NULL);
-                  }
-                  return display;
-              }
-              EOF
-              gcc -shared -fPIC -O2 -o "$root/osmesa-glx-shim.so" \
-                  "$root/osmesa-glx-shim.c" -ldl
-              osmesa="$(ldconfig -p | awk '/libOSMesa\.so\.8 /{print $NF; exit}')"
-              test -n "$osmesa"
-
-              sudo tee /usr/local/bin/bambu-studio >/dev/null <<EOF
-              #!/usr/bin/env bash
-              set -euo pipefail
-              export XDG_RUNTIME_DIR="\$(mktemp -d)"
-              socket=bambu-studio
-              weston --backend=headless-backend.so --shell=kiosk-shell.so \\
-                  --socket="\$socket" --idle-time=0 >"\$XDG_RUNTIME_DIR/weston.log" 2>&1 &
-              weston_pid=\$!
-              trap 'kill "\$weston_pid" 2>/dev/null || true; rm -rf "\$XDG_RUNTIME_DIR"' EXIT
-              for _ in \$(seq 100); do
-                  [[ -S "\$XDG_RUNTIME_DIR/\$socket" ]] && break
-                  sleep 0.1
-              done
-              if [[ ! -S "\$XDG_RUNTIME_DIR/\$socket" ]]; then
-                  echo "Weston did not start:" >&2
-                  cat "\$XDG_RUNTIME_DIR/weston.log" >&2
-                  exit 1
-              fi
-              WAYLAND_DISPLAY="\$socket" xvfb-run -a \\
-                  env LD_PRELOAD="$osmesa:$root/osmesa-glx-shim.so" "$root/AppRun" "\$@"
-              EOF
-              sudo chmod +x /usr/local/bin/bambu-studio
-              echo "BAMBU_STUDIO_PROFILES=$root/resources/profiles" >>"$GITHUB_ENV"
-              test -d "$root/resources/profiles/BBL"
-              bambu-studio --help >/dev/null
+              exe="$app/Contents/MacOS/BambuStudio"
+              test -x "$exe"
+              test -d "$app/Contents/Resources/profiles/BBL"
+              echo "BAMBU_STUDIO=$exe" >>"$GITHUB_ENV"
+              # The CLI writes result.json into the working directory.
+              (cd "$RUNNER_TEMP" && "$exe" --help >/dev/null)
