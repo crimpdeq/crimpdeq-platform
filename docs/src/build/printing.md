@@ -40,7 +40,7 @@ Each release also includes `crimpdeq-platform.3mf`, a Bambu Studio project
 with both plates already laid out and the [print settings](#print-settings)
 applied, including the per-part infill. It's set up for a Bambu Lab A1 with
 a 0.4 mm nozzle, Generic PETG, and the textured PEI plate. It takes about
-760 g of PETG.
+740 g of PETG.
 
 1. Open it with **File → Open Project**.
 2. Select your printer, filament and plate. Changing the printer can reset
@@ -76,13 +76,15 @@ Per-object override (select the object, switch Process to **Objects**):
 |---|---|
 | `grip`, `anchor`, `clips`, `keys` | 100% infill |
 | `rest` | 50% infill |
+| `base_front`, `base_rear` | 4 top and 4 bottom layers |
 
 The lugs must be solid: the load cell's eyes bear on them directly. The
-base halves and palm rest can be sparse because the six walls and six top
-and bottom layers print their loaded features solid: the key slots and the
-ligaments between them, the rail, the joints, the anchor pocket and the
-rest's key wings. Don't reduce the walls or the top and bottom layers. The
-stoppers are outside the load path.
+base halves and palm rest can be sparse because the six walls print their
+loaded features solid: the key slots and the ligaments between them, the
+rail, the joints, the anchor pocket and the rest's key wings. Don't reduce
+the walls, or the top and bottom layers below these values. The stoppers
+are outside the load path. If the base's top surfaces show the infill
+through them, go back to 5 top layers.
 
 PETG prints well on the A1 and is what the structural screens assume, but a
 filament name or infill setting does not establish strength. Validate

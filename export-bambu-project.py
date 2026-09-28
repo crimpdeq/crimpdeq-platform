@@ -49,15 +49,16 @@ PROCESS_OVERRIDES = {
 }
 SOLID = {"sparse_infill_density": "100%"}
 REST = {"sparse_infill_density": "50%"}
+BASE = {"top_shell_layers": "4", "bottom_shell_layers": "4"}
 
 # Bambu Studio drops plate names containing any of ILLEGAL_NAME_CHARS.
 PLATES = [
     ("Front base and small parts", [
-        ("base_front", {}), ("grip", SOLID), ("anchor", SOLID), ("clips", SOLID),
+        ("base_front", BASE), ("grip", SOLID), ("anchor", SOLID), ("clips", SOLID),
         ("keys", SOLID),
     ]),
     ("Rear base, palm rest and stoppers", [
-        ("stoppers", {}), ("base_rear", {}), ("rest", REST),
+        ("stoppers", {}), ("base_rear", BASE), ("rest", REST),
     ]),
 ]
 ILLEGAL_NAME_CHARS = '<>:/\\|?*"'
