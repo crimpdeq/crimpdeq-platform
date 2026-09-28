@@ -2,12 +2,14 @@
 # Export printable parts as crimpdeq-platform-<part>.stl.
 # Usage: bash export-parts.sh [part ...]   (default: every part)
 # EXPORT_DIR sets the output directory (default: exports/).
+# ON_PLATE=true places each part where it sits on its print plate.
 set -euo pipefail
 
 project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 out_dir="${EXPORT_DIR:-$project_root/exports}"
 render_fn="${OPENSCAD_RENDER_FN:-96}"
 export_jobs="${EXPORT_JOBS:-4}"
+on_plate="${ON_PLATE:-false}"
 
 if ! command -v openscad >/dev/null 2>&1; then
     echo "openscad not found in PATH" >&2
@@ -19,6 +21,10 @@ if [[ ! "$render_fn" =~ ^[0-9]+$ ]] || (( render_fn < 3 )); then
 fi
 if [[ ! "$export_jobs" =~ ^[0-9]+$ ]] || (( export_jobs < 1 )); then
     echo "EXPORT_JOBS must be an integer >= 1" >&2
+    exit 1
+fi
+if [[ "$on_plate" != true && "$on_plate" != false ]]; then
+    echo "ON_PLATE must be true or false" >&2
     exit 1
 fi
 
@@ -33,7 +39,7 @@ export_part() {
     local part="$1"
     local stl="$out_dir/crimpdeq-platform-${part}.stl"
     local log_file="$stl.log"
-    if ! openscad -D "render_fn=${render_fn}" -D "part=\"${part}\"" \
+    if ! openscad -D "render_fn=${render_fn}" -D "part=\"${part}\"" -D "on_plate=${on_plate}" \
         -o "$stl" "$project_root/dynamometer_assembly.scad" >"$log_file" 2>&1 ||
         grep -Eq 'ERROR:|WARNING:' "$log_file"; then
         printf 'Export failed: %s\n' "$part" >&2

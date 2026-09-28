@@ -32,6 +32,20 @@ not fit together.
 All parts are exported already oriented for printing. Don't rotate them or
 use "Lay on face".
 
+## Ready-made Bambu Studio project
+
+Each release also includes `crimpdeq-platform.3mf`, a Bambu Studio project
+with the three plates below already laid out and the
+[print settings](#print-settings) applied, including the 100% infill for the
+wrist rest, grip and stoppers. It's set up for a Bambu Lab A1 with a 0.4 mm
+nozzle, Generic PETG, the textured PEI plate, and 50% infill for the frame
+halves.
+
+1. Open it with **File → Open Project**.
+2. Select your printer, filament and plate. Changing the printer can reset
+   process settings, so compare them with the tables below afterwards.
+3. Do the [slicer checks](slicer-checks.md) before printing.
+
 ## Plates 1 and 2: frame halves
 
 ![Plate 1 layout](../images/plate1.png)

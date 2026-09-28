@@ -398,6 +398,8 @@ phone_probe_w = 80;
 // frame is closed.
 frame_split_x = is_undef(frame_split_x) ? 70 : frame_split_x;
 frame_split_bed_max = is_undef(frame_split_bed_max) ? 240 : frame_split_bed_max;
+// Square bed the print plates are laid out on.
+print_bed_size = is_undef(print_bed_size) ? 256 : print_bed_size;
 frame_split_lap_len = is_undef(frame_split_lap_len) ? 48 : frame_split_lap_len;
 frame_split_x_min = frame_split_x - frame_split_lap_len / 2;
 frame_split_x_max = frame_split_x + frame_split_lap_len / 2;

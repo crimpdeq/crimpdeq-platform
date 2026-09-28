@@ -156,7 +156,7 @@ module full_assembly(x_offset = 0) {
 }
 
 module build_plate(label) {
-    color(c_plate) translate([0, 0, -1.2]) cube([256, 256, 1]);
+    color(c_plate) translate([0, 0, -1.2]) cube([print_bed_size, print_bed_size, 1]);
     color(c_text)
         translate([6, -14, -1])
             linear_extrude(0.5) text(label, size = 9);
@@ -164,20 +164,17 @@ module build_plate(label) {
 
 module frame_plate(side, label) {
     build_plate(label);
-    translate([128, 128, 0])
-        rotate([0, 0, 90])
-            color(side == "left" ? c_frame : c_frame_b)
-                frame_half_print_layout(side);
+    print_plate_placement(side == "left" ? "frame_left" : "frame_right")
+        color(side == "left" ? c_frame : c_frame_b)
+            frame_half_print_layout(side);
 }
 
 module plate_3() {
     // Wrist rest on the left; grip and stoppers stacked on the right.
     build_plate("Plate 3: wrist rest, grip and stoppers");
-    translate([15 - wrist_arm_x_min, 128 - frame_center_y, 0])
-        color(c_rest) wrist_rest_print_layout();
-    translate([115 - moving_clevis_x_min, 190 - frame_center_y, 0])
-        color(c_grip) moving_finger_grip_print_layout();
-    translate([150, 70, 0]) color(c_stopper) pocket_stoppers_print_layout();
+    print_plate_placement("wrist_rest") color(c_rest) wrist_rest_print_layout();
+    print_plate_placement("grip") color(c_grip) moving_finger_grip_print_layout();
+    print_plate_placement("stoppers") color(c_stopper) pocket_stoppers_print_layout();
 }
 
 // ---- Flat labelled cross-sections (x right, z up) ----

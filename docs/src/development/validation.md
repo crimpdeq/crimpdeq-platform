@@ -55,7 +55,8 @@ collision checks in seconds rather than the quarter of an hour the CGAL-only
 2021.01 release needs, so `.github/workflows/compat.yml` checks 2021.01
 weekly instead of on every change. Bump the pin deliberately, after the
 checks pass locally on the new snapshot, and run a release dry run (see
-[Previewing and exporting](exporting.md)) before the next release.
+[Previewing and exporting](exporting.md)) before the next release. Do the
+same when bumping the pinned Bambu Studio version.
 
 Digital checks do not validate strength, fit on printed parts, comfort, or
 calibration; those still require physical testing.

@@ -62,10 +62,15 @@
   `crimpdeq-case` source.
 - `export-parts.sh`: exports every printable part; used by the release
   workflow.
+- `export-bambu-project.py`: builds and slice-checks the three-plate Bambu
+  Studio project from the plate layout in `print_plate_placement()`; used
+  by the release workflow.
 - `.github/workflows/`: CI checks, release STL publication, and a weekly
   OpenSCAD 2021.01 compatibility check.
 - `.github/actions/setup-openscad/`: the pinned OpenSCAD snapshot used by CI
   and releases.
+- `.github/actions/setup-bambu-studio/`: the pinned Bambu Studio used to
+  build the release project.
 - `docs/`: mdBook documentation; `docs/illustrations/` renders the images in
   `docs/src/images/` from the model.
 - `README.md`: short prose overview; keep details, lists, and figures that

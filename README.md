@@ -29,7 +29,8 @@ mdbook serve docs
 
 ## Quick start
 
-Ready-to-print STL files are attached to each
+Ready-to-print STL files and a Bambu Studio project with the plates laid out
+are attached to each
 [release](https://github.com/crimpdeq/crimpdeq-platform/releases). To preview
 the model or export the parts yourself:
 
