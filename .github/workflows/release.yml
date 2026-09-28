@@ -34,11 +34,19 @@ jobs:
                   python3 check-stl-components.py --expect 2 \
                       artifacts/crimpdeq-platform-stoppers.stl
 
+            - name: Install Bambu Studio
+              uses: ./.github/actions/setup-bambu-studio
+
+            - name: Build Bambu Studio project
+              run: python3 export-bambu-project.py --output artifacts/crimpdeq-platform.3mf
+
             - name: Upload platform release files
               uses: actions/upload-artifact@v6
               with:
                   name: release-platform-files
-                  path: artifacts/*.stl
+                  path: |
+                      artifacts/*.stl
+                      artifacts/*.3mf
                   if-no-files-found: error
                   compression-level: 0
 
@@ -63,6 +71,7 @@ jobs:
                   for part in frame_left frame_right grip wrist_rest stoppers; do
                       test -f "release-assets/platform/crimpdeq-platform-${part}.stl"
                   done
+                  test -f release-assets/platform/crimpdeq-platform.3mf
 
             - name: Upload release assets
               uses: svenstaro/upload-release-action@v2

@@ -23,12 +23,32 @@ openscad -D 'part="frame_left"' -o /tmp/dynamometer_frame_left.stl dynamometer_a
 `export-parts.sh` exports every part in the table (or only the parts given as
 arguments) as `crimpdeq-platform-<part>.stl` into `exports/`, which is ignored
 by Git. `EXPORT_DIR`, `EXPORT_JOBS`, and `OPENSCAD_RENDER_FN` override the
-output directory, parallel jobs, and tessellation. The release workflow runs
-the same script, checks that each load-bearing part is one body and the
-stoppers two, and attaches the files to each GitHub release. Run it from the
-Actions tab (**Release Crimpdeq Platform → Run workflow**) for a dry run: it
-builds and checks the files and keeps them as a run artifact, without
-publishing anything.
+output directory, parallel jobs, and tessellation. `ON_PLATE=true` (or
+`-D on_plate=true` in OpenSCAD) exports each part where it sits on its print
+plate instead, using the layout in `print_plate_placement()` that the book's
+plate images also use.
+
+`export-bambu-project.py` builds the Bambu Studio project
+`exports/crimpdeq-platform.3mf`. It exports the parts on their plates, checks
+that each part and its brim stay on the bed and that parts sharing a plate
+are at least 15 mm apart, and has the Bambu Studio command-line interface lay
+out the three plates with the settings from [Printing](../build/printing.md).
+It then slices every plate to confirm that the project is printable
+(`--skip-slice` skips this). It needs Bambu Studio: the macOS application is
+found automatically; elsewhere put `bambu-studio` on `PATH` or set
+`BAMBU_STUDIO`, and `BAMBU_STUDIO_PROFILES` if its profiles aren't found.
+The printer, process and filament presets and the setting overrides are at
+the top of the script.
+
+The release workflow runs both scripts, checks that each load-bearing part is
+one body and the stoppers two, and attaches the STL files and the project to
+each GitHub release. It uses the Bambu Studio version pinned in
+`.github/actions/setup-bambu-studio/action.yml`. That Linux build can't render
+plate thumbnails without a display, so the release project has none; Bambu
+Studio draws the plates when it opens the project. Run it from the Actions tab
+(**Release Crimpdeq Platform → Run workflow**) for a dry run: it builds and
+checks the files and keeps them as a run artifact, without publishing
+anything.
 
 ## Preview options
 

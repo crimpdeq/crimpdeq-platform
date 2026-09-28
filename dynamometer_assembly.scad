@@ -8,6 +8,7 @@
 //   openscad -D 'part="grip"' -o /tmp/dyno-grip.stl dynamometer_assembly.scad
 //   openscad -D 'part="wrist_rest"' -o /tmp/dyno-wrist-rest.stl dynamometer_assembly.scad
 //   openscad -D 'part="stoppers"' -o /tmp/dyno-stoppers.stl dynamometer_assembly.scad
+//   openscad -D 'part="grip"' -D on_plate=true -o /tmp/dyno-grip-on-plate.stl dynamometer_assembly.scad
 //
 // The view options below are literals so that OpenSCAD's Customizer
 // (Window > Customizer) lists them; -D still overrides them.
@@ -22,6 +23,8 @@ include <dynamometer_dimensions.scad>
 part = "assembly"; // [assembly, frame_left, frame_right, grip, wrist_rest, stoppers]
 // Preview pose; rated exaggerates the grip displacement
 pose = "unloaded"; // [unloaded, rated, exploded]
+// Export the part at its place on the print plate instead of the origin
+on_plate = false;
 // Wrist rest position, from the smallest (-1) to the largest (1) opening
 wrist_position = 0; // [-1:0.25:1]
 
@@ -138,16 +141,8 @@ module dynamometer_complete() {
 
 if (part == "assembly") {
     dynamometer_complete();
-} else if (part == "frame_left") {
-    fixed_frame_half_print_layout("left");
-} else if (part == "frame_right") {
-    fixed_frame_half_print_layout("right");
-} else if (part == "grip") {
-    moving_finger_grip_print_layout();
-} else if (part == "wrist_rest") {
-    wrist_rest_print_layout();
-} else if (part == "stoppers") {
-    pocket_stoppers_print_layout();
+} else if (on_plate) {
+    print_plate_placement(part) print_layout(part);
 } else {
-    assert(false, str("Unknown part: ", part));
+    print_layout(part);
 }

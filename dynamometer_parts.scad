@@ -712,3 +712,38 @@ module wrist_rest_print_layout() {
     translate([0, 0, -wrist_rest_z_min])
         adjustable_wrist_rest();
 }
+
+module print_layout(part) {
+    if (part == "frame_left" || part == "frame_right")
+        fixed_frame_half_print_layout(part == "frame_left" ? "left" : "right");
+    else if (part == "grip")
+        moving_finger_grip_print_layout();
+    else if (part == "wrist_rest")
+        wrist_rest_print_layout();
+    else if (part == "stoppers")
+        pocket_stoppers_print_layout();
+    else
+        assert(false, str("Unknown part: ", part));
+}
+
+// Moves a part's print layout to its place on the print plate, origin at
+// the front-left bed corner. Plates 1 and 2 hold one frame half each,
+// centred with the long sides along Y; plate 3 holds the rest. Shared by
+// the book's plate images and the Bambu Studio project.
+module print_plate_placement(part) {
+    if (part == "frame_left" || part == "frame_right")
+        translate([print_bed_size / 2, print_bed_size / 2, 0])
+            rotate([0, 0, 90])
+                children();
+    else if (part == "wrist_rest")
+        translate([15 - wrist_arm_x_min, print_bed_size / 2 - frame_center_y, 0])
+            children();
+    else if (part == "grip")
+        translate([115 - moving_clevis_x_min, 190 - frame_center_y, 0])
+            children();
+    else if (part == "stoppers")
+        translate([150, 70, 0])
+            children();
+    else
+        assert(false, str("Unknown part: ", part));
+}
