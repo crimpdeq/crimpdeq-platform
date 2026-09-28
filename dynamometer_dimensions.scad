@@ -68,8 +68,9 @@ u_slot_clear = is_undef(u_slot_clear) ? 1.0 : u_slot_clear;
 tongue_r = case_eye_u_d / 2 - u_slot_clear;
 lug_fit = is_undef(lug_fit) ? 0.25 : lug_fit;
 lug_r = eye_d / 2 - lug_fit;
-lug_neck_r = is_undef(lug_neck_r) ? 6 : lug_neck_r;
-lug_head_flat_w = 1;
+lug_neck_r = is_undef(lug_neck_r) ? 5.5 : lug_neck_r;
+// Flat ring under the head that the clip bears on.
+lug_head_flat_w = is_undef(lug_head_flat_w) ? 2 : lug_head_flat_w;
 lug_head_chamfer = lug_r - lug_neck_r - lug_head_flat_w;
 lug_top_chamfer = 1;
 // Above the load cell, the neck and head are cut flat on their inboard side
@@ -84,27 +85,29 @@ lug_top_z = lug_head_z_min + lug_head_h;
 // Snap-on eye clips hold each load-cell end down on its tongue, under the
 // lug head, so the grip hangs from the load cell. A clip drops into the
 // U-slot beside its lug and slides inboard until its fork snaps round the
-// neck. The clips carry no measured load.
+// neck. The clips carry the grip's tilt moment, not the measured pull.
 clip_seat_r = lug_neck_r + 0.15;
 clip_snap = is_undef(clip_snap) ? 0.3 : clip_snap;
 clip_mouth_w = 2 * (lug_neck_r - clip_snap);
 clip_tip_x = 4;
-clip_tail_x = 16;
+clip_tail_x = is_undef(clip_tail_x) ? 12 : clip_tail_x;
 clip_fin_t = 3;
 clip_fin_w_y = 16;
 clip_fin_top_z = is_undef(clip_fin_top_z) ? 20 : clip_fin_top_z;
 clip_install_travel = lug_r + 0.5 + clip_tip_x;
+// Finger room beside a grip-side clip's fin while it is fitted.
+clip_access_x = is_undef(clip_access_x) ? 6 : clip_access_x;
 
 // Four-finger hangboard pocket, loaded on its +X lip. Its mid-depth sits
 // near the load-cell plane so the finger pull adds little tilt.
 grip_x_min = dyno_eye_x_right - tongue_r;
 // The grip's upper body starts beyond the case, leaving room to fit a clip.
-grip_body_x_min = dyno_eye_x_right + clip_tail_x + clip_install_travel + 1;
+grip_body_x_min = dyno_eye_x_right + clip_tail_x + clip_install_travel + clip_access_x;
 grip_spine_t = is_undef(grip_spine_t) ? 8 : grip_spine_t;
 hangboard_opening_w_x = is_undef(hangboard_opening_w_x) ? 20 : hangboard_opening_w_x;
 hangboard_opening_w_y = is_undef(hangboard_opening_w_y) ? 80 : hangboard_opening_w_y;
 hangboard_side_wall_t = 4;
-hangboard_right_lip_t = 10;
+hangboard_right_lip_t = is_undef(hangboard_right_lip_t) ? 12 : hangboard_right_lip_t;
 hangboard_opening_x_min = grip_body_x_min + grip_spine_t;
 hangboard_opening_x_max = hangboard_opening_x_min + hangboard_opening_w_x;
 grip_x_max = hangboard_opening_x_max + hangboard_right_lip_t;
@@ -126,7 +129,7 @@ hangboard_lip_min_t = hangboard_right_lip_t - hangboard_lip_radius;
 base_z_min = is_undef(base_z_min) ? deck_z - 22.6 : base_z_min;
 base_half_w_y = is_undef(base_half_w_y) ? 61 : base_half_w_y;
 base_corner_r = 6;
-grip_guide_gap_z = is_undef(grip_guide_gap_z) ? 0.3 : grip_guide_gap_z;
+grip_guide_gap_z = is_undef(grip_guide_gap_z) ? 1.0 : grip_guide_gap_z;
 grip_guide_bearing_y = is_undef(grip_guide_bearing_y) ? 4 : grip_guide_bearing_y;
 grip_side_gap_y = 3;
 trench_x_min = grip_x_min - 1;
@@ -293,7 +296,7 @@ key_shank_l = rest_wing_top_z - key_bottom_z;
 // Two-piece base for a 256 mm bed (Bambu Lab A1). Two vertical dovetail
 // tongues on the front half drop into sockets in the rear half. Under load
 // the butt faces are in compression.
-base_split_x = is_undef(base_split_x) ? 108 : base_split_x;
+base_split_x = is_undef(base_split_x) ? 111 : base_split_x;
 base_split_bed_max = is_undef(base_split_bed_max) ? 240 : base_split_bed_max;
 print_bed_size = is_undef(print_bed_size) ? 256 : print_bed_size;
 base_x_min = phone_slot_x_top - phone_slot_top_w_x - phone_slot_outer_wall_x;
@@ -338,6 +341,16 @@ lug_shear_mpa = design_force_n / (PI * lug_r * lug_r);
 tongue_root_len_x = case_x_half - (dyno_eye_x_right - tongue_r);
 tongue_bending_mpa = design_force_n * (loadcell_center_z - deck_z)
     / (2 * tongue_r * pow(tongue_root_len_x, 2) / 6);
+
+// The largest finger-pull offset tilts the grip. The clip reacts it against
+// the tongue seat, taken conservatively at tongue_r from the eye, bearing on
+// the outboard half of the flat ring under the lug head; the head then pulls
+// on the neck across the layers.
+clip_tilt_moment_nmm = design_force_n * max([for (o = edge_pull_offsets) abs(o)]);
+clip_tilt_force_n = clip_tilt_moment_nmm / tongue_r;
+clip_ring_area_mm2 = PI * (pow(lug_neck_r + lug_head_flat_w, 2) - pow(clip_seat_r, 2)) / 2;
+clip_ring_bearing_mpa = clip_tilt_force_n / clip_ring_area_mm2;
+lug_neck_tension_mpa = clip_tilt_force_n / (PI * lug_neck_r * lug_neck_r);
 
 // Anchor block bearing on the pocket's +X wall below the case.
 anchor_bearing_mpa = design_force_n / (2 * anchor_half_w_y * (deck_z - anchor_z_min));
@@ -387,6 +400,14 @@ assert(clip_snap >= 0.2 && clip_snap <= 0.5 && clip_t >= 2.5 &&
     lug_neck_r - clip_tip_x > 0 &&
     sqrt(pow(lug_neck_r, 2) - pow(clip_tip_x, 2)) < clip_mouth_w / 2,
     "Clips need a light snap and fork tips clear of the seated neck.");
+assert(clip_ring_bearing_mpa <= allowable_printed_bearing_mpa &&
+    lug_neck_tension_mpa <= allowable_printed_tension_mpa,
+    "The clip ring or lug neck exceeds configured stress under the grip's tilt.");
+assert(clip_access_x >= 5 && clip_tail_x >= clip_tip_x + 6 &&
+    dyno_eye_x_right + clip_tail_x <= lc_L / 2,
+    "Clips need finger room beside the fin, a tail over the load cell, and must end on it.");
+assert(lug_upper_flat_x <= dyno_eye_x_right - lug_neck_r,
+    "The flat that clears the lid walls must not cut the lug neck.");
 assert(clip_fin_top_z < case_z_max - 4 && clip_fin_top_z > lug_top_z + 4,
     "Clip fins must stand clear of the lug and stay below the case top.");
 assert(grip_body_x_min >= case_x_half + 1 + clip_t,
@@ -417,7 +438,7 @@ assert(stopper_tab_rise >= 4 && stopper_tab_rise <= 10 &&
     "Stopper pull tabs must stand proud, fit the straight ends, and leave 1.8 mm of pocket end wall behind their slots.");
 assert(grip_pull_gap_x >= 5 * (lug_fit + anchor_play_x + rated_preview_deflection),
     "The grip needs free travel in the pull direction of at least five times its play and rated deflection.");
-assert(grip_guide_gap_z > 0 && grip_guide_gap_z <= 0.5 && grip_guide_bearing_y >= 3 &&
+assert(grip_guide_gap_z >= 0.8 && grip_guide_gap_z <= 1.2 && grip_guide_bearing_y >= 3 &&
     trench_floor_z > base_z_min + 5,
     "Grip guides need a small Z gap, a real bearing width and a solid trench floor.");
 assert(anchor_z_min > base_z_min + 5 && anchor_bearing_mpa <= allowable_printed_bearing_mpa,

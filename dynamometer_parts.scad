@@ -557,9 +557,9 @@ function print_layout_min(part) =
 function print_plate_corner(part) =
     part == "base_front" ? [10, 10]
     : part == "grip" ? [10, 150]
-    : part == "anchor" ? [103, 150]
-    : part == "clips" ? [160, 150]
-    : part == "keys" ? [196, 150]
+    : part == "anchor" ? [106, 150]
+    : part == "clips" ? [163, 150]
+    : part == "keys" ? [199, 150]
     : part == "stoppers" ? [10, 10]
     : part == "base_rear" ? [10, 68]
     : part == "rest" ? [145, 68]

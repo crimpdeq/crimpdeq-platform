@@ -26,8 +26,9 @@
   battery walls. Keep the lugs solid, and screen the lug and tongue roots
   across the layers (anchor block and grip printed upright).
 - Keep both snap-on eye clips holding the load cell down under the lug heads,
-  fitted by dropping into the U-slot and sliding onto the neck, and outside
-  the load path.
+  fitted by dropping into the U-slot and sliding onto the neck with finger
+  room beside the grip-side fin; screen the clip ring and lug neck for the
+  grip's tilt, which they carry, though not the pull.
 - Keep the four-finger hangboard pocket exactly 25 mm deep with at least an
   80 mm-wide opening, 6 mm back wall, and 8 mm loading lip, its `+Z` opening
   clear, and every edge's mid-depth within 5 mm of the load-cell plane.
@@ -36,8 +37,8 @@
   slots in the pocket end walls that stand proud of the grip top and leave
   the whole stopper top free for the fingers, and their storage well in the
   deck beside the case.
-- Keep the grip-guide ledges under the grip's side walls with a Z gap and
-  free X travel, so they catch tilt without carrying measured load.
+- Keep the grip-guide ledges under the grip's side walls with a 0.8–1.2 mm
+  Z gap and free X travel, so they catch tilt without carrying measured load.
 - Keep the palm rest's solid heel deck level with the pocket mouth and its
   palm bolster rising 18–24 mm above it, at least 2 mm above the key heads.
 - Preserve its nine positively locked 25–105 mm opening positions, with the

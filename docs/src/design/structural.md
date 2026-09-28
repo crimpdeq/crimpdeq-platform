@@ -22,7 +22,9 @@ All values are at the 981 N design target.
 | Lug root shear across the layers | 4.6 MPa | 6 MPa |
 | Tongue root at the deck, bending across the layers | 3.1 MPa | 12 MPa |
 | Anchor block bearing on its pocket | 1.1 MPa | 12 MPa, bearing |
-| Finger lip bending over the full 25 mm edge | 28.7 MPa | 30 MPa, bending |
+| Clip on the flat ring under the lug head, largest finger-pull tilt | 10.3 MPa | 12 MPa, bearing |
+| Lug neck pulled by the clip, across the layers | 4.1 MPa | 12 MPa |
+| Finger lip bending over the full 25 mm edge | 18.4 MPa | 30 MPa, bending |
 | Grip side and back walls in tension | 1.3 MPa | 12 MPa |
 | Either index key alone, in shear | 10.2 MPa | 12 MPa |
 | Key bearing in the rest wing / base slot | 5.6 / 4.4 MPa | 12 MPa, bearing |
@@ -33,8 +35,13 @@ All values are at the 981 N design target.
 Each index key is screened for the **entire** palm force. Both keys must
 still be fitted; the one-key calculation does not authorise using one.
 The base joint is in compression under load and is not screened. The
-clips, stoppers, grip guides, stopper well and phone stand are outside the
-load path.
+stoppers, grip guides, stopper well and phone stand are outside the load
+path.
+
+The clip screen takes the largest finger-pull offset from the load-cell
+plane (4 mm, with both stoppers) at the design force. It is reacted between
+the clip and the tongue seat, taken 10 mm from the eye centre, and bears on
+the outboard half of the flat ring under the lug head only.
 
 ## The eye lugs
 

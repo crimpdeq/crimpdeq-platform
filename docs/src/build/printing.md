@@ -25,8 +25,8 @@ not fit together.
 | `crimpdeq-platform-rest.stl` | Palm rest | 2 |
 
 > [!NOTE]
-> The base comes as two halves because it is 328 mm long and does not fit a
-> 256 mm bed, even diagonally. The front half is 227 mm long and the rear
+> The base comes as two halves because it is 331 mm long and does not fit a
+> 256 mm bed, even diagonally. The front half is 230 mm long and the rear
 > half 112 mm; both are 122 mm wide. The phone stand makes the front half
 > 60 mm tall at one end, the tallest part on the plates.
 
@@ -87,7 +87,7 @@ No part needs support, so supports are off. The base halves print flat with
 every slot, pocket, trench and well open upward; the rear half's joint
 sockets (12 mm) and the palm rest's rail groove (25 mm) are closed by
 bridges. The anchor block and grip print upright with their lugs on top;
-the flat ring under each lug head is only 1 mm wide. The clips print flat on
+the flat ring under each lug head is only 2 mm wide. The clips print flat on
 their clamp faces with their fins up, the keys stand on their sides, and the
 stoppers print flat with their pull tabs upright.
 

@@ -25,7 +25,9 @@ For each lug:
 1. Hold a clip by its fin, flat side down, fork toward the case centre.
 2. Drop it into the slot in the case end beside the lug head, onto the load
    cell.
-3. Push it in until its fork snaps round the lug's neck, under the head.
+3. Push it in by its fin until its fork snaps round the lug's neck, under the
+   head. On the grip side there is 6 mm of finger room between the fin and
+   the grip.
 
 The clips hold the load cell down on the tongues, and the grip hangs from it.
 
@@ -35,8 +37,8 @@ The clips hold the load cell down on the tongues, and the grip hangs from it.
 
 - [ ] The case doesn't touch the deck, the anchor block or the grip. A sheet
       of paper slides under it.
-- [ ] The grip's top is level. Note whether it hangs free or rests on the
-      guide ledges.
+- [ ] The grip's top is level and hangs free: a strip of paper slides
+      between both guide ledges and the grip's side walls.
 - [ ] The switch and USB port are easy to reach.
 
 To take the case out, pull both clips out by their fins and lift the case

@@ -27,11 +27,12 @@ cell rests on the tongues. On each tongue, a round lug fills the eye with
 0.25 mm clearance, and the eye bears on it across its full 16.5 mm diameter
 and the load cell's 4 mm thickness.
 
-Above the load cell the lug narrows to a Ø12 mm neck, then widens to a head
-with a 1 mm lead-in chamfer, so the eye still drops over it. The neck and head
-are cut flat on their inboard side, 1 mm clear of the battery walls that the
-case lid drops into the inboard edge of each U-slot. Only the outboard side of
-the lug carries load.
+Above the load cell the lug narrows to a Ø11 mm neck, then widens to a head
+no wider than the lug, with a 1 mm lead-in chamfer on top, so the eye still
+drops over it. The head's underside is a 2 mm-wide flat ring for the clip,
+then a short printable chamfer. The head is cut flat on its inboard side,
+1 mm clear of the battery walls that the case lid drops into the inboard edge
+of each U-slot. Only the outboard side of the lug carries the pull.
 
 The anchor block and the grip print upright. The lug is short and round, so
 even loaded across the layers its root stays at 4.4 MPa bending at the design
@@ -45,14 +46,17 @@ that lies on the load cell round a lug's neck, with a fin at its outboard end.
 It drops into the U-slot beside the lug, then slides in until its fork snaps
 round the neck: the fork's mouth is 0.3 mm narrower than the neck on each
 side. The head stops it lifting and the snap stops it sliding out. The
-clips carry no measured load. Pulling the fins releases them and frees the
-case.
+clips don't carry the pull, but they do carry the grip's tilt: they hold the
+load cell against the moment of an off-centre finger pull, bearing on the
+flat ring under each lug head. The grip-side clip's fin has 6 mm of finger
+room beside the grip while it is fitted. Pulling the fins releases the clips
+and frees the case.
 
 ## Finger pocket
 
 The pocket has an 80 × 20 mm opening and is exactly 25 mm deep. Its walls
 have a 1 mm draft and rounded corners, leaving 78 × 18 mm at the floor. A
-2 mm radius rolls the loaded +X edge, and the lip keeps at least 8 mm of
+2 mm radius rolls the loaded +X edge, and the lip keeps at least 10 mm of
 material behind it. Fingers enter from +Z and pull toward the palm rest.
 
 The pocket is set low: its top is 11 mm above the load cell's underside and
@@ -95,7 +99,8 @@ The grip hangs from the load cell and does not touch the base. Its trench
 leaves it 8 mm of free travel in the pull direction, 1 mm behind and 3 mm at
 each side. Pulling takes up at most about 1 mm of that: the lug's clearance
 in the eye, the anchor block's play in its pocket and the load cell's
-stretch. Two ledges run under the grip's side walls, 0.3 mm below them. If the
+stretch. Two ledges run under the grip's side walls, 1 mm below them, enough
+to absorb print tolerances so the grip doesn't rest on them. If the
 grip tilts, they catch it and keep its top level, but they leave it free
 along X. They only touch the grip once it has dropped onto them, and friction
 there then affects readings; see
@@ -124,8 +129,8 @@ These are setup guides, not ergonomic prescriptions.
 
 ## Base
 
-The base is 328 mm long, 122 mm wide and 22.6 mm tall below the deck, so it
-is printed as two halves that each fit a 256 mm bed: a 227 mm front half
+The base is 331 mm long, 122 mm wide and 22.6 mm tall below the deck, so it
+is printed as two halves that each fit a 256 mm bed: a 230 mm front half
 with the phone stand, anchor pocket, stopper well and grip trench, and a
 112 mm rear half with the rail and key slots. Two vertical dovetail tongues on the front half
 drop into sockets in the rear half. Under load the anchor pushes the front
