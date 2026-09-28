@@ -43,8 +43,12 @@ rotated or the model changed. Re-import the release files.
 
 ## F. Infill
 
-- [ ] In the **Line Type** preview, the grip, anchor block, clips, keys,
-      palm rest and stoppers show solid infill all the way through.
+- [ ] In the **Line Type** preview, the grip, anchor block, clips and keys
+      show solid infill all the way through.
+- [ ] The palm rest shows 50% sparse infill, and the base halves and
+      stoppers 20%.
+- [ ] On the rear half, the walls between neighbouring key slots print
+      solid, with no sparse infill.
 
 ## G. Printer and material
 

@@ -75,6 +75,10 @@ Copy this table into a comment or a new note.
 >   This is the design's governing assumption and needs coupon and proof
 >   tests with the real load cell. Printed parts under sustained load also
 >   creep: don't leave the device loaded, and check the lugs for flattening.
+> - **Sparse base and palm rest.** The screening assumes solid sections. The
+>   base halves (20% infill) and palm rest (50%) have solid loaded features
+>   but sparse interiors, so their real margin is lower than screened and is
+>   untested.
 > - **Physical validation is still pending:** fit with the real case, comfort,
 >   strength of the printed parts, and any load testing.
 > - **Grip-guide friction.** If the grip rests on the guide ledges, friction

@@ -40,7 +40,7 @@ PROCESS_OVERRIDES = {
     "wall_loops": "6",
     "top_shell_layers": "6",
     "bottom_shell_layers": "6",
-    "sparse_infill_density": "50%",
+    "sparse_infill_density": "20%",
     # No part needs support; the joint sockets and the rest's rail groove are
     # bridged, and support in the groove would scar a sliding face.
     "enable_support": "0",
@@ -48,6 +48,7 @@ PROCESS_OVERRIDES = {
     "brim_width": "5",
 }
 SOLID = {"sparse_infill_density": "100%"}
+REST = {"sparse_infill_density": "50%"}
 
 # Bambu Studio drops plate names containing any of ILLEGAL_NAME_CHARS.
 PLATES = [
@@ -56,7 +57,7 @@ PLATES = [
         ("keys", SOLID),
     ]),
     ("Rear base, palm rest and stoppers", [
-        ("stoppers", SOLID), ("base_rear", {}), ("rest", SOLID),
+        ("stoppers", {}), ("base_rear", {}), ("rest", REST),
     ]),
 ]
 ILLEGAL_NAME_CHARS = '<>:/\\|?*"'
