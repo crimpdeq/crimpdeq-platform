@@ -40,7 +40,7 @@ Each release also includes `crimpdeq-platform.3mf`, a Bambu Studio project
 with both plates already laid out and the [print settings](#print-settings)
 applied, including the per-part infill. It's set up for a Bambu Lab A1 with
 a 0.4 mm nozzle, Generic PETG, and the textured PEI plate. It takes about
-740 g of PETG.
+720 g of PETG.
 
 1. Open it with **File → Open Project**.
 2. Select your printer, filament and plate. Changing the printer can reset

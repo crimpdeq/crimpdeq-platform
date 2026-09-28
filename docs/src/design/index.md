@@ -89,9 +89,12 @@ case and about 40 mm behind it, so the case only hides the bottom of the phone
 when seen from less than 18° above the table. The slot is 14 mm wide, for a
 phone up to about 13 mm thick in its case, and 16 mm deep with a flat floor.
 It leans 15° away from the user, so the screen faces the hand, and is open at
-both sides, so a phone fits in portrait or landscape. The stand is 90 mm
-wide, beyond the anchor block, with 6 mm of finger room before the stopper
-well. It is away from the hand and the grip, and carries no load.
+both sides, so a phone fits in portrait or landscape. The stand is two
+20 mm-wide slotted cheeks, 84 mm across overall. The phone spans the 44 mm
+gap between them, which saves filament and leaves room for a charging
+cable in portrait; a phone 64 mm wide still rests 10 mm on each cheek. The
+stand sits beyond the anchor block, with 6 mm of finger room before the
+stopper well. It is away from the hand and the grip, and carries no load.
 
 ## Grip guides
 

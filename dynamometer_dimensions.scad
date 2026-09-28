@@ -222,7 +222,14 @@ phone_slot_inner_wall_x = 4;
 phone_slot_outer_wall_x = 5;
 phone_slot_z_min = is_undef(phone_slot_z_min) ? 15 : phone_slot_z_min;
 phone_stand_top_z = phone_slot_z_min + phone_slot_depth_z;
-phone_stand_half_w_y = is_undef(phone_stand_half_w_y) ? 45 : phone_stand_half_w_y;
+phone_stand_half_w_y = is_undef(phone_stand_half_w_y) ? 42 : phone_stand_half_w_y;
+// The stand is two slotted cheeks; the phone spans the gap between them,
+// which leaves room for a charging cable in portrait.
+phone_stand_gap_half_y = is_undef(phone_stand_gap_half_y) ? 22 : phone_stand_gap_half_y;
+phone_stand_cheek_w_y = phone_stand_half_w_y - phone_stand_gap_half_y;
+// Narrowest phone, in its case, that must still rest on both cheeks.
+phone_min_w = 64;
+phone_min_rest_y = 8;
 // Finger room between the stand and the stopper well's pull tabs.
 phone_stand_clear_x = is_undef(phone_stand_clear_x) ? 6 : phone_stand_clear_x;
 phone_stand_x_max = min(stopper_well_x_min, anchor_pocket_x_min) - phone_stand_clear_x;
@@ -488,6 +495,9 @@ assert(phone_slot_z_min > deck_z + phone_slot_depth_z &&
     phone_view_elevation <= phone_view_max_elevation &&
     phone_stand_clear_x >= 5 && phone_stand_half_w_y >= phone_probe_w / 2 + 2,
     "The phone stand must lift the slot so the case hides the phone only from low viewpoints, leave finger room by the stopper well, and span a phone in portrait.");
+assert(phone_stand_cheek_w_y >= 15 && phone_stand_gap_half_y >= 10 &&
+    phone_min_w / 2 - phone_stand_gap_half_y >= phone_min_rest_y,
+    "Phone stand cheeks must be at least 15 mm wide, leave a cable gap, and carry a narrow phone on both.");
 assert(stopper_well_y_max < case_y_min - 3 && stopper_well_x_min > base_x_min + 2 &&
     stopper_well_z_min > base_z_min + 5,
     "The stopper well must stay clear of the case and keep solid walls and floor.");

@@ -46,7 +46,7 @@ assembling anything.
 ## Phone
 
 - [ ] Your phone, in its case, drops into the slot in the stand at the far end of the
-      front half and leans back against its outer face.
+      front half, rests on both cheeks and leans back against their outer faces.
 
 Sand tight fits lightly; don't enlarge them past a sliding fit. Never sand
 the lugs' round sides to make an eye fit: reprint instead, so the eye still

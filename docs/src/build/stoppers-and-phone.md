@@ -24,10 +24,12 @@ When not in use, stack both stoppers in the well beside the case, tabs up.
 
 ![Phone in its slot](../images/phone.png)
 
-Stand your phone, in its case, in the slot on top of the stand at the far
-end of the base, in portrait or landscape. The stand lifts it so the case
-doesn't hide the screen from where you sit, and the slot leans back 15° so
-the screen faces you while you pull. It takes phones up to about 13 mm thick.
+Stand your phone, in its case, in the slot across the two cheeks of the stand
+at the far end of the base, in portrait or landscape. The stand lifts it so
+the case doesn't hide the screen from where you sit, and the slot leans back
+15° so the screen faces you while you pull. It takes phones up to about
+13 mm thick. In portrait, a charging cable fits through the gap between the
+cheeks.
 
 ## Check
 

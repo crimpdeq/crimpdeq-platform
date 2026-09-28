@@ -270,10 +270,12 @@ module stopper_well_cut() {
 // --- Phone slot ----------------------------------------------------------
 
 module phone_stand() {
-    // Solid stand rising from the deck; the slot is cut from its top.
-    dyno_rounded_prism_xy(base_x_min, phone_stand_x_max,
-        -phone_stand_half_w_y, phone_stand_half_w_y,
-        deck_z - 1, phone_stand_top_z, 3);
+    // Two solid cheeks rising from the deck; the slot is cut from their tops.
+    for (side = [-1, 1])
+        mirror([0, side < 0 ? 1 : 0, 0])
+            dyno_rounded_prism_xy(base_x_min, phone_stand_x_max,
+                phone_stand_gap_half_y, phone_stand_half_w_y,
+                deck_z - 1, phone_stand_top_z, 3);
 }
 
 module phone_slot_cut() {
