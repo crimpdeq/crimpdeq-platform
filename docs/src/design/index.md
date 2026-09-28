@@ -79,9 +79,10 @@ When not in use, the stoppers stack in a 16 mm-deep well in the deck, on the
 
 ## Phone stand
 
-A 52 mm-tall stand across the far (−X) end of the base holds a phone running
-the Crimpdeq app. Its slot floor is 2 mm above the top of the case, so the
-case never hides the bottom of the screen. The slot is 14 mm wide, for a
+A 37 mm-tall stand across the far (−X) end of the base holds a phone running
+the Crimpdeq app. Its slot floor is at Z = 15 mm, 13 mm below the top of the
+case and about 40 mm behind it, so the case only hides the bottom of the phone
+when seen from less than 18° above the table. The slot is 14 mm wide, for a
 phone up to about 13 mm thick in its case, and 16 mm deep with a flat floor.
 It leans 15° away from the user, so the screen faces the hand, and is open at
 both sides, so a phone fits in portrait or landscape. The stand is 90 mm

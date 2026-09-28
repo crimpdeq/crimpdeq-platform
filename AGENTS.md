@@ -50,8 +50,9 @@
   compression under load.
 - Preserve switch and USB access on the open +Y side of the base.
 - Keep the tilted phone slot in its stand at the far (-X) end of the base,
-  with the slot floor above the case top, finger room by the stopper well,
-  outside the load path and clear of the hand at every rest position.
+  with its floor at Z = 15 mm so the case hides the phone only from viewpoints
+  below 20° elevation, finger room by the stopper well, outside the load path
+  and clear of the hand at every rest position.
 - Keep every part printable without supports.
 - Keep the base, anchor, grip, clips, rest, keys, phone and case collision-free
   except for explicitly modelled contact surfaces.

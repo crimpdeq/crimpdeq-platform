@@ -230,7 +230,7 @@ invalid_parameters=(
     'phone_slot_w=11'
     'phone_slot_tilt=40'
     'phone_slot_depth_z=10'
-    'phone_slot_z_min=20'
+    'phone_slot_z_min=0'
     'phone_stand_clear_x=2'
 )
 for parameter in "${invalid_parameters[@]}"; do

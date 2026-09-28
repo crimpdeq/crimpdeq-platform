@@ -28,7 +28,7 @@ not fit together.
 > The base comes as two halves because it is 328 mm long and does not fit a
 > 256 mm bed, even diagonally. The front half is 223 mm long and the rear
 > half 116 mm; both are 122 mm wide. The phone stand makes the front half
-> 75 mm tall at one end, the tallest part on the plates.
+> 60 mm tall at one end, the tallest part on the plates.
 
 All parts are exported already oriented for printing. Don't rotate them or
 use "Lay on face". The keys print on their sides on purpose: they are then
