@@ -19,6 +19,9 @@ rest. It never passes through the case: the case floats 1 mm above the deck
 and the printed parts keep at least 1 mm from it. Its shell, lid and screws
 carry no load.
 
+The [requirements](requirements.md) list what every change to the design must
+keep.
+
 ## Eye lugs
 
 A narrow tongue rises from the anchor block and from the grip through each
