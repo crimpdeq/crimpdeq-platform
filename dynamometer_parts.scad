@@ -395,6 +395,26 @@ module base_key_slots() {
             key_slot(key_x(rest_offset(i)), y_pos, key_slot_z_min, deck_z + 0.1);
 }
 
+module brand_text_2d(text, size) {
+    text(text, size = size, font = brand_font, halign = "center", valign = "center");
+}
+
+module brand_engravings() {
+    // Top: on the deck, reading from the -Y side.
+    translate([top_brand_x, top_brand_y, deck_z - brand_depth])
+        linear_extrude(height = brand_depth + 0.1)
+            brand_text_2d(top_brand_text, top_brand_size);
+    // Sides: each reading from outside its face, cut from inside the wall
+    // outward so the depth stays controlled.
+    for (angle = [0, 180])
+        translate([side_brand_x, 0, side_brand_z])
+            rotate([0, 0, angle])
+                translate([0, -base_half_w_y + brand_depth, 0])
+                    rotate([90, 0, 0])
+                        linear_extrude(height = brand_depth + 0.1)
+                            brand_text_2d(side_brand_text, side_brand_size);
+}
+
 module base_front() {
     difference() {
         union() {
@@ -409,6 +429,7 @@ module base_front() {
         grip_trench_cut();
         stopper_well_cut();
         phone_slot_cut();
+        brand_engravings();
     }
 }
 

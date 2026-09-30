@@ -147,3 +147,7 @@ aligned and together when the platform is carried.
 The switch and USB port face +Y. Nothing stands above the deck on that side:
 a 30 mm-wide corridor in front of both openings stays clear out past the
 base edge.
+
+The front half carries the brand, engraved 0.8 mm deep in Inter Bold, the
+font of the case: "crimpdeq" on the deck beside the case's +Y wall, and
+"crimpdeq.com" on both side faces beside the grip trench.
