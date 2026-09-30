@@ -99,7 +99,10 @@ clip_tail_x = is_undef(clip_tail_x) ? 12 : clip_tail_x;
 clip_fin_t = 3;
 clip_fin_w_y = 16;
 clip_fin_top_z = is_undef(clip_fin_top_z) ? 20 : clip_fin_top_z;
-clip_install_travel = lug_r + 0.5 + clip_tip_x;
+// Slide from the fitting position, fork tip clear of the lug head, to the
+// seat. Kept at the Ø16.5 mm lug's travel, which also sets where the grip
+// body starts, so the grip and base halves keep their printed length.
+clip_install_travel = 12.75;
 // Finger room beside a grip-side clip's fin while it is fitted.
 clip_access_x = is_undef(clip_access_x) ? 6 : clip_access_x;
 
@@ -435,6 +438,8 @@ assert(clip_snap >= 0.2 && clip_snap <= 0.5 && clip_t >= 2.5 &&
 assert(clip_ring_bearing_mpa <= allowable_printed_bearing_mpa &&
     lug_neck_tension_mpa <= allowable_printed_tension_mpa,
     "The clip ring or lug neck exceeds configured stress under the grip's tilt.");
+assert(clip_install_travel >= lug_r + 0.5 + clip_tip_x,
+    "Clips must drop in with their fork tips clear of the lug head.");
 assert(clip_access_x >= 5 && clip_tail_x >= clip_tip_x + 6 &&
     dyno_eye_x_right + clip_tail_x <= lc_L / 2,
     "Clips need finger room beside the fin, a tail over the load cell, and must end on it.");
