@@ -31,7 +31,7 @@ rotated or the model changed. Re-import the release files.
 ## D. Plate 1: the lugs
 
 - [ ] Step up through the top of the grip's and the anchor block's lugs: the
-      neck and head print as closed outlines, and the 2 mm ring under each
+      neck and head print as closed outlines, and the 1.9 mm ring under each
       head prints as an overhang wall, not in free air.
 
 ## E. Plate 2: bridges

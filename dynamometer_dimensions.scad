@@ -52,8 +52,8 @@ case_switch_h = 10;
 usb_cable_boot_w = 12;
 
 // Platform rating and the printed structure's design target. The Crimpdeq is
-// rated to 1500 N; the printed lugs in its eyes limit the platform to 50 kg.
-platform_rated_kg = is_undef(platform_rated_kg) ? 50 : platform_rated_kg;
+// rated to 1500 N; the printed lugs in its eyes limit the platform to 49 kg.
+platform_rated_kg = is_undef(platform_rated_kg) ? 49 : platform_rated_kg;
 gravity = 9.80665;
 platform_rated_force_n = platform_rated_kg * gravity;
 structural_safety_factor = is_undef(structural_safety_factor) ? 2.0 : structural_safety_factor;
@@ -71,11 +71,11 @@ deck_z = case_z_min - case_float_gap;
 // Above the load cell the lug necks down under a head that holds a clip.
 u_slot_clear = is_undef(u_slot_clear) ? 1.0 : u_slot_clear;
 tongue_r = case_eye_u_d / 2 - u_slot_clear;
-lug_fit = is_undef(lug_fit) ? 0.25 : lug_fit;
+lug_fit = is_undef(lug_fit) ? 0.35 : lug_fit;
 lug_r = eye_bore_d / 2 - lug_fit;
 lug_neck_r = is_undef(lug_neck_r) ? 5.25 : lug_neck_r;
-// Flat ring under the head that the clip bears on.
-lug_head_flat_w = is_undef(lug_head_flat_w) ? 2 : lug_head_flat_w;
+// Flat ring under the head that the clip bears on, out to the head's rim.
+lug_head_flat_w = is_undef(lug_head_flat_w) ? lug_r - lug_neck_r : lug_head_flat_w;
 lug_head_chamfer = lug_r - lug_neck_r - lug_head_flat_w;
 lug_top_chamfer = 1;
 // Above the load cell, the neck and head are cut flat on their inboard side
@@ -412,7 +412,7 @@ rest_min_engaged_x = base_x_max - rest_face_x(rest_adjust_range);
 rest_uplift_n = design_force_n * (rest_bolster_z_max - deck_z) / rest_depth_x;
 rail_flank_shear_mpa = rest_uplift_n / (2 * rest_min_engaged_x * rail_h / 2);
 
-assert(platform_rated_kg == 50, "The printed platform is screened for 50 kg only.");
+assert(platform_rated_kg == 49, "The printed platform is screened for 49 kg only.");
 assert(structural_safety_factor >= 2, "Use a structural design factor of at least 2.0.");
 assert(u_slot_clear >= 1 && tongue_r > lug_r + 1,
     "Tongues must keep 1 mm from the case's U-slots and a seat ring round each lug.");

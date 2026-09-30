@@ -7,10 +7,10 @@ them replaces testing printed parts.
 
 ## Load rating
 
-- The platform is rated for 50 kg (about 490 N). The Crimpdeq itself is rated
+- The platform is rated for 49 kg (about 481 N). The Crimpdeq itself is rated
   to 1500 N (about 150 kg); the printed lugs set the lower limit.
 - The printed structure is sized with a 2.0 structural design factor, but the
-  platform is never loaded above its 50 kg rating.
+  platform is never loaded above its 49 kg rating.
 
 ## Printing
 

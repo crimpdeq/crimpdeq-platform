@@ -27,12 +27,12 @@ keep.
 A narrow tongue rises from the anchor block and from the grip through each
 U-slot, keeping 1 mm from the case, up to the load cell's underside. The load
 cell rests on the tongues. On each tongue, a round lug fills the eye's
-ring with 0.25 mm clearance, and the ring bears on it across its full
-14.5 mm diameter and the load cell's 4 mm thickness.
+ring with 0.35 mm clearance, and the ring bears on it across its full
+14.3 mm diameter and the load cell's 4 mm thickness.
 
 Above the load cell the lug narrows to a Ø10.5 mm neck, then widens to a head
 no wider than the lug, with a 1 mm lead-in chamfer on top, so the eye still
-drops over it. The head's underside is a 2 mm-wide flat ring for the clip,
+drops over it. The head's underside is a 1.9 mm-wide flat ring for the clip,
 out to the lug's full diameter. The head is cut flat on its inboard side,
 1 mm clear of the battery walls that the case lid drops into the inboard edge
 of each U-slot. Only the outboard side of the lug carries the pull.

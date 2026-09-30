@@ -96,7 +96,7 @@ No part needs support, so supports are off. The base halves print flat with
 every slot, pocket, trench and well open upward; the rear half's joint
 sockets (12 mm) and the palm rest's rail groove (25 mm) are closed by
 bridges. The anchor block and grip print upright with their lugs on top;
-the flat ring under each lug head is only 2 mm wide. The clips print flat on
+the flat ring under each lug head is only 1.9 mm wide. The clips print flat on
 their clamp faces with their fins up, the keys stand on their sides, and the
 stoppers print flat with their pull tabs upright.
 
