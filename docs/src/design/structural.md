@@ -18,13 +18,13 @@ All values are at the 981 N design target.
 
 | Check | Stress | Limit |
 |---|---|---|
-| Eye bearing on each lug (16.5 mm × 4 mm) | 14.9 MPa | 20 MPa, lug bearing |
-| Lug root bending across the layers, eye force at the load-cell mid-plane | 4.4 MPa | 12 MPa |
-| Lug root shear across the layers | 4.6 MPa | 6 MPa |
+| Eye bearing on each lug (14.5 mm × 4 mm) | 16.9 MPa | 20 MPa, lug bearing |
+| Lug root bending across the layers, eye force at the load-cell mid-plane | 6.6 MPa | 12 MPa |
+| Lug root shear across the layers | 5.9 MPa | 6 MPa |
 | Tongue root at the deck, bending across the layers | 3.1 MPa | 12 MPa |
 | Anchor block bearing on its pocket | 1.1 MPa | 12 MPa, bearing |
-| Clip on the flat ring under the lug head, largest finger-pull tilt | 10.3 MPa | 12 MPa, bearing |
-| Lug neck pulled by the clip, across the layers | 4.1 MPa | 12 MPa |
+| Clip on the flat ring under the lug head, largest finger-pull tilt | 10.7 MPa | 12 MPa, bearing |
+| Lug neck pulled by the clip, across the layers | 4.5 MPa | 12 MPa |
 | Finger lip bending over the full 25 mm edge | 18.4 MPa | 30 MPa, bending |
 | Grip side and back walls in tension | 1.3 MPa | 12 MPa |
 | Either index key alone, in shear | 10.2 MPa | 12 MPa |
@@ -55,7 +55,7 @@ Eye bearing on printed plastic is the governing assumption of the design.
 `allowable_lug_bearing_mpa` (20 MPa by default, about 40% of PETG's
 compressive yield) is for conformal contact between the metal eye and a
 solid, 100%-infill lug. At the platform's 490 N rating the bearing stress is
-half the screened value, 7.4 MPa. The anchor block and grip print upright, so
+half the screened value, 8.5 MPa. The anchor block and grip print upright, so
 the lug and tongue roots are screened against the cross-layer tension limit,
 and lug shear against half of it.
 

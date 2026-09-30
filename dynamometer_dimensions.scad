@@ -14,6 +14,9 @@ loadcell_top_z = loadcell_bottom_z + lc_T;
 loadcell_center_z = loadcell_bottom_z + lc_T / 2;
 eye_d = 17;
 eye_center_offset = 6 + eye_d / 2;
+// A ring pressed into each eye narrows its bore; the case is sized round
+// eye_d, the lugs round the bore.
+eye_bore_d = 15;
 dyno_eye_x_right = lc_L / 2 - eye_center_offset;
 dyno_eye_x_left = -dyno_eye_x_right;
 dyno_eye_y = 0;
@@ -62,14 +65,15 @@ deck_z = case_z_min - case_float_gap;
 
 // Printed eye lugs. A narrow tongue rises from the anchor block and from the
 // grip through each eye's U-slot, keeping u_slot_clear from the case; the
-// load cell rests on its top. A round lug on the tongue fills the eye;
-// pulling the grip (+X) presses the outer rim of each eye against a lug.
+// load cell rests on its top. A round lug on the tongue fills the eye's
+// bore; pulling the grip (+X) presses the outer rim of each eye against a
+// lug.
 // Above the load cell the lug necks down under a head that holds a clip.
 u_slot_clear = is_undef(u_slot_clear) ? 1.0 : u_slot_clear;
 tongue_r = case_eye_u_d / 2 - u_slot_clear;
 lug_fit = is_undef(lug_fit) ? 0.25 : lug_fit;
-lug_r = eye_d / 2 - lug_fit;
-lug_neck_r = is_undef(lug_neck_r) ? 5.5 : lug_neck_r;
+lug_r = eye_bore_d / 2 - lug_fit;
+lug_neck_r = is_undef(lug_neck_r) ? 5.25 : lug_neck_r;
 // Flat ring under the head that the clip bears on.
 lug_head_flat_w = is_undef(lug_head_flat_w) ? 2 : lug_head_flat_w;
 lug_head_chamfer = lug_r - lug_neck_r - lug_head_flat_w;
@@ -409,6 +413,7 @@ assert(platform_rated_kg == 50, "The printed platform is screened for 50 kg only
 assert(structural_safety_factor >= 2, "Use a structural design factor of at least 2.0.");
 assert(u_slot_clear >= 1 && tongue_r > lug_r + 1,
     "Tongues must keep 1 mm from the case's U-slots and a seat ring round each lug.");
+assert(eye_bore_d < eye_d, "The eye ring's bore must be smaller than the eye.");
 assert(lug_fit >= 0.15 && lug_fit <= 0.4, "Lugs need a 0.15-0.4 mm radial fit in the eye.");
 assert(lug_bearing_mpa <= allowable_lug_bearing_mpa,
     "Eye bearing on the printed lug exceeds the configured limit.");

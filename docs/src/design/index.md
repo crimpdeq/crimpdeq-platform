@@ -5,9 +5,9 @@
 The device is isometric and fully printed. It holds the
 [crimpdeq-case v2.0.0](https://github.com/crimpdeq/crimpdeq-case/tree/v2.0.0)
 enclosure, which lies flat, lid up, in the middle of a printed base. The
-case encloses the whole load cell. Each Ø17 mm eye is reached through a
-vertical U-slot, Ø22 mm round the eye and open to the case end, through the
-full height of the case. Printed lugs rise through those slots into the eyes:
+case encloses the whole load cell. Each Ø17 mm eye holds a pressed-in ring
+with a Ø15 mm bore, and is reached through a vertical U-slot, Ø22 mm round
+the eye and open to the case end, through the full height of the case. Printed lugs rise through those slots into the eyes:
 
 - the **anchor block** holds the left eye and bears on the base
 - the **finger grip** holds the right eye and carries the hangboard pocket
@@ -26,19 +26,19 @@ keep.
 
 A narrow tongue rises from the anchor block and from the grip through each
 U-slot, keeping 1 mm from the case, up to the load cell's underside. The load
-cell rests on the tongues. On each tongue, a round lug fills the eye with
-0.25 mm clearance, and the eye bears on it across its full 16.5 mm diameter
-and the load cell's 4 mm thickness.
+cell rests on the tongues. On each tongue, a round lug fills the eye's
+ring with 0.25 mm clearance, and the ring bears on it across its full
+14.5 mm diameter and the load cell's 4 mm thickness.
 
-Above the load cell the lug narrows to a Ø11 mm neck, then widens to a head
+Above the load cell the lug narrows to a Ø10.5 mm neck, then widens to a head
 no wider than the lug, with a 1 mm lead-in chamfer on top, so the eye still
 drops over it. The head's underside is a 2 mm-wide flat ring for the clip,
-then a short printable chamfer. The head is cut flat on its inboard side,
+out to the lug's full diameter. The head is cut flat on its inboard side,
 1 mm clear of the battery walls that the case lid drops into the inboard edge
 of each U-slot. Only the outboard side of the lug carries the pull.
 
 The anchor block and the grip print upright. The lug is short and round, so
-even loaded across the layers its root stays at 4.4 MPa bending at the design
+even loaded across the layers its root stays at 6.6 MPa bending at the design
 target.
 
 ## Eye clips

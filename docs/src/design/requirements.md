@@ -26,10 +26,10 @@ them replaces testing printed parts.
 - The platform holds the crimpdeq-case `v2.0.0` enclosure.
 - The case lies flat, lid up, and floats at least 1 mm above the deck and
   clear of every printed part. Its shell, lid and screws never carry load.
-- Hand force passes through printed round lugs in both Ø17 mm load-cell
-  eyes: the anchor block's lug and the grip's lug. Each stands on a tongue
-  rising through the case's eye U-slot, at least 1 mm from the case and its
-  lid battery walls.
+- Hand force passes through printed round lugs in the Ø15 mm ring bores
+  of both load-cell eyes: the anchor block's lug and the grip's lug. Each
+  stands on a tongue rising through the case's eye U-slot, at least 1 mm
+  from the case and its lid battery walls.
 - The lugs are solid. The anchor block and grip print upright, so the lug and
   tongue roots are screened across the layers.
 - Two snap-on eye clips hold the load cell down under the lug heads. Each

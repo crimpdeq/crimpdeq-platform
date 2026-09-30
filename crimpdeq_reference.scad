@@ -31,11 +31,12 @@ module ref_rounded_prism(x_min, x_max, y_min, y_max, z_min, z_max, r) {
 }
 
 module loadcell_2d_reference() {
+    // Each eye with its pressed-in ring, which crimpdeq-case does not model.
     difference() {
         square([lc_L, lc_W], center = true);
         for (x_pos = [dyno_eye_x_left, dyno_eye_x_right])
             translate([x_pos, 0])
-                circle(d = eye_d);
+                circle(d = eye_bore_d);
     }
 }
 
