@@ -56,7 +56,7 @@ them replaces testing printed parts.
 ## Palm rest
 
 - The solid heel deck is level with the pocket mouth. The palm bolster rises
-  18–24 mm above it and at least 2 mm above the key heads.
+  10–14 mm above it and at least 2 mm above the key heads.
 - The rest has nine positively locked positions, for hand openings of 25 to
   105 mm.
 - The rest is captured on a dovetail rail and locked by two printed index

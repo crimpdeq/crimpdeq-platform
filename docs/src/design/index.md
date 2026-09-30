@@ -116,7 +116,7 @@ there then affects readings; see
 
 The palm rest is one solid part: an upright palm face, a 60 × 78 mm heel deck
 level with the top of the finger pocket, and a straight palm bolster along the
-finger-facing edge. The bolster is 22 mm deep and rises 20 mm above the
+finger-facing edge. The bolster is 22 mm deep and rises 12 mm above the
 deck, with rolled 6 and 5 mm top edges. Its −X face continues the palm
 face. There are no holes, slots or fasteners in the contact area.
 

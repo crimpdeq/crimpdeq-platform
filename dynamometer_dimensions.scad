@@ -271,7 +271,7 @@ rest_z_min = deck_z;
 rest_deck_z = hangboard_front_z;
 rest_corner_r = 5;
 rest_bolster_depth_x = is_undef(rest_bolster_depth_x) ? 22 : rest_bolster_depth_x;
-rest_bolster_rise = is_undef(rest_bolster_rise) ? 20 : rest_bolster_rise;
+rest_bolster_rise = is_undef(rest_bolster_rise) ? 12 : rest_bolster_rise;
 rest_bolster_front_r = 6;
 rest_bolster_rear_r = 5;
 rest_bolster_embed = 6;
@@ -490,9 +490,9 @@ assert(abs(2 * rest_adjust_range
     "The rest travel must divide evenly into indexed positions.");
 assert(rest_face_x(-rest_adjust_range) >= trench_x_max + 15,
     "The palm rest gets too close to the grip trench at its smallest opening.");
-assert(rest_bolster_rise >= 18 && rest_bolster_rise <= 24 &&
+assert(rest_bolster_rise >= 10 && rest_bolster_rise <= 14 &&
     rest_bolster_depth_x >= 20 && rest_bolster_depth_x < rest_depth_x - 30,
-    "The palm bolster must rise 18-24 mm and leave a 30 mm heel deck behind it.");
+    "The palm bolster must rise 10-14 mm and leave a 30 mm heel deck behind it.");
 assert(rest_bolster_z_max >= key_head_z_max + 2,
     "The palm bolster must rise at least 2 mm above the key heads.");
 assert(key_y - key_w_y / 2 - key_fit > rest_half_w_y + 1 &&

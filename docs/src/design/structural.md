@@ -30,8 +30,8 @@ All values are at the 981 N design target.
 | Either index key alone, in shear | 10.2 MPa | 12 MPa |
 | Key bearing in the rest wing / base slot | 5.6 / 4.4 MPa | 12 MPa, bearing |
 | Base slot ligament between positions, in shear | 9.5 MPa | 12 MPa |
-| Palm bolster root, across the layers | 1.6 MPa | 12 MPa |
-| Rail flanks holding the rest down at its shortest engagement | 4.6 MPa | 6 MPa |
+| Palm bolster root, across the layers | 0.9 MPa | 12 MPa |
+| Rail flanks holding the rest down at its shortest engagement | 3.7 MPa | 6 MPa |
 
 Each index key is screened for the **entire** palm force. Both keys must
 still be fitted; the one-key calculation does not authorise using one.
