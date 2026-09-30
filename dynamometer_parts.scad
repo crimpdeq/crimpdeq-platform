@@ -400,10 +400,11 @@ module brand_text_2d(text, size) {
 }
 
 module brand_engravings() {
-    // Top: on the deck, reading from the -Y side.
+    // Top: across the deck, reading from the palm-rest (+X) end.
     translate([top_brand_x, top_brand_y, deck_z - brand_depth])
         linear_extrude(height = brand_depth + 0.1)
-            brand_text_2d(top_brand_text, top_brand_size);
+            rotate([0, 0, 90])
+                brand_text_2d(top_brand_text, top_brand_size);
     // Sides: each reading from outside its face, cut from inside the wall
     // outward so the depth stays controlled.
     for (angle = [0, 180])

@@ -326,15 +326,15 @@ base_rear_len = base_x_max - base_split_x;
 service_w = 30;
 service_y_max = base_half_w_y + 20;
 
-// Brand engraved into the front base half, in the crimpdeq-case font: on
-// the deck beside the case's +Y wall, and on both side faces beside the
-// grip trench.
+// Brand engraved into the front base half, in the crimpdeq-case font: across
+// the deck between the phone stand and the anchor pocket, reading from the
+// palm-rest end, and on both side faces beside the grip trench.
 brand_font = "Inter:style=Bold";
 brand_depth = 0.8;
 top_brand_text = "crimpdeq";
 top_brand_size = 9.5;
-top_brand_x = (phone_stand_x_max + trench_x_min) / 2;
-top_brand_y = (case_y_max + base_half_w_y) / 2;
+top_brand_x = (phone_stand_x_max + anchor_pocket_x_min) / 2;
+top_brand_y = 0;
 side_brand_text = "crimpdeq.com";
 side_brand_size = 8;
 side_brand_x = (stopper_well_x_max + base_split_x) / 2;
@@ -517,9 +517,10 @@ assert(phone_slot_z_min > deck_z + phone_slot_depth_z &&
 assert(phone_stand_cheek_w_y >= 15 && phone_stand_gap_half_y >= 10 &&
     phone_min_w / 2 - phone_stand_gap_half_y >= phone_min_rest_y,
     "Phone stand cheeks must be at least 15 mm wide, leave a cable gap, and carry a narrow phone on both.");
-assert(abs(top_brand_x - phone_stand_x_max) >= brand_len(top_brand_text, top_brand_size) / 2 + 3 &&
-    top_brand_size * brand_line_h + 6 <= base_half_w_y - case_y_max,
-    "The top brand must fit the deck strip between the phone stand, the trench and the case.");
+assert(top_brand_y - brand_len(top_brand_text, top_brand_size) / 2 >= stopper_well_y_max + 3 &&
+    top_brand_y + brand_len(top_brand_text, top_brand_size) / 2 <= base_half_w_y - 3 &&
+    top_brand_size * brand_line_h + 6 <= anchor_pocket_x_min - phone_stand_x_max,
+    "The top brand must fit the deck strip between the phone stand, the anchor pocket and the stopper well.");
 assert(abs(side_brand_x - stopper_well_x_max) >= brand_len(side_brand_text, side_brand_size) / 2 + 3 &&
     side_brand_size * brand_line_h + 6 <= deck_z - base_z_min &&
     base_half_w_y - trench_half_w_y - brand_depth >= 6,

@@ -149,5 +149,6 @@ a 30 mm-wide corridor in front of both openings stays clear out past the
 base edge.
 
 The front half carries the brand, engraved 0.8 mm deep in Inter Bold, the
-font of the case: "crimpdeq" on the deck beside the case's +Y wall, and
-"crimpdeq.com" on both side faces beside the grip trench.
+font of the case: "crimpdeq" across the deck between the case and the phone
+stand, reading from the palm-rest end, and "crimpdeq.com" on both side faces
+beside the grip trench.
