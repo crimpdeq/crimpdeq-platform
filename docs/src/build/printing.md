@@ -25,9 +25,9 @@ not fit together.
 | `crimpdeq-platform-rest.stl` | Palm rest | 2 |
 
 > [!NOTE]
-> The base comes as two halves because it is 331 mm long and does not fit a
+> The base comes as two halves because it is 311 mm long and does not fit a
 > 256 mm bed, even diagonally. The front half is 230 mm long and the rear
-> half 112 mm; both are 122 mm wide. The phone stand makes the front half
+> half 92 mm; both are 122 mm wide. The phone stand makes the front half
 > 60 mm tall at one end, the tallest part on the plates.
 
 All parts are exported already oriented for printing. Don't rotate them or
