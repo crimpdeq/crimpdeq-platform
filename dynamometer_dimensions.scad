@@ -255,10 +255,10 @@ phone_probe_l = 165;
 phone_probe_w = 80;
 
 // Palm rest. Its upright palm face sits hand_opening from the outside of the
-// finger lip; nine positions give 25-105 mm in 10 mm steps. The rest slides
+// finger lip; seven positions give 25-85 mm in 10 mm steps. The rest slides
 // on a dovetail rail and two printed keys lock it through its side wings.
-hand_opening = is_undef(hand_opening) ? 65 : hand_opening;
-rest_adjust_range = is_undef(rest_adjust_range) ? 40 : rest_adjust_range;
+hand_opening = is_undef(hand_opening) ? 55 : hand_opening;
+rest_adjust_range = is_undef(rest_adjust_range) ? 30 : rest_adjust_range;
 rest_index_pitch = is_undef(rest_index_pitch) ? 10 : rest_index_pitch;
 rest_index_count = round(2 * rest_adjust_range / rest_index_pitch) + 1;
 hand_opening_min = hand_opening - rest_adjust_range;
@@ -483,8 +483,8 @@ assert(anchor_z_min > base_z_min + 5 && anchor_bearing_mpa <= allowable_printed_
 assert(lip_design_bending_mpa <= allowable_printed_bending_mpa &&
     grip_net_tension_mpa <= allowable_printed_tension_mpa,
     "Finger lip or grip body exceeds configured nominal stress.");
-assert(hand_opening_min == 25 && hand_opening_max == 105 && rest_index_count == 9,
-    "Preserve nine 25-105 mm hand openings.");
+assert(hand_opening_min == 25 && hand_opening_max == 85 && rest_index_count == 7,
+    "Preserve seven 25-85 mm hand openings.");
 assert(abs(2 * rest_adjust_range
     - rest_index_pitch * round(2 * rest_adjust_range / rest_index_pitch)) < 0.001,
     "The rest travel must divide evenly into indexed positions.");

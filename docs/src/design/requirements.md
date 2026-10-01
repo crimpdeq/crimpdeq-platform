@@ -57,8 +57,8 @@ them replaces testing printed parts.
 
 - The solid heel deck is level with the pocket mouth. The palm bolster rises
   10–14 mm above it and at least 2 mm above the key heads.
-- The rest has nine positively locked positions, for hand openings of 25 to
-  105 mm.
+- The rest has seven positively locked positions, for hand openings of 25 to
+  85 mm.
 - The rest is captured on a dovetail rail and locked by two printed index
   keys in deck slots outside the palm area. Adjustment needs no tools.
 - Either index key alone is screened for the entire design force, and both

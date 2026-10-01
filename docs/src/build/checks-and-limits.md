@@ -8,7 +8,7 @@
       when you tap the base.
 - [ ] **Grip level:** the grip's top is level. Note whether it hangs free or
       rests on the guide ledges.
-- [ ] **All nine positions:** the keys go in and come out easily each time,
+- [ ] **All seven positions:** the keys go in and come out easily each time,
       and the rest slides freely between positions.
 - [ ] **Case access:** the USB port and switch are reachable.
 - [ ] **Base joint:** no visible gap or step between the halves.

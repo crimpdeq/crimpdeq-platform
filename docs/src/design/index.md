@@ -123,22 +123,22 @@ face. There are no holes, slots or fasteners in the contact area.
 The rest slides on a dovetail rail along the middle of the rear base half.
 The rail holds it down and sideways, so pushing on the bolster cannot tip it
 off. Two printed index keys lock its position. Each key drops through a slot
-in one of the rest's side wings, outside the palm area, into one of nine
-slots in the deck. The nine positions set the hand opening from 25 to 105 mm
+in one of the rest's side wings, outside the palm area, into one of seven
+slots in the deck. The seven positions set the hand opening from 25 to 85 mm
 in 10 mm steps. The opening is the clear gap from the outside of the finger
 lip to the palm face. Adjustment needs no tools: lift both keys out, slide the
 rest, and drop them in again.
 
 Approximate starting points are 25–45 mm for full crimp or smaller hands,
-55–75 mm for half crimp, and 85–105 mm for extended fingers or larger hands.
+55–75 mm for half crimp, and 85 mm for extended fingers or larger hands.
 These are setup guides, not ergonomic prescriptions.
 
 ## Base
 
-The base is 331 mm long, 122 mm wide and 22.6 mm tall below the deck, so it
+The base is 311 mm long, 122 mm wide and 22.6 mm tall below the deck, so it
 is printed as two halves that each fit a 256 mm bed: a 230 mm front half
 with the phone stand, anchor pocket, stopper well and grip trench, and a
-112 mm rear half with the rail and key slots. Two vertical dovetail tongues on the front half
+92 mm rear half with the rail and key slots. Two vertical dovetail tongues on the front half
 drop into sockets in the rear half. Under load the anchor pushes the front
 half toward the rest and the rest pushes the rear half back, so the butt
 faces of the joint are in compression. The dovetails only keep the halves

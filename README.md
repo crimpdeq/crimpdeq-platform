@@ -11,7 +11,7 @@ case into the two eyes of its load cell: one on a fixed anchor block,
 the other on a four-finger hangboard grip that the fingers pull toward the
 palm. The case itself floats clear of the base and never carries load.
 Drop-in stoppers give 25, 20, 15 and 10 mm edges, the palm rest slides on a
-rail and locks with two printed keys into one of nine hand openings, and a
+rail and locks with two printed keys into one of seven hand openings, and a
 raised stand at the far end holds a phone running the Crimpdeq app clear
 of the case.
 

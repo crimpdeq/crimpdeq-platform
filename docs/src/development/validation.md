@@ -9,7 +9,7 @@ CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash check-collisions.sh
 The runner renders every probe in `collision_check.scad`. The probes check
 that the base halves, anchor block, grip, clips, palm rest, keys and case
 reference don't collide, with the grip also at rated deflection and the rest
-at each of its nine positions. The case must clear the base even lowered by
+at each of its seven positions. The case must clear the base even lowered by
 nearly its 1 mm float gap, and must lower onto both lugs from above without
 touching them. They check that intentional contacts are present: the load
 cell rests on both tongues, each eye bears on its lug when the grip is

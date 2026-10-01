@@ -57,7 +57,7 @@ checks=(
     "stopper_stored empty"
     "stopper_stored_seated nonempty"
 )
-for index in {0..8}; do
+for index in {0..6}; do
     checks+=("rest_position_${index} empty")
 done
 for index in {0..3}; do
@@ -223,7 +223,7 @@ invalid_parameters=(
     'stopper_t_list=[5,10,5]'
     'stopper_tab_rise=2'
     'hand_opening=75'
-    'rest_adjust_range=30'
+    'rest_adjust_range=40'
     'rest_index_pitch=8'
     'rest_bolster_rise=8'
     'rest_bolster_rise=16'

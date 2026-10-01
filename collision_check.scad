@@ -170,7 +170,7 @@ if (mode == "anchor_case") {
     // Pushed together, the halves bear on their butt faces.
     intersection() { base_front(); translate([-0.02, 0, 0.01]) base_rear(); }
 } else if (mode == "rest_position") {
-    // The rest and both keys at each of the nine positions.
+    // The rest and both keys at each of the seven positions.
     o = rest_offset(test_position);
     intersection() {
         lifted() palm_rest(o);
