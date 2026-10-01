@@ -6,8 +6,8 @@
       case never touches the deck, the anchor block, the grip or the clips.
 - [ ] **Clips:** both are snapped round their lugs' necks and don't come off
       when you tap the base.
-- [ ] **Grip level:** the grip's top is level. Note whether it hangs free or
-      rests on the guide ledges.
+- [ ] **Grip level:** the grip's top is level and hangs free: a strip of
+      paper slides between both guide ledges and the grip's side walls.
 - [ ] **All seven positions:** the keys go in and come out easily each time,
       and the rest slides freely between positions.
 - [ ] **Case access:** the USB port and switch are reachable.

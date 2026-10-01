@@ -29,6 +29,8 @@ assembling anything.
 - [ ] The anchor block drops into its pocket in the front half and sits flat
       on the pocket floor.
 - [ ] The grip drops into its trench and rests on both guide ledges, level.
+      Without the load cell, the ledges carry it; once assembled, it hangs
+      clear of them.
 
 ## Palm rest and keys
 
