@@ -7,11 +7,6 @@ about 680 g of PETG. There is nothing else to buy. It holds the Crimpdeq case
 from [crimpdeq-case v2.0.0](https://github.com/crimpdeq/crimpdeq-case/tree/v2.0.0)
 or any earlier release.
 
-> [!CAUTION]
-> **The design has not been load-tested.** Never load the platform above its
-> 49 kg rating, even though the Crimpdeq itself is rated to 150 kg, and never
-> pull on it without both clips and both keys fitted.
-
 ## Parts
 
 The illustrations use the same colours throughout.
