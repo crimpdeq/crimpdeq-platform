@@ -12,7 +12,7 @@
 
 ## Design requirements
 
-- `docs/src/design/requirements.md` lists the design requirements. Preserve
+- `docs/src/requirements.md` lists the design requirements. Preserve
   every one; if a change needs to break one, explain the impact and ask
   before implementing it, then update that page with the model.
 
@@ -44,7 +44,7 @@
   and releases.
 - `.github/actions/setup-bambu-studio/`: the pinned Bambu Studio used to
   build the release project.
-- `docs/`: mdBook documentation; `docs/src/design/requirements.md` holds
+- `docs/`: mdBook documentation; `docs/src/requirements.md` holds
   the design requirements and `docs/illustrations/` renders the images in
   `docs/src/images/` from the model.
 - `README.md`: short prose overview; keep details, lists, and figures that
