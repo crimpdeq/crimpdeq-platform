@@ -21,6 +21,19 @@ simplified reference of the Crimpdeq case interface and does not need the
 [crimpdeq-case](https://github.com/crimpdeq/crimpdeq-case) repository to preview,
 export, or validate the model.
 
+## Specifications
+
+| | |
+|---|---|
+| Load rating | 49 kg (481 N); printed structure sized with a 2.0 design factor |
+| Edge depths | 25, 20, 15 and 10 mm, set with two stackable stoppers (5 and 10 mm) |
+| Finger pocket | Four fingers, 80 mm wide, 2 mm loading-edge radius |
+| Palm rest | 25–85 mm from the outside of the finger lip to the palm face, seven positions in 10 mm steps |
+| Phone slot | Phones up to about 13 mm thick in their case, portrait or landscape, leaned back 15° |
+| Size | 311 × 122 mm base, 60 mm tall at the phone stand |
+| Printing | No supports and no hardware; the base splits into two halves for a 256 mm bed; about 680 g of PETG |
+| Compatibility | [crimpdeq-case](https://github.com/crimpdeq/crimpdeq-case) v2.0.0 and earlier |
+
 ## Documentation
 
 The [book](docs/src/SUMMARY.md) covers the design and its structural
