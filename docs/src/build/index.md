@@ -9,9 +9,7 @@ or any earlier release.
 
 ## Parts
 
-The illustrations use the same colours throughout.
-
-![Colour key](../images/legend.png)
+The illustrations use the same colours throughout:
 
 - **Base** (grey), printed as a front and a rear half.
 - **Anchor block** (red) and **finger grip** (blue): their lugs go into the
