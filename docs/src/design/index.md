@@ -109,8 +109,7 @@ stretch. Two ledges run under the grip's side walls, 1 mm below them, enough
 to absorb print tolerances so the grip doesn't rest on them. If the
 grip tilts, they catch it and keep its top level, but they leave it free
 along X. They only touch the grip once it has dropped onto them, and friction
-there then affects readings; see
-[Known limits](../build/checks-and-limits.md#known-limits).
+there then affects readings.
 
 ## Palm rest and hand positions
 

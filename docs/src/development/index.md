@@ -1,18 +1,44 @@
 # Development
 
-The model is plain OpenSCAD with no library dependencies. Shared parameters,
-derived dimensions, and structural assertions live in
-`dynamometer_dimensions.scad`; printable modules live in
-`dynamometer_parts.scad`; and `dynamometer_assembly.scad` is the preview and
-export entry point. `crimpdeq_reference.scad` is a self-contained, simplified
-snapshot of the Crimpdeq case (crimpdeq-case v2.0.0) and load-cell interface, used for fit and
-collision checks. It is not a replacement enclosure design.
+The model is plain OpenSCAD with no library dependencies:
 
-All dimensions are in millimetres and forces in newtons. Parameters can be
-overridden from the command line with `-D name=value`; unsafe combinations
-fail with an assertion.
+- `dynamometer_dimensions.scad`: parameters and structural assertions.
+- `dynamometer_parts.scad`: the printable parts.
+- `dynamometer_assembly.scad`: preview and export entry point.
+- `crimpdeq_reference.scad`: a simplified snapshot of the Crimpdeq case
+  (crimpdeq-case v2.0.0) used for fit and collision checks.
 
-The model is tested with the OpenSCAD development snapshot pinned for
-[continuous integration](validation.md#continuous-integration), which
-renders far faster than the 2021.01 release. It also works on 2021.01, which
-is checked weekly.
+All dimensions are in millimetres. Override parameters with `-D name=value`;
+unsafe combinations fail with an assertion.
+
+## Preview and export
+
+```bash
+openscad dynamometer_assembly.scad    # preview; options in Window → Customizer
+bash export-parts.sh                  # every part as STL into exports/
+python3 export-bambu-project.py       # Bambu Studio project into exports/
+```
+
+## Validate
+
+Run after every geometry or dimension change:
+
+```bash
+CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash check-collisions.sh
+```
+
+It checks the parts for collisions and required contacts, confirms that each
+exported STL has the expected number of bodies, and that unsafe parameters
+are rejected. `check-real-case.sh` runs the same fit checks against the real
+[crimpdeq-case](https://github.com/crimpdeq/crimpdeq-case) source. CI runs
+both on every pull request.
+
+## Book
+
+The images in `docs/src/images/` are rendered from the model; re-render them
+after geometry changes and preview the book:
+
+```bash
+bash docs/illustrations/render-illustrations.sh
+mdbook serve docs
+```

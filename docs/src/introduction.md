@@ -17,8 +17,8 @@ hardware to buy.
 ## How this book is organised
 
 [Design](design/index.md) explains the mechanism and the structural
-assumptions behind it. [Build](build/index.md) is a step-by-step guide to
-printing the parts on a 256 mm printer and assembling them.
+assumptions behind it. [Build](build/index.md) explains how to print the parts and
+assemble them.
 [Development](development/index.md) covers previewing, exporting, and
 validating the model.
 
