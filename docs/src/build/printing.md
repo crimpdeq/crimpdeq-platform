@@ -4,7 +4,7 @@
 
 Download the STL files from the latest
 [release](https://github.com/crimpdeq/crimpdeq-platform/releases), or export
-them into `exports/` from the repository root (this takes a few minutes):
+them into `exports/` from the repository root:
 
 ```bash
 bash export-parts.sh
@@ -15,54 +15,47 @@ not fit together.
 
 | File | Contents | Plate |
 |---|---|---|
-| `crimpdeq-platform-frame_left.stl` | Left frame half (fixed clevis, stopper well, phone slot, USB window, upper lap tongues) | 1 |
-| `crimpdeq-platform-frame_right.stl` | Right frame half (index holes, grip guides, palm post, lower lap tongues) | 2 |
-| `crimpdeq-platform-wrist_rest.stl` | Wrist rest with palm bolster | 3 |
-| `crimpdeq-platform-grip.stl` | Finger grip | 3 |
-| `crimpdeq-platform-stoppers.stl` | Two stackable pocket stoppers, 5 and 10 mm thick | 3 |
+| `crimpdeq-platform-base_front.stl` | Front base half: phone stand, anchor pocket, stopper well, grip trench, joint tongues | 1 |
+| `crimpdeq-platform-grip.stl` | Finger grip with its eye lug | 1 |
+| `crimpdeq-platform-anchor.stl` | Anchor block with its eye lug | 1 |
+| `crimpdeq-platform-clips.stl` | Two identical eye clips | 1 |
+| `crimpdeq-platform-keys.stl` | Two identical index keys, printed on their sides | 1 |
+| `crimpdeq-platform-stoppers.stl` | Two stackable pocket stoppers, 5 and 10 mm thick | 2 |
+| `crimpdeq-platform-base_rear.stl` | Rear base half: rest rail, key slots, joint sockets | 2 |
+| `crimpdeq-platform-rest.stl` | Palm rest | 2 |
 
 > [!NOTE]
-> The frame comes as two halves because the full frame is 343.9 mm long and
-> does not fit a 256 mm bed, even diagonally. The left half is 210.1 mm long
-> and the right half 181.8 mm. Both are 124 mm wide, 134 mm with the 5 mm
-> brim, so each gets its own plate. Without the brim they would just fit on
-> one plate, but these tall parts need it to avoid lifting at the corners:
-> the lap faces must stay flat to mate.
+> The base comes as two halves because it is 311 mm long and does not fit a
+> 256 mm bed, even diagonally. The front half is 230 mm long and the rear
+> half 92 mm; both are 122 mm wide. The phone stand makes the front half
+> 60 mm tall at one end, the tallest part on the plates.
 
 All parts are exported already oriented for printing. Don't rotate them or
-use "Lay on face".
+use "Lay on face". The keys print on their sides on purpose: they are then
+sheared along their layers instead of between them.
 
 ## Ready-made Bambu Studio project
 
 Each release also includes `crimpdeq-platform.3mf`, a Bambu Studio project
-with the three plates below already laid out and the
-[print settings](#print-settings) applied, including the 100% infill for the
-wrist rest, grip and stoppers. It's set up for a Bambu Lab A1 with a 0.4 mm
-nozzle, Generic PETG, the textured PEI plate, and 50% infill for the frame
-halves.
+with both plates already laid out and the [print settings](#print-settings)
+applied, including the per-part infill. It's set up for a Bambu Lab A1 with
+a 0.4 mm nozzle, Generic PETG, and the textured PEI plate. It takes about
+680 g of PETG.
 
 1. Open it with **File → Open Project**.
 2. Select your printer, filament and plate. Changing the printer can reset
    process settings, so compare them with the tables below afterwards.
 3. Do the [slicer checks](slicer-checks.md) before printing.
 
-## Plates 1 and 2: frame halves
+## Plate 1: front base half, grip and small parts
 
 ![Plate 1 layout](../images/plate1.png)
 
+## Plate 2: rear base half, palm rest and stoppers
+
 ![Plate 2 layout](../images/plate2.png)
 
-- One frame half per plate, centred, with the long sides along Y.
-- Both halves print upside down: the flat rail faces on the bed and the feet
-  pointing up. The stopper well and phone slot of the left half open onto
-  the bed.
-
-## Plate 3: wrist rest, grip and stoppers
-
-![Plate 3 layout](../images/plate3.png)
-
-Keep the parts at least 15–20 mm apart. **Print Plate 3 first.** It's
-shorter, and it lets you check support removal before the long frame prints.
+Keep the parts at least 15 mm apart.
 
 ## Print settings
 
@@ -73,40 +66,50 @@ Use one global process profile, then override per object where listed.
 | Layer height | 0.2 mm |
 | Walls | 6 |
 | Top/bottom layers | 6 |
-| Infill | 40–60% for the frame halves |
-| Supports | On, **Global**, type **tree(auto)**, threshold 30° |
-| On build plate only | **Off** (the grip cheek needs support from the part) |
+| Infill | 20% |
+| Supports | **Off** |
 | Brim | Outer brim only, 5 mm |
 
 Per-object override (select the object, switch Process to **Objects**):
 
 | Object | Override |
 |---|---|
-| `grip`, `wrist_rest`, `stoppers` | 100% infill |
+| `grip`, `anchor`, `clips`, `keys` | 100% infill |
+| `rest` | 50% infill |
+| `base_front`, `base_rear` | 4 top and 4 bottom layers |
 
-PETG or ASA print well on the A1 and are enough to check fit and comfort.
-PA-CF or PET-CF may be candidates for structural evaluation, but a filament
-name or infill setting does not establish strength. Validate coupons in the
-intended print orientation.
+Height ranges print the lightly loaded parts of three objects sparser.
+Right-click the object, choose **Height range Modifier**, set the range, and
+give it the listed infill:
 
-## Where supports are needed
+| Object | Range | Infill | Covers |
+|---|---|---|---|
+| `base_front` | 22.6–59.6 mm | 10% | The phone stand's cheeks, the only part above the deck |
+| `rest` | 11–29.5 mm | 15% | The upper heel and the bolster, above the key wings and rail groove |
+| `anchor` | 0–11.5 mm | 40% | The lower body in the pocket, below its solid top 5 mm |
 
-| Part | Supported area |
-|---|---|
-| Right frame half | Underside of both lap tongues, about 22.5 mm up |
-| Right frame half | Grip-guide ledges on the rail inner faces, about 31 mm up |
-| Right frame half | Bridge over the palm-deck channel at the closed end |
-| Left frame half | Clevis cheek with the Ø12.9 mm sleeve hole, about 35–45 mm up |
-| Wrist rest | Underside of the overhanging heel deck and outer upper arms |
-| Grip | Underside of the upper clevis cheek and pocket body |
+The lugs must be solid: the load cell's eyes bear on them directly, and the
+anchor block stays solid for 5 mm under its tongue root. The anchor's lower
+body only bears on its pocket. The base halves and palm rest can be sparse because the six walls print their
+loaded features solid: the key slots and the ligaments between them, the
+rail, the joints, the anchor pocket and the rest's key wings. Don't reduce
+the walls, or the top and bottom layers below these values. The stoppers
+are outside the load path. If the base's top surfaces show the infill
+through them, go back to 5 top layers.
 
-Nothing else needs support: the index holes are self-supporting, the screw
-counterbores, stopper well and phone slot of the left half bridge over their
-openings, the nut pockets of the right half open upwards, and the stoppers
-print flat with their pull tabs standing upright.
+PETG prints well on the A1 and is what the structural screens assume, but a
+filament name or infill setting does not establish strength. Validate
+coupons in the intended print orientation.
 
-The right half's lap faces bear the rail load. Remove their support
-carefully and sand them flat, without rounding the edges. The grip rests on
-the top faces of the guide ledges: sand those smooth and flat too. The wrist
-rest's upper arms slide just above the rail tops and its lower arms just
-below them, so sand support scars on those faces flat as well.
+## Supports
+
+No part needs support, so supports are off. The base halves print flat with
+every slot, pocket, trench and well open upward; the rear half's joint
+sockets (12 mm) and the palm rest's rail groove (25 mm) are closed by
+bridges. The anchor block and grip print upright with their lugs on top;
+the flat ring under each lug head is only 1.9 mm wide. The clips print flat on
+their clamp faces with their fins up, the keys stand on their sides, and the
+stoppers print flat with their pull tabs upright.
+
+Don't turn supports on: support in the rail groove would scar a sliding face,
+and support round a lug would scar the side the load-cell eye bears on.

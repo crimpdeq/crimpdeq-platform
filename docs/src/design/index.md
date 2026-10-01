@@ -1,142 +1,154 @@
 # Design
 
-The device is isometric. The fixed frame anchors the left load-cell eye, and
-a recessed four-finger hangboard pocket pulls the right eye. The palm bears
-against a continuous rounded face beside the finger pocket, and the wrist heel
-rests on an integral, unperforated deck extending away from the fingers. The
-hand does not rest on the adjustment rails or their gaps.
+![Section through the load-cell axis](../images/lug_section.png)
 
-Hand force is routed through both Ø17 mm load-cell eyes, pin sleeves, collars,
-and double-shear clevis cheeks. The enclosure shell, lid, and M2.5 enclosure
-screws are not in the force path. The switch and USB port stay reachable
-through a service tunnel in the +Y frame rail.
+The device is isometric and fully printed. It holds the
+[crimpdeq-case v2.0.0](https://github.com/crimpdeq/crimpdeq-case/tree/v2.0.0)
+enclosure or any earlier release, which lies flat, lid up, in the middle of a printed base. The
+case encloses the whole load cell. Each Ø17 mm eye holds a pressed-in ring
+with a Ø15 mm bore, and is reached through a vertical U-slot, Ø22 mm round
+the eye and open to the case end, through the full height of the case. Printed lugs rise through those slots into the eyes:
 
-Nine positively locked positions set a 25–105 mm hand opening in 10 mm steps.
-Two tethered Ø6 mm push-button ball-lock pins pass through discrete holes in
-the fixed rails and round holes in the wrist rest's short, stiff arms.
-Adjustment needs no tools.
+- the **anchor block** holds the left eye and bears on the base
+- the **finger grip** holds the right eye and carries the hangboard pocket
+
+When the fingers pull the grip toward the palm (+X), the outer rim of each
+eye presses on its lug. The force passes from the grip, through the load
+cell, into the anchor block, and from there through the base to the palm
+rest. It never passes through the case: the case floats 1 mm above the deck
+and the printed parts keep at least 1 mm from it. Its shell, lid and screws
+carry no load.
+
+The [requirements](requirements.md) list what every change to the design must
+keep.
+
+## Eye lugs
+
+A narrow tongue rises from the anchor block and from the grip through each
+U-slot, keeping 1 mm from the case, up to the load cell's underside. The load
+cell rests on the tongues. On each tongue, a round lug fills the eye's
+ring with 0.35 mm clearance, and the ring bears on it across its full
+14.3 mm diameter and the load cell's 4 mm thickness.
+
+Above the load cell the lug narrows to a Ø10.5 mm neck, then widens to a head
+no wider than the lug, with a 1 mm lead-in chamfer on top, so the eye still
+drops over it. The head's underside is a 1.9 mm-wide flat ring for the clip,
+out to the lug's full diameter. The head is cut flat on its inboard side,
+1 mm clear of the battery walls that the case lid drops into the inboard edge
+of each U-slot. Only the outboard side of the lug carries the pull.
+
+The anchor block and the grip print upright. The lug is short and round, so
+even loaded across the layers its root stays at 6.6 MPa bending at the design
+target.
+
+## Eye clips
+
+Two identical printed clips hold the load cell down on its tongues, under the
+lug heads, so the grip hangs from the load cell. Each clip is a flat fork
+that lies on the load cell round a lug's neck, with a fin at its outboard end.
+It drops into the U-slot beside the lug, then slides in until its fork snaps
+round the neck: the fork's mouth is 0.3 mm narrower than the neck on each
+side. The head stops it lifting and the snap stops it sliding out. The
+clips don't carry the pull, but they do carry the grip's tilt: they hold the
+load cell against the moment of an off-centre finger pull, bearing on the
+flat ring under each lug head. The grip-side clip's fin has 6 mm of finger
+room beside the grip while it is fitted. Pulling the fins releases the clips
+and frees the case.
 
 ## Finger pocket
 
-The finger pocket has a nominal 80 × 20 mm opening, exactly 25 mm insertion
-depth, and drafted walls leaving 78 × 18 mm at the floor (rounded corners).
-The depth is the edge the finger pads pull on, like the edge depth of a
-hangboard. A 2 mm radius rolls the loaded edge into the top face, widening the
-mouth to 22 mm locally without reducing the lip below 8 mm. The left spine
-remains full-depth and joins both clevis cheeks. Fingers enter from `+Z` and
-pull toward the palm pad. The wide slot and rolled edge are intended to reduce
-crowding and edge pressure; comfort still needs testing with different hands.
+The pocket has an 80 × 20 mm opening and is exactly 25 mm deep. Its walls
+have a 1 mm draft and rounded corners, leaving 78 × 18 mm at the floor. A
+2 mm radius rolls the loaded +X edge, and the lip keeps at least 10 mm of
+material behind it. Fingers enter from +Z and pull toward the palm rest.
+
+The pocket is set low: its top is 11 mm above the load cell's underside and
+its floor 14 mm below it. The middle of each edge then sits within 4 mm of
+the load-cell plane, from −3.5 mm for the 25 mm edge to +4 mm for the 10 mm
+edge. This keeps the finger pull nearly in line with the load cell and
+limits the tilt it causes.
 
 ## Pocket stoppers
 
 Two drop-in stoppers, 5 and 10 mm thick, raise the pocket floor. On their
 own they give 20 and 15 mm edges; stacked, in either order, they give a
 10 mm edge. Without a stopper the edge is 25 mm. Each is a 17.5 × 77.5 mm
-plate that fills the pocket floor with 0.25 mm clearance, so the closed
-pocket walls locate it in both directions, and the fingers press it onto the
-floor or the stopper below. The loaded lip is unchanged.
+plate that fits the pocket floor with 0.25 mm clearance, so the pocket walls
+locate it. The fingers press it onto the floor or onto the stopper below.
 
 Each stopper has a 3 × 8 mm pull tab on one end face: the 5 mm stopper at one
-end, the 10 mm stopper at the other. The tabs run in vertical slots in the
-pocket end walls, which leave 2 mm of wall behind them, so the whole top of
-the stopper stays free for the fingers. With the stopper on the pocket floor,
-its tab stands 6 mm above the grip top, so it can be pinched and pulled
-straight up; the top stopper of a stack stands a further 5 or 10 mm proud.
+end, the 10 mm stopper at the other. The tabs run in slots in the pocket end
+walls, so the whole top of the stopper stays free for the fingers. With a
+stopper on the pocket floor, its tab stands 6 mm above the grip.
 
-When not in use, the stoppers stack in a 16 mm-deep well in the left end of
-the frame, next to the anchor post, with their tabs standing above it.
+When not in use, the stoppers stack in a 16 mm-deep well in the deck, on the
+−Y side next to the case.
+
+## Phone stand
+
+A 37 mm-tall stand across the far (−X) end of the base holds a phone running
+the Crimpdeq app. Its slot floor is at Z = 15 mm, 13 mm below the top of the
+case and about 40 mm behind it, so the case only hides the bottom of the phone
+when seen from less than 18° above the table. The slot is 14 mm wide, for a
+phone up to about 13 mm thick in its case, and 16 mm deep with a flat floor.
+It leans 15° away from the user, so the screen faces the hand, and is open at
+both sides, so a phone fits in portrait or landscape. The stand is two
+20 mm-wide slotted cheeks, 84 mm across overall. The phone spans the 44 mm
+gap between them, which saves filament and leaves room for a charging
+cable in portrait; a phone 64 mm wide still rests 10 mm on each cheek. The
+stand sits beyond the anchor block, with 6 mm of finger room before the
+stopper well. It is away from the hand and the grip, and carries no load.
 
 ## Grip guides
 
-The grip hangs from a single joint at the right load-cell eye, and the pocket
-sits about 40 mm from it, so the grip and the load cell can tip until the
-pocket drops below the frame. Two 38 mm-long ledges on the rail inner faces
-reach 4 mm under the grip's side walls, 0.3 mm below them. They catch the
-grip if it tips and hold its top level with the frame, but leave it free
-along X. They only touch the grip once it has dropped onto them, so friction
-there can affect readings; see [Known limits](../build/checks-and-limits.md#known-limits).
+The grip hangs from the load cell and does not touch the base. Its trench
+leaves it 8 mm of free travel in the pull direction, 1 mm behind and 3 mm at
+each side. Pulling takes up at most about 1 mm of that: the lug's clearance
+in the eye, the anchor block's play in its pocket and the load cell's
+stretch. Two ledges run under the grip's side walls, 1 mm below them, enough
+to absorb print tolerances so the grip doesn't rest on them. If the
+grip tilts, they catch it and keep its top level, but they leave it free
+along X. They only touch the grip once it has dropped onto them, and friction
+there then affects readings; see
+[Known limits](../build/checks-and-limits.md#known-limits).
 
-## Palm and wrist saddle
+## Palm rest and hand positions
 
-The adjustable support is one solid L-shaped saddle, not a series of narrow
-contact points. Its 65 × 78 mm heel deck joins the upright palm face with
-matching 5 mm rounded edges and no groove at the transition. Two low,
-2 mm-high side lips retain 2.4 mm rolled edges. The pad is 10 mm narrower
-than the grip so it slides past the grip guides when it goes onto the frame.
+The palm rest is one solid part: an upright palm face, a 60 × 78 mm heel deck
+level with the top of the finger pocket, and a straight palm bolster along the
+finger-facing edge. The bolster is 22 mm deep and rises 12 mm above the
+deck, with rolled 6 and 5 mm top edges. Its −X face continues the palm
+face. There are no holes, slots or fasteners in the contact area.
 
-At the finger-facing end, a straight palm bolster modelled on the GoGor LITE
-pad spans the full 78 mm pad width. It is 22 mm deep and 20 mm tall above
-the deck, with a nearly flat 11 mm top, a 6 mm front top radius, a 5 mm rear
-top radius, rounded ends blended into the side lips, and a 3 mm concave fillet
-into the deck. It has no cup or ridge. The palm heel pushes on its
-finger-facing (−X) face, which is one plane with the upright palm face below
-it. The bolster starts exactly at that palm-face datum and extends only away
-from the fingers, so all nine openings are unchanged. It is rigid printed
-material, with no soft layer.
+The rest slides on a dovetail rail along the middle of the rear base half.
+The rail holds it down and sideways, so pushing on the bolster cannot tip it
+off. Two printed index keys lock its position. Each key drops through a slot
+in one of the rest's side wings, outside the palm area, into one of seven
+slots in the deck. The seven positions set the hand opening from 25 to 85 mm
+in 10 mm steps. The opening is the clear gap from the outside of the finger
+lip to the palm face. Adjustment needs no tools: lift both keys out, slide the
+rest, and drop them in again.
 
-Behind the bolster, a 38 × 68 mm open heel deck remains solid and
-uninterrupted: no holes, slots, exposed fasteners, or separate pads beneath
-the wrist. The 14 mm-thick deck sits at Z = 34 mm, level with the finger
-pocket's +Z opening; only the bolster and the low lips rise above it. The
-bolster top, at Z = 54 mm, is 2.5 mm above the pin buttons, and the pin heads
-sit 6.5 mm outboard of the bolster ends. A rounded clearance
-channel in the fixed right post keeps 2 mm under the deck at full wrist
-travel. The upper pin arms are trimmed flush with the palm face across the
-pad width and join the saddle through the bolster's end faces.
-
-The whole saddle moves with the selected opening. The index holes and release
-pins remain outboard of the contact surface; they are adjustment features, not
-places to position the hand. The raised deck can overhang the right end of the
-frame at wider settings. Keep that overhang free rather than propping it on a
-table, keep skin clear of the moving rail and arm gaps, and adjust only when
-unloaded. Smooth any print seam before use.
-
-The openings are measured as the clear X gap from the **outside of the loading
-lip** to the palm-pad face, not from the recessed finger-contact surface.
 Approximate starting points are 25–45 mm for full crimp or smaller hands,
-55–75 mm for half crimp, and 85–105 mm for extended fingers or larger hands.
+55–75 mm for half crimp, and 85 mm for extended fingers or larger hands.
 These are setup guides, not ergonomic prescriptions.
 
-## Frame and feet
+## Base
 
-The lower wrist arms are 28 mm wide. The upper arms extend 3 mm farther away
-from the fingers, giving 24 mm of joint length behind the palm face where they
-enter the bolster's end faces. The full-depth indexed rails and left load-cell
-anchor stay intact; the right closing post retains a 29 mm-deep lower bridge
-and 20 mm side webs under its clearance channel. The rails sit 10.7 mm
-from the case on each side, set by the grip width, so the service tunnel
-through the +Y rail is 26 mm long.
+The base is 311 mm long, 122 mm wide and 22.6 mm tall below the deck, so it
+is printed as two halves that each fit a 256 mm bed: a 230 mm front half
+with the phone stand, anchor pocket, stopper well and grip trench, and a
+92 mm rear half with the rail and key slots. Two vertical dovetail tongues on the front half
+drop into sockets in the rear half. Under load the anchor pushes the front
+half toward the rest and the rest pushes the rear half back, so the butt
+faces of the joint are in compression. The dovetails only keep the halves
+aligned and together when the platform is carried.
 
-Four integral 12 × 12 mm corner feet hold the fixed frame above a flat
-tabletop. The modelled M8 nuts and wrist-pin tips keep at least
-`support_foot_clearance` to the foot plane, and the tips of the M8 × 60 bolts,
-which pass through the nuts, at least 5 mm; the case shell is not a support.
-Set the assembled frame on a level surface and confirm that all four soles
-touch without rocking before considering any load.
+The switch and USB port face +Y. Nothing stands above the deck on that side:
+a 30 mm-wide corridor in front of both openings stays clear out past the
+base edge.
 
-## Phone slot
-
-An unloaded block outboard of the left anchor post holds the stopper well and,
-at the far end, a slot for a phone running the Crimpdeq app. The slot is
-14 mm wide, for a phone up to about 13 mm thick in its case, and 16 mm deep
-with a flat floor. It leans 15° away from the user, so the screen faces the
-hand, and runs across the full frame width, so a phone fits in portrait or
-landscape. It is well away from the hand, the grip and the service tunnel,
-and it carries no load.
-
-## Two-piece frame
-
-The complete frame is 343.9 mm long and 124 mm wide, so it is printed as two
-halves that each fit a 256 mm bed: 210.1 mm and 181.8 mm long. They join at `frame_split_x` with a
-48 mm half-lap in each side rail, crossing only plain rail clear of the
-service tunnel, load anchor, feet and index holes, and clear of the wrist arms
-at minimum travel. The left half keeps the upper half of the rail depth and
-the right half the lower half.
-
-Two M5 × 35 socket-head screws per rail clamp the lap. Their heads sit in
-counterbores in the top face and nyloc nuts in hex pockets in the bottom face,
-so nothing stands proud of the frame. Rail compression bears on the lap
-shoulders; the screws and the thinner tongue are also screened for the full
-design force (see [Structural screening](structural.md)). Because the frame
-only closes when the halves are bolted, the wrist rest can slide onto the
-right half first and be removed again later.
+The front half carries the brand, engraved 0.8 mm deep in Inter Bold, the
+font of the case: "crimpdeq" across the deck between the case and the phone
+stand, reading from the palm-rest end, and "crimpdeq.com" on both side faces
+beside the grip trench.

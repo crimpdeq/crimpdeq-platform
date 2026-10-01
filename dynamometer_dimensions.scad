@@ -1,148 +1,172 @@
 //
-// Standalone Crimpdeq hand-dynamometer dimensions.
-// Units: mm, N, MPa unless noted.
+// All-printed Crimpdeq finger dynamometer: shared dimensions and screens.
+// Units: mm, N, MPa. Origin: load-cell centre in X/Y, load-cell bottom face
+// at Z = 0, matching the crimpdeq-case assembly coordinates.
 //
 
-// Crimpdeq v2 enclosure/load-cell interface snapshot.
+// Crimpdeq v2 interface snapshot (crimpdeq-case v2.0.0). Keep in step with
+// crimpdeq_reference.scad.
 lc_L = 80;
 lc_W = 40;
 lc_T = 4;
-loadcell_lift = 2.5;
-eye_d = 17;
-eye_edge_start = 6;
-eye_center_offset = eye_edge_start + eye_d / 2;
-clear_x = 0.8;
-pcb_L = 63.8;
-rear_clear = 0.8;
-front_clear = 2.0;
-usb_cable_boot_w = 12.0;
-
-case_wall_t = 3;
-case_floor_t = 3;
-case_lid_t = 3;
-case_inner_z_min = -lc_T / 2;
-case_inner_z_max = 25;
-loadcell_bottom_z = case_inner_z_min + loadcell_lift;
-loadcell_center_z = loadcell_bottom_z + lc_T / 2;
+loadcell_bottom_z = 0.5;
 loadcell_top_z = loadcell_bottom_z + lc_T;
-
-case_inner_x_min = -lc_L / 2 - clear_x;
-case_inner_x_max = lc_L / 2 + clear_x;
-case_inner_y_min = -pcb_L / 2 - rear_clear;
-case_inner_y_max = pcb_L / 2 + front_clear;
-case_outer_x_min = case_inner_x_min - case_wall_t;
-case_outer_x_max = case_inner_x_max + case_wall_t;
-case_outer_y_min = case_inner_y_min - case_wall_t;
-case_outer_y_max = case_inner_y_max + case_wall_t;
-case_outer_z_min = case_inner_z_min - case_floor_t;
-case_outer_z_max = case_inner_z_max + case_lid_t;
-case_center_z = (case_outer_z_min + case_outer_z_max) / 2;
-case_depth_z = case_outer_z_max - case_outer_z_min;
-
-// Verified sensor rating.
-loadcell_rated_kg = is_undef(loadcell_rated_kg) ? 50 : loadcell_rated_kg;
-gravity = 9.80665;
-loadcell_rated_force_n = loadcell_rated_kg * gravity;
-structural_safety_factor = is_undef(structural_safety_factor) ? 2.0 : structural_safety_factor;
-design_force_n = loadcell_rated_force_n * structural_safety_factor;
-
-// Load-cell eye datums.
-dyno_eye_x_left = -lc_L / 2 + eye_center_offset;
+loadcell_center_z = loadcell_bottom_z + lc_T / 2;
+eye_d = 17;
+eye_center_offset = 6 + eye_d / 2;
+// A ring pressed into each eye narrows its bore; the case is sized round
+// eye_d, the lugs round the bore.
+eye_bore_d = 15;
 dyno_eye_x_right = lc_L / 2 - eye_center_offset;
+dyno_eye_x_left = -dyno_eye_x_right;
 dyno_eye_y = 0;
-dyno_eye_z = loadcell_center_z;
+// The case encloses the whole load cell. Each eye is reached through a
+// vertical U-slot: a circle round the eye, open to the case end, through
+// the full height of the case and lid.
+case_x_half = 43.8;
+case_y_min = -35.7;
+case_y_max = 36.9;
+case_z_min = -5;
+case_lid_z = 25;
+case_z_max = 28;
+case_corner_r = 6;
+case_wall_t = 3;
+case_eye_access_d = eye_d + 1;
+case_eye_u_d = case_eye_access_d + 4;
+// Lid battery walls hang into the inboard edge of each U-slot above the
+// load cell, and a lid bridge joins each to the U-slot at the top.
+case_battery_wall_x = 18.3;
+case_battery_wall_t = 1.2;
+case_battery_wall_l_y = 24;
+case_battery_wall_z_min = 5.1;
+case_u_bridge_x_min = 13.9;
+// +Y wall openings; the USB opening runs up to the lid seam.
+case_usb_x = 0;
+case_usb_z = 22.9;
+case_usb_w = 12;
+case_usb_h = 11;
+case_switch_x = 0;
+case_switch_z = 3;
+case_switch_w = 15;
+case_switch_h = 10;
+usb_cable_boot_w = 12;
 
-// M8 retainer, steel load-transfer sleeve, and aluminium flanged eye collars.
-pin_nominal_d = is_undef(pin_nominal_d) ? 8 : pin_nominal_d;
-bushing_od = is_undef(bushing_od) ? 16.4 : bushing_od;
-bushing_id = pin_nominal_d + 0.4;
-bushing_core_od = is_undef(bushing_core_od) ? 12.4 : bushing_core_od;
-bushing_core_clearance = 0.5;
-pin_hole_d = bushing_core_od + bushing_core_clearance;
-bushing_collar_id = bushing_core_od + 0.3;
-bushing_eye_collar_body_h = lc_T / 2 - 0.1;
-bushing_eye_collar_flange_t = 0.5;
-bushing_eye_collar_flange_od = eye_d + 0.6;
-clevis_plate_t = is_undef(clevis_plate_t) ? 5 : clevis_plate_t;
-clevis_case_gap = is_undef(clevis_case_gap) ? 1.0 : clevis_case_gap;
-clevis_width_y = is_undef(clevis_width_y) ? 26 : clevis_width_y;
-clevis_end_r = clevis_width_y / 2;
+// Platform rating and the printed structure's design target. The Crimpdeq is
+// rated to 1500 N; the printed lugs in its eyes limit the platform to 49 kg.
+platform_rated_kg = is_undef(platform_rated_kg) ? 49 : platform_rated_kg;
+gravity = 9.80665;
+platform_rated_force_n = platform_rated_kg * gravity;
+structural_safety_factor = is_undef(structural_safety_factor) ? 2.0 : structural_safety_factor;
+design_force_n = platform_rated_force_n * structural_safety_factor;
 
-frame_depth_z = case_depth_z + 2 * clevis_case_gap + 2 * clevis_plate_t;
-frame_z_min = case_outer_z_min - clevis_case_gap - clevis_plate_t;
-frame_z_max = case_outer_z_max + clevis_case_gap + clevis_plate_t;
-clevis_gap_z = frame_depth_z - 2 * clevis_plate_t;
-bushing_length = frame_depth_z;
-bushing_center_z = (frame_z_min + frame_z_max) / 2;
+// The case floats case_float_gap above the deck and clear of every part.
+case_float_gap = is_undef(case_float_gap) ? 1.0 : case_float_gap;
+deck_z = case_z_min - case_float_gap;
 
-// Fixed outer frame. The rails clear the finger grip, which is wider than
-// the case, so the grip sets the frame's inner width.
-frame_rail_t = is_undef(frame_rail_t) ? 15 : frame_rail_t;
-frame_left_post_t = is_undef(frame_left_post_t) ? 22 : frame_left_post_t;
-frame_palm_post_t = is_undef(frame_palm_post_t) ? 22 : frame_palm_post_t;
-frame_corner_r = 7;
-frame_center_y = (case_outer_y_min + case_outer_y_max) / 2;
-grip_rail_gap_y = is_undef(grip_rail_gap_y) ? 3 : grip_rail_gap_y;
+// Printed eye lugs. A narrow tongue rises from the anchor block and from the
+// grip through each eye's U-slot, keeping u_slot_clear from the case; the
+// load cell rests on its top. A round lug on the tongue fills the eye's
+// bore; pulling the grip (+X) presses the outer rim of each eye against a
+// lug.
+// Above the load cell the lug necks down under a head that holds a clip.
+u_slot_clear = is_undef(u_slot_clear) ? 1.0 : u_slot_clear;
+tongue_r = case_eye_u_d / 2 - u_slot_clear;
+lug_fit = is_undef(lug_fit) ? 0.35 : lug_fit;
+lug_r = eye_bore_d / 2 - lug_fit;
+lug_neck_r = is_undef(lug_neck_r) ? 5.25 : lug_neck_r;
+// Flat ring under the head that the clip bears on, out to the head's rim.
+lug_head_flat_w = is_undef(lug_head_flat_w) ? lug_r - lug_neck_r : lug_head_flat_w;
+lug_head_chamfer = lug_r - lug_neck_r - lug_head_flat_w;
+lug_top_chamfer = 1;
+// Above the load cell, the neck and head are cut flat on their inboard side
+// to clear the lid battery walls; the eye only bears on the outboard side.
+lug_upper_flat_x = case_battery_wall_x + case_battery_wall_t / 2 + u_slot_clear;
+clip_t = is_undef(clip_t) ? 3 : clip_t;
+clip_head_gap = 0.2;
+lug_head_z_min = loadcell_top_z + clip_t + clip_head_gap;
+lug_head_h = 3.5;
+lug_top_z = lug_head_z_min + lug_head_h;
+
+// Snap-on eye clips hold each load-cell end down on its tongue, under the
+// lug head, so the grip hangs from the load cell. A clip drops into the
+// U-slot beside its lug and slides inboard until its fork snaps round the
+// neck. The clips carry the grip's tilt moment, not the measured pull.
+clip_seat_r = lug_neck_r + 0.15;
+clip_snap = is_undef(clip_snap) ? 0.3 : clip_snap;
+clip_mouth_w = 2 * (lug_neck_r - clip_snap);
+clip_tip_x = 4;
+clip_tail_x = is_undef(clip_tail_x) ? 12 : clip_tail_x;
+clip_fin_t = 3;
+clip_fin_w_y = 16;
+clip_fin_top_z = is_undef(clip_fin_top_z) ? 20 : clip_fin_top_z;
+// Slide from the fitting position, fork tip clear of the lug head, to the
+// seat. Kept at the Ø16.5 mm lug's travel, which also sets where the grip
+// body starts, so the grip and base halves keep their printed length.
+clip_install_travel = 12.75;
+// Finger room beside a grip-side clip's fin while it is fitted.
+clip_access_x = is_undef(clip_access_x) ? 6 : clip_access_x;
+
+// Four-finger hangboard pocket, loaded on its +X lip. Its mid-depth sits
+// near the load-cell plane so the finger pull adds little tilt.
+grip_x_min = dyno_eye_x_right - tongue_r;
+// The grip's upper body starts beyond the case, leaving room to fit a clip.
+grip_body_x_min = dyno_eye_x_right + clip_tail_x + clip_install_travel + clip_access_x;
+grip_spine_t = is_undef(grip_spine_t) ? 8 : grip_spine_t;
+hangboard_opening_w_x = is_undef(hangboard_opening_w_x) ? 20 : hangboard_opening_w_x;
 hangboard_opening_w_y = is_undef(hangboard_opening_w_y) ? 80 : hangboard_opening_w_y;
 hangboard_side_wall_t = 4;
-hangboard_body_w_y = hangboard_opening_w_y + 2 * hangboard_side_wall_t;
-
-frame_inner_y_min = frame_center_y - hangboard_body_w_y / 2 - grip_rail_gap_y;
-frame_inner_y_max = frame_center_y + hangboard_body_w_y / 2 + grip_rail_gap_y;
-frame_outer_y_min = frame_inner_y_min - frame_rail_t;
-frame_outer_y_max = frame_inner_y_max + frame_rail_t;
-frame_case_clear_y = min(case_outer_y_min - frame_inner_y_min,
-    frame_inner_y_max - case_outer_y_max);
-
-frame_left_post_inner_x = case_outer_x_min - 4;
-frame_left_post_outer_x = frame_left_post_inner_x - frame_left_post_t;
-
-// Four-finger hangboard pocket, independently modelled from the reference.
-// The pocket opens toward +Z and loads its right-hand lip along +X.
-hangboard_case_clear_x = 4;
-hangboard_body_x_min = case_outer_x_max + hangboard_case_clear_x;
-hangboard_body_w_x = is_undef(hangboard_body_w_x) ? 36 : hangboard_body_w_x;
-hangboard_body_x_max = hangboard_body_x_min + hangboard_body_w_x;
-hangboard_body_y_min = frame_inner_y_min + grip_rail_gap_y;
-hangboard_body_y_max = frame_inner_y_max - grip_rail_gap_y;
-hangboard_body_depth_z = is_undef(hangboard_body_depth_z) ? 31 : hangboard_body_depth_z;
-hangboard_front_z = frame_z_max;
-hangboard_back_z = hangboard_front_z - hangboard_body_depth_z;
+hangboard_right_lip_t = is_undef(hangboard_right_lip_t) ? 12 : hangboard_right_lip_t;
+hangboard_opening_x_min = grip_body_x_min + grip_spine_t;
+hangboard_opening_x_max = hangboard_opening_x_min + hangboard_opening_w_x;
+grip_x_max = hangboard_opening_x_max + hangboard_right_lip_t;
+grip_half_w_y = hangboard_opening_w_y / 2 + hangboard_side_wall_t;
+hangboard_opening_y_min = -hangboard_opening_w_y / 2;
+hangboard_opening_y_max = hangboard_opening_w_y / 2;
+hangboard_front_z = is_undef(hangboard_front_z) ? loadcell_center_z + 9 : hangboard_front_z;
 hangboard_pocket_depth_z = is_undef(hangboard_pocket_depth_z) ? 25 : hangboard_pocket_depth_z;
 hangboard_pocket_back_z = hangboard_front_z - hangboard_pocket_depth_z;
-hangboard_back_wall_t = hangboard_pocket_back_z - hangboard_back_z;
-hangboard_left_wall_t = 6;
-hangboard_right_lip_t = 10;
-hangboard_opening_x_min = hangboard_body_x_min + hangboard_left_wall_t;
-hangboard_opening_x_max = hangboard_body_x_max - hangboard_right_lip_t;
-hangboard_opening_y_min = hangboard_body_y_min + hangboard_side_wall_t;
-hangboard_opening_y_max = hangboard_body_y_max - hangboard_side_wall_t;
+hangboard_back_wall_t = is_undef(hangboard_back_wall_t) ? 6 : hangboard_back_wall_t;
+grip_z_min = hangboard_pocket_back_z - hangboard_back_wall_t;
 hangboard_opening_r = 4;
 hangboard_draft = 1;
-// Roll only the loaded edge; retain the full left spine and side walls.
 hangboard_lip_radius = is_undef(hangboard_lip_radius) ? 2 : hangboard_lip_radius;
 hangboard_lip_min_t = hangboard_right_lip_t - hangboard_lip_radius;
-finger_grip_center_x = (hangboard_body_x_min + hangboard_body_x_max) / 2;
-finger_yoke_spine_y = clevis_width_y;
 
-// The grip hangs from a single eye joint, which lets it tip. Ledges on the
-// rail inner faces catch the underside of its side walls with a small Z gap.
-// They leave X free, so they carry no measured load while the grip is level.
-grip_guide_gap_z = is_undef(grip_guide_gap_z) ? 0.3 : grip_guide_gap_z;
+// Base. The grip hangs in a trench, and ledges under its side walls catch
+// tilt with a small Z gap while leaving X free.
+base_z_min = is_undef(base_z_min) ? deck_z - 22.6 : base_z_min;
+base_half_w_y = is_undef(base_half_w_y) ? 61 : base_half_w_y;
+base_corner_r = 6;
+grip_guide_gap_z = is_undef(grip_guide_gap_z) ? 1.0 : grip_guide_gap_z;
 grip_guide_bearing_y = is_undef(grip_guide_bearing_y) ? 4 : grip_guide_bearing_y;
-grip_guide_t = 6;
-grip_guide_w_y = grip_rail_gap_y + grip_guide_bearing_y;
-grip_guide_x_min = hangboard_body_x_min;
-grip_guide_x_max = hangboard_body_x_max + 2;
-grip_guide_z_max = hangboard_back_z - grip_guide_gap_z;
-grip_guide_z_min = grip_guide_z_max - grip_guide_t;
+grip_side_gap_y = 3;
+trench_x_min = grip_x_min - 1;
+// Free travel for the grip in the pull direction (+X).
+grip_pull_gap_x = is_undef(grip_pull_gap_x) ? 8 : grip_pull_gap_x;
+trench_x_max = grip_x_max + grip_pull_gap_x;
+trench_half_w_y = grip_half_w_y + grip_side_gap_y;
+trench_floor_z = grip_z_min - 1.5;
+grip_guide_z_max = grip_z_min - grip_guide_gap_z;
+grip_guide_inner_y = grip_half_w_y - grip_guide_bearing_y;
+rated_preview_deflection = 0.4;
 
-// Two drop-in pocket stoppers raise the floor to give shallower edges: each
-// on its own, or both stacked in either order. The closed pocket walls locate
-// them. A pull tab on one end face of each, in a slot in the pocket end wall,
-// stands proud of the grip top so it can be pinched; the tabs of stacked
-// stoppers sit at opposite ends. The whole stopper top stays free for the
-// fingers. They stack in a storage well in the left end of the frame.
+// Anchor block, dropped into a pocket in the base. Under load it bears on
+// the pocket's +X wall, below the floating case.
+anchor_play_x = is_undef(anchor_play_x) ? 0.2 : anchor_play_x;
+anchor_fit = 0.3;
+anchor_outboard_x = is_undef(anchor_outboard_x) ? 12 : anchor_outboard_x;
+anchor_x_min = -(case_x_half + 1 + anchor_outboard_x);
+anchor_x_max = -grip_x_min;
+anchor_half_w_y = is_undef(anchor_half_w_y) ? 26 : anchor_half_w_y;
+anchor_z_min = is_undef(anchor_z_min) ? deck_z - 16.5 : anchor_z_min;
+anchor_pocket_x_min = anchor_x_min - anchor_fit;
+anchor_pocket_x_max = anchor_x_max + anchor_play_x;
+anchor_pocket_half_w_y = anchor_half_w_y + anchor_fit;
+
+// Two drop-in pocket stoppers raise the floor for shallower edges: each on
+// its own, or both stacked. The pocket walls locate them; a pull tab on one
+// end face of each runs in a slot in the pocket end wall and stands proud of
+// the grip top.
 stopper_t_list = is_undef(stopper_t_list) ? [5, 10] : stopper_t_list;
 stopper_clearance = is_undef(stopper_clearance) ? 0.25 : stopper_clearance;
 stopper_count = len(stopper_t_list);
@@ -157,416 +181,288 @@ stopper_tab_w_x = 8;
 stopper_tab_rise = is_undef(stopper_tab_rise) ? 6 : stopper_tab_rise;
 stopper_tab_h = hangboard_pocket_depth_z + stopper_tab_rise;
 stopper_tab_clearance = 0.25;
-// Stopper 0 has its tab on the -Y end face, stopper 1 on the +Y end face.
-// Above the plate the tab stands just off the end face, so it never reaches
-// over the plate or the other stopper.
 stopper_tab_gap_y = 0.02;
 function stopper_tab_y_min(i) = i == 0
     ? stopper_y_min - stopper_tab_gap_y - stopper_tab_t_y
     : stopper_y_max + stopper_tab_gap_y;
-// Vertical tab slots in both pocket end walls, from the floor to the top.
 stopper_tab_slot_w_x = stopper_tab_w_x + 2 * stopper_tab_clearance;
 stopper_tab_slot_y_min =
     stopper_y_min - stopper_tab_gap_y - stopper_tab_t_y - stopper_tab_clearance;
 stopper_tab_slot_y_max =
     stopper_y_max + stopper_tab_gap_y + stopper_tab_t_y + stopper_tab_clearance;
-stopper_tab_slot_skin_y = min(stopper_tab_slot_y_min - hangboard_body_y_min,
-    hangboard_body_y_max - stopper_tab_slot_y_max);
+stopper_tab_slot_skin_y = min(stopper_tab_slot_y_min + grip_half_w_y,
+    grip_half_w_y - stopper_tab_slot_y_max);
 function sum_list(v, i = 0) = i >= len(v) ? 0 : v[i] + sum_list(v, i + 1);
 stopper_stack_h = sum_list(stopper_t_list);
 stopper_min_t = min(stopper_t_list);
-// Edges from each stopper alone, then from both stacked.
 stopper_edge_depths = concat(
     [for (t = stopper_t_list) hangboard_pocket_depth_z - t],
     [hangboard_pocket_depth_z - stopper_stack_h]);
+all_edge_depths = concat([hangboard_pocket_depth_z], stopper_edge_depths);
+// Height of each edge's mid-depth above the load-cell plane.
+edge_pull_offsets = [for (e = all_edge_depths) hangboard_front_z - e / 2 - loadcell_center_z];
+edge_pull_offset_max = is_undef(edge_pull_offset_max) ? 5 : edge_pull_offset_max;
 
-// Adjustable palm/wrist-heel pad beside the hangboard pocket.
-hand_opening = is_undef(hand_opening) ? 65 : hand_opening;
-wrist_adjust_range = is_undef(wrist_adjust_range) ? 40 : wrist_adjust_range;
-wrist_pad_t_x = is_undef(wrist_pad_t_x) ? 14 : wrist_pad_t_x;
-wrist_pad_center_x = hangboard_body_x_max + hand_opening + wrist_pad_t_x / 2;
-// The pad clears the grip-guide ledges as it slides onto the right half.
-wrist_pad_rail_clear_y = grip_guide_w_y + 1;
-wrist_pad_y_min = frame_inner_y_min + wrist_pad_rail_clear_y;
-wrist_pad_y_max = frame_inner_y_max - wrist_pad_rail_clear_y;
-wrist_pad_corner_r = 5;
-wrist_post_clear_x = 3;
-frame_palm_post_inner_x =
-    wrist_pad_center_x + wrist_adjust_range + wrist_pad_t_x / 2 + wrist_post_clear_x;
-frame_palm_post_outer_x = frame_palm_post_inner_x + frame_palm_post_t;
-palm_grip_center_x = (frame_palm_post_inner_x + frame_palm_post_outer_x) / 2;
-
-// Four integral corner feet support the fixed frame on a flat bench. Their
-// soles sit below the nuts and both wrist-pin tips, even at full travel. The
-// M8 x 60 bolts pass through their DIN 985 nyloc nuts and keep at least 5 mm.
-loadcell_washer_t = 1.6;
-loadcell_nut_h = 8;
-loadcell_bolt_l = is_undef(loadcell_bolt_l) ? 60 : loadcell_bolt_l;
-support_foot_w_x = 12;
-support_foot_w_y = 12;
-support_foot_clearance = is_undef(support_foot_clearance) ? 6 : support_foot_clearance;
-support_foot_x_left = (frame_left_post_outer_x + frame_left_post_inner_x) / 2;
-support_foot_x_right = palm_grip_center_x;
-support_foot_y_bottom = frame_outer_y_min + frame_rail_t / 2;
-support_foot_y_top = frame_outer_y_max - frame_rail_t / 2;
-support_foot_top_z = frame_z_min + 2;
-
-fixed_clevis_x_min = frame_left_post_inner_x - 1.5;
-fixed_clevis_x_max = dyno_eye_x_left + clevis_end_r;
-moving_clevis_x_min = dyno_eye_x_right - clevis_end_r;
-moving_clevis_x_max = hangboard_opening_x_min;
-
-// Discrete holes in the fixed rails positively lock posture/hand-size
-// adjustment. Two push-button ball-lock pins make adjustment tool-free.
-wrist_mount_x = wrist_pad_center_x;
-wrist_mount_y_bottom = (frame_outer_y_min + frame_inner_y_min) / 2;
-wrist_mount_y_top = (frame_inner_y_max + frame_outer_y_max) / 2;
-wrist_quick_pin_d = is_undef(wrist_quick_pin_d) ? 6 : wrist_quick_pin_d;
-wrist_quick_pin_clearance = 0.3;
-wrist_mount_hole_d = wrist_quick_pin_d + wrist_quick_pin_clearance;
-wrist_index_hole_d = wrist_mount_hole_d;
-wrist_index_pitch = 10;
-wrist_index_count = round(2 * wrist_adjust_range / wrist_index_pitch) + 1;
-wrist_plate_t = 7.2;
-wrist_plate_frame_gap = 0.3;
-wrist_plate_z_min_1 = frame_z_min - wrist_plate_frame_gap - wrist_plate_t;
-wrist_plate_z_max_1 = frame_z_min - wrist_plate_frame_gap;
-wrist_plate_z_min_2 = frame_z_max + wrist_plate_frame_gap;
-wrist_plate_z_max_2 = frame_z_max + wrist_plate_frame_gap + wrist_plate_t;
-wrist_rest_z_min = wrist_plate_z_min_1;
-wrist_rest_z_max = wrist_plate_z_max_2;
-wrist_quick_pin_grip_l = is_undef(wrist_quick_pin_grip_l) ? 60 : wrist_quick_pin_grip_l;
-wrist_quick_pin_tip_l = 4;
-wrist_quick_pin_head_d = 18;
-wrist_quick_pin_head_h = 8;
-wrist_quick_pin_button_d = 8;
-wrist_quick_pin_button_h = 2;
-wrist_quick_pin_lock_ball_d = 2;
-wrist_quick_pin_stack_h = wrist_rest_z_max - wrist_rest_z_min;
-wrist_arm_h_y = 10;
-// Keep the above-frame arms outside the uninterrupted palm contact area.
-wrist_arm_pad_overlap_y = 4;
-wrist_arm_w_x = 28;
-wrist_arm_x_min = wrist_pad_center_x - wrist_arm_w_x / 2;
-wrist_arm_x_max = wrist_pad_center_x + wrist_arm_w_x / 2;
-wrist_lanyard_hole_d = 3.5;
-wrist_lanyard_x = wrist_pad_center_x;
-wrist_lanyard_y_bottom = wrist_pad_y_min - 3;
-wrist_lanyard_y_top = wrist_pad_y_max + 3;
-wrist_index_remaining_web_y = frame_rail_t - wrist_index_hole_d;
-wrist_index_ligament_x = wrist_index_pitch - wrist_index_hole_d;
-hand_opening_min = hand_opening - wrist_adjust_range;
-hand_opening_max = hand_opening + wrist_adjust_range;
-
-// One continuous L-shaped palm/heel saddle, not a hand resting on the rails.
-// Keep the 60 mm pin stack independent of the taller contact surface.
-wrist_saddle_depth_x = is_undef(wrist_saddle_depth_x) ? 65 : wrist_saddle_depth_x;
-wrist_saddle_t = is_undef(wrist_saddle_t) ? 14 : wrist_saddle_t;
-wrist_saddle_x_min = wrist_pad_center_x - wrist_pad_t_x / 2;
-wrist_saddle_x_max = wrist_saddle_x_min + wrist_saddle_depth_x;
-// Align the palm/heel contact deck with the +Z finger-pocket mouth. The
-// sliding deck needs a clearance channel through the non-anchor right post.
-wrist_saddle_z_max = hangboard_front_z;
-wrist_saddle_z_min = wrist_saddle_z_max - wrist_saddle_t;
-wrist_post_channel_clearance = is_undef(wrist_post_channel_clearance) ? 2 : wrist_post_channel_clearance;
-wrist_post_channel_y_margin = is_undef(wrist_post_channel_y_margin) ? 3 : wrist_post_channel_y_margin;
-wrist_post_channel_z_min = wrist_saddle_z_min - wrist_post_channel_clearance;
-wrist_post_channel_y_min = wrist_pad_y_min - wrist_post_channel_y_margin;
-wrist_post_channel_y_max = wrist_pad_y_max + wrist_post_channel_y_margin;
-wrist_post_remaining_depth_z = wrist_post_channel_z_min - frame_z_min;
-wrist_post_remaining_web_y = min(frame_outer_y_max - wrist_post_channel_y_max,
-    wrist_post_channel_y_min - frame_outer_y_min);
-wrist_saddle_core_width_y = wrist_pad_y_max - wrist_pad_y_min - 2 * wrist_pad_corner_r;
-wrist_pin_access_d = wrist_quick_pin_head_d + 2;
-// The pin-tip model is the lowest point of the adjustable hardware.
-wrist_pin_tip_low_z = wrist_rest_z_max - wrist_quick_pin_grip_l
-    - wrist_quick_pin_lock_ball_d / 2 - 0.2 - wrist_quick_pin_tip_l;
-loadcell_nut_low_z = frame_z_min - loadcell_washer_t - loadcell_nut_h;
-// The bolt head's underside seats on the upper washer.
-loadcell_bolt_tip_z = frame_z_max + loadcell_washer_t - loadcell_bolt_l;
-loadcell_bolt_protrusion = loadcell_nut_low_z - loadcell_bolt_tip_z;
-support_foot_bottom_z = min(wrist_pin_tip_low_z, loadcell_nut_low_z)
-    - support_foot_clearance;
-
-// Low side lips and a full-width palm bolster on the finger-facing (-X) side.
-// The full-thickness central heel surface stays solid.
-wrist_cradle_edge_w = is_undef(wrist_cradle_edge_w) ? 5 : wrist_cradle_edge_w;
-wrist_cradle_rise = is_undef(wrist_cradle_rise) ? 2 : wrist_cradle_rise;
-wrist_cradle_embed = 3;
-wrist_cradle_edge_radius = is_undef(wrist_cradle_edge_radius) ? 2.4 : wrist_cradle_edge_radius;
-wrist_cradle_z_min = wrist_saddle_z_max - wrist_cradle_embed;
-wrist_cradle_z_max = wrist_saddle_z_max + wrist_cradle_rise;
-wrist_cradle_open_width_y = wrist_pad_y_max - wrist_pad_y_min - 2 * wrist_cradle_edge_w;
-// Straight GoGor LITE-style palm bolster: a full-width rounded-rectangle
-// section with a nearly flat top. Its -X face continues the palm face and it
-// extends only toward +X, so the nine 25-105 mm openings are unchanged. It
-// rises 20 mm above the deck, just above the pin buttons beside its ends.
-wrist_palm_bolster_depth_x =
-    is_undef(wrist_palm_bolster_depth_x) ? 22 : wrist_palm_bolster_depth_x;
-wrist_palm_bolster_rise = is_undef(wrist_palm_bolster_rise) ? 20 : wrist_palm_bolster_rise;
-wrist_palm_bolster_front_r =
-    is_undef(wrist_palm_bolster_front_r) ? 6 : wrist_palm_bolster_front_r;
-wrist_palm_bolster_rear_r =
-    is_undef(wrist_palm_bolster_rear_r) ? 5 : wrist_palm_bolster_rear_r;
-wrist_palm_bolster_fillet_r =
-    is_undef(wrist_palm_bolster_fillet_r) ? 3 : wrist_palm_bolster_fillet_r;
-// Root the bolster below the deck/face edge radius so the -X plane has no
-// groove at the deck datum.
-wrist_palm_bolster_embed =
-    is_undef(wrist_palm_bolster_embed) ? 6 : wrist_palm_bolster_embed;
-wrist_palm_bolster_x_min = wrist_saddle_x_min;
-wrist_palm_bolster_x_max = wrist_palm_bolster_x_min + wrist_palm_bolster_depth_x;
-wrist_palm_bolster_z_min = wrist_saddle_z_max - wrist_palm_bolster_embed;
-wrist_palm_bolster_z_max = wrist_saddle_z_max + wrist_palm_bolster_rise;
-wrist_palm_bolster_flat_top_x =
-    wrist_palm_bolster_depth_x - wrist_palm_bolster_front_r - wrist_palm_bolster_rear_r;
-// Open heel deck from the bolster's rear face to the rear edge band. The
-// bolster intentionally reduces it from 50 mm to 38 mm.
-wrist_cradle_open_depth_x =
-    wrist_saddle_depth_x - wrist_palm_bolster_depth_x - wrist_cradle_edge_w;
-wrist_cradle_open_depth_min_x = 38;
-// The upper arms join the saddle only through the bolster's end faces, behind
-// the palm-face plane. Extend them rearward above the frame to keep that joint
-// section; the lower arms keep their original clearance to the right feet.
-wrist_upper_arm_joint_x = is_undef(wrist_upper_arm_joint_x) ? 24 : wrist_upper_arm_joint_x;
-wrist_upper_arm_x_max = wrist_saddle_x_min + wrist_upper_arm_joint_x;
-
-// Simplified positive-lock checks at the 2.0x frame design load.
-wrist_fastener_count = 2;
-// Screen either locking station for the entire force, not ideal 50/50 sharing.
-wrist_force_per_fastener_n = design_force_n;
-wrist_pin_double_shear_area_mm2 =
-    2 * PI * wrist_quick_pin_d * wrist_quick_pin_d / 4;
-wrist_pin_design_shear_mpa =
-    wrist_force_per_fastener_n / wrist_pin_double_shear_area_mm2;
-wrist_arm_bearing_area_mm2 = 2 * wrist_plate_t * wrist_quick_pin_d;
-wrist_arm_design_bearing_mpa = wrist_force_per_fastener_n / wrist_arm_bearing_area_mm2;
-// Screen one upper arm's joint to the bolster end face for the entire force,
-// without relying on the lower arm or the other station to share it.
-wrist_upper_arm_joint_shear_mpa = wrist_force_per_fastener_n /
-    (wrist_upper_arm_joint_x * wrist_plate_t);
-wrist_rail_bearing_area_mm2 = frame_depth_z * wrist_quick_pin_d;
-wrist_rail_design_bearing_mpa = wrist_force_per_fastener_n / wrist_rail_bearing_area_mm2;
-allowable_quick_pin_shear_mpa =
-    is_undef(allowable_quick_pin_shear_mpa) ? 150 : allowable_quick_pin_shear_mpa;
-allowable_printed_bearing_mpa =
-    is_undef(allowable_printed_bearing_mpa) ? 12 : allowable_printed_bearing_mpa;
-
-// Front (+Y) service tunnel for the case switch and USB cable.
-service_tunnel_w = 22;
-service_tunnel_z_min = case_outer_z_min + 1;
-service_tunnel_z_max = case_outer_z_max - 1;
-service_tunnel_y_min = case_outer_y_max - 0.2;
-service_tunnel_y_max = frame_outer_y_max + 0.2;
-
-rated_preview_deflection = 0.4;
-
-// Unloaded accessory block outboard of the left anchor post (-X): a well
-// for the stacked pocket stoppers next to the post, then a tilted slot that
-// holds a phone facing the user. Neither is in the load path.
+// Storage well for the stacked stoppers in the -Y side of the deck, turned
+// so their long side runs along X.
 stopper_well_clearance = 0.5;
-stopper_well_x_max = frame_left_post_outer_x;
-stopper_well_x_min = stopper_well_x_max
-    - (stopper_x_max - stopper_x_min) - 2 * stopper_well_clearance;
-stopper_well_y_min = stopper_y_min - stopper_well_clearance;
-stopper_well_y_max = stopper_y_max + stopper_well_clearance;
+stopper_well_len_x = stopper_tab_slot_y_max - stopper_tab_slot_y_min
+    + 2 * stopper_well_clearance;
+stopper_well_w_y = stopper_x_max - stopper_x_min + 2 * stopper_well_clearance;
+stopper_well_x_max = trench_x_min - 3;
+stopper_well_x_min = stopper_well_x_max - stopper_well_len_x;
+stopper_well_center_x = (stopper_well_x_min + stopper_well_x_max) / 2;
+stopper_well_y_min = -base_half_w_y + 3;
+stopper_well_y_max = stopper_well_y_min + stopper_well_w_y;
+stopper_well_center_y = (stopper_well_y_min + stopper_well_y_max) / 2;
 stopper_well_depth_z = stopper_stack_h + 1;
-stopper_well_z_min = frame_z_max - stopper_well_depth_z;
+stopper_well_z_min = deck_z - stopper_well_depth_z;
+
+// Tilted phone slot in a stand across the -X end of the base, outside the
+// load path. The raised slot floor keeps the case from hiding the screen
+// except from low viewpoints; the slot leans toward -X so the screen faces
+// the user.
 phone_slot_w = is_undef(phone_slot_w) ? 14 : phone_slot_w;
 phone_slot_depth_z = is_undef(phone_slot_depth_z) ? 16 : phone_slot_depth_z;
 phone_slot_tilt = is_undef(phone_slot_tilt) ? 15 : phone_slot_tilt;
 phone_slot_inner_wall_x = 4;
 phone_slot_outer_wall_x = 5;
-phone_slot_z_min = frame_z_max - phone_slot_depth_z;
-// The slot's +X face meets the top face here and leans toward -X; its floor
-// is flat so it bridges when the half prints upside down.
-phone_slot_x_top = stopper_well_x_min - phone_slot_inner_wall_x
-    - phone_slot_depth_z * tan(phone_slot_tilt);
+phone_slot_z_min = is_undef(phone_slot_z_min) ? 15 : phone_slot_z_min;
+phone_stand_top_z = phone_slot_z_min + phone_slot_depth_z;
+phone_stand_half_w_y = is_undef(phone_stand_half_w_y) ? 42 : phone_stand_half_w_y;
+// The stand is two slotted cheeks; the phone spans the gap between them,
+// which leaves room for a charging cable in portrait.
+phone_stand_gap_half_y = is_undef(phone_stand_gap_half_y) ? 22 : phone_stand_gap_half_y;
+phone_stand_cheek_w_y = phone_stand_half_w_y - phone_stand_gap_half_y;
+// Narrowest phone, in its case, that must still rest on both cheeks.
+phone_min_w = 64;
+phone_min_rest_y = 8;
+// Finger room between the stand and the stopper well's pull tabs.
+phone_stand_clear_x = is_undef(phone_stand_clear_x) ? 6 : phone_stand_clear_x;
+phone_stand_x_max = min(stopper_well_x_min, anchor_pocket_x_min) - phone_stand_clear_x;
+// The slot's +X face meets the stand top here and leans toward -X.
+phone_slot_x_top = phone_stand_x_max
+    - phone_slot_inner_wall_x - phone_slot_depth_z * tan(phone_slot_tilt);
 phone_slot_top_w_x = phone_slot_w / cos(phone_slot_tilt);
-frame_x_min = phone_slot_x_top - phone_slot_top_w_x - phone_slot_outer_wall_x;
-frame_accessory_len_x = frame_left_post_outer_x - frame_x_min;
+// Lowest viewing elevation, over the case's -X top edge, from which the
+// front edge of the slot floor is still visible.
+phone_view_max_elevation = is_undef(phone_view_max_elevation) ? 20 : phone_view_max_elevation;
+phone_view_elevation = atan(max(0, case_z_max - phone_slot_z_min)
+    / (-case_x_half - (phone_stand_x_max - phone_slot_inner_wall_x)));
 // Largest phone, in its case, checked in the slot in either orientation.
 phone_probe_t = 13;
 phone_probe_l = 165;
 phone_probe_w = 80;
 
-// Two-piece frame for printers with a 256 mm bed (Bambu Lab A1/P1/X1). Each
-// rail is spliced by a bolted half-lap: the left half keeps the upper half of
-// the rail depth, the right half the lower half. Rail compression bears on the
-// lap shoulders; two M5 bolts per rail clamp the lap and carry any shear or
-// tension. The joint lets the wrist rest slide onto the right half before the
-// frame is closed.
-frame_split_x = is_undef(frame_split_x) ? 70 : frame_split_x;
-frame_split_bed_max = is_undef(frame_split_bed_max) ? 240 : frame_split_bed_max;
-// Square bed the print plates are laid out on.
-print_bed_size = is_undef(print_bed_size) ? 256 : print_bed_size;
-frame_split_lap_len = is_undef(frame_split_lap_len) ? 48 : frame_split_lap_len;
-frame_split_x_min = frame_split_x - frame_split_lap_len / 2;
-frame_split_x_max = frame_split_x + frame_split_lap_len / 2;
-frame_split_lap_z = (frame_z_min + frame_z_max) / 2;
-frame_split_upper_t = frame_z_max - frame_split_lap_z;
-frame_split_lower_t = frame_split_lap_z - frame_z_min;
-frame_split_left_len = frame_split_x_max - frame_x_min;
-frame_split_right_len = frame_palm_post_outer_x - frame_split_x_min;
-// ISO 4762 M5 socket-head screws from the top face into DIN 985 nyloc nuts
-// held in hex pockets in the lower face; both stay recessed. The counterbore
-// depth follows from the screw length so the tip ends just inside the lower
-// face, where it picks up a nut held at the pocket mouth and draws it in.
-frame_split_bolt_d = is_undef(frame_split_bolt_d) ? 5 : frame_split_bolt_d;
-frame_split_bolt_l = is_undef(frame_split_bolt_l) ? 35 : frame_split_bolt_l;
-frame_split_bolt_pitch = is_undef(frame_split_bolt_pitch) ? 24 : frame_split_bolt_pitch;
-frame_split_bolt_hole_d = frame_split_bolt_d + 0.5;
-frame_split_bolt_head_d = 1.7 * frame_split_bolt_d;
-frame_split_bolt_head_h = frame_split_bolt_d;
-frame_split_bolt_cbore_d = frame_split_bolt_head_d + 1;
-frame_split_bolt_tip_recess =
-    is_undef(frame_split_bolt_tip_recess) ? 1 : frame_split_bolt_tip_recess;
-frame_split_nut_af = 1.6 * frame_split_bolt_d;
-frame_split_nut_h = frame_split_bolt_d;
-frame_split_nut_pocket_af = frame_split_nut_af + 0.4;
-// The bolt tip passes the nylon insert by this much.
-frame_split_bolt_protrusion = 1.5;
-frame_split_bolt_x = [frame_split_x - frame_split_bolt_pitch / 2,
-    frame_split_x + frame_split_bolt_pitch / 2];
-frame_split_bolt_y = [wrist_mount_y_bottom, wrist_mount_y_top];
-frame_split_bolt_count = len(frame_split_bolt_x) * len(frame_split_bolt_y);
-frame_split_bolt_tip_z = frame_z_min + frame_split_bolt_tip_recess;
-frame_split_bolt_head_z = frame_split_bolt_tip_z + frame_split_bolt_l;
-frame_split_bolt_cbore_depth = frame_z_max - frame_split_bolt_head_z;
-frame_split_nut_top_z =
-    frame_split_bolt_tip_z + frame_split_bolt_protrusion + frame_split_nut_h;
-frame_split_nut_pocket_depth = frame_split_nut_top_z - frame_z_min;
-// Thread overlap with the nut held at the pocket mouth, before tightening.
-frame_split_nut_start_engagement =
-    frame_z_min + frame_split_nut_h - frame_split_bolt_tip_z;
-frame_split_bolt_end_dist = (frame_split_lap_len - frame_split_bolt_pitch) / 2;
-frame_split_bolt_side_wall_y = (frame_rail_t
-    - max(frame_split_bolt_cbore_d, frame_split_nut_pocket_af)) / 2;
-// Printed bolt bearing length in each half, excluding the head counterbore
-// and nut pocket.
-frame_split_bolt_bearing_l = min(frame_split_bolt_head_z - frame_split_lap_z,
-    frame_split_lap_z - frame_split_nut_top_z);
+// Palm rest. Its upright palm face sits hand_opening from the outside of the
+// finger lip; seven positions give 25-85 mm in 10 mm steps. The rest slides
+// on a dovetail rail and two printed keys lock it through its side wings.
+hand_opening = is_undef(hand_opening) ? 55 : hand_opening;
+rest_adjust_range = is_undef(rest_adjust_range) ? 30 : rest_adjust_range;
+rest_index_pitch = is_undef(rest_index_pitch) ? 10 : rest_index_pitch;
+rest_index_count = round(2 * rest_adjust_range / rest_index_pitch) + 1;
+hand_opening_min = hand_opening - rest_adjust_range;
+hand_opening_max = hand_opening + rest_adjust_range;
+function rest_face_x(offset = 0) = grip_x_max + hand_opening + offset;
+function rest_offset(i) = -rest_adjust_range + i * rest_index_pitch;
+rest_depth_x = is_undef(rest_depth_x) ? 60 : rest_depth_x;
+rest_half_w_y = is_undef(rest_half_w_y) ? 39 : rest_half_w_y;
+rest_z_min = deck_z;
+rest_deck_z = hangboard_front_z;
+rest_corner_r = 5;
+rest_bolster_depth_x = is_undef(rest_bolster_depth_x) ? 22 : rest_bolster_depth_x;
+rest_bolster_rise = is_undef(rest_bolster_rise) ? 12 : rest_bolster_rise;
+rest_bolster_front_r = 6;
+rest_bolster_rear_r = 5;
+rest_bolster_embed = 6;
+rest_bolster_z_max = rest_deck_z + rest_bolster_rise;
+rest_wing_len_x = 24;
+rest_wing_top_z = is_undef(rest_wing_top_z) ? 5 : rest_wing_top_z;
+rest_wing_y_max = base_half_w_y;
 
-// Nominal load-path screens, not a strength qualification. Material limits
-// require coupon verification in the actual print orientation/environment.
+// Dovetail rail on the rear half of the base, flaring upward; the groove
+// under the rest captures it. The groove roof prints as a bridge.
+rail_root_w = 16;
+rail_top_w = 24;
+rail_h = 6;
+rail_fit = 0.3;
+// Headroom over the rail, so the bridged groove roof can sag without rubbing.
+rail_top_clear = 1;
+rail_top_z = deck_z + rail_h;
+// Lift before the rest's groove catches the rail flanks.
+rest_catch_travel = rail_fit / sin(atan((rail_top_w - rail_root_w) / 2 / rail_h));
+
+// Printed index keys: a rectangular shank with a head, printed on its side
+// so the shear plane lies across the layers' long direction.
+key_t_x = is_undef(key_t_x) ? 6 : key_t_x;
+key_w_y = is_undef(key_w_y) ? 16 : key_w_y;
+key_fit = 0.3;
+key_y = is_undef(key_y) ? 49 : key_y;
+key_offset_x = rest_wing_len_x / 2;
+function key_x(offset = 0) = rest_face_x(offset) + key_offset_x;
+key_slot_depth = is_undef(key_slot_depth) ? 14 : key_slot_depth;
+key_slot_z_min = deck_z - key_slot_depth;
+key_bottom_z = key_slot_z_min + 0.5;
+key_head_x = 14;
+key_head_h = 8;
+key_head_z_max = rest_wing_top_z + key_head_h;
+key_shank_l = rest_wing_top_z - key_bottom_z;
+
+// Two-piece base for a 256 mm bed (Bambu Lab A1). Two vertical dovetail
+// tongues on the front half drop into sockets in the rear half. Under load
+// the butt faces are in compression.
+base_split_x = is_undef(base_split_x) ? 111 : base_split_x;
+base_split_bed_max = is_undef(base_split_bed_max) ? 240 : base_split_bed_max;
+print_bed_size = is_undef(print_bed_size) ? 256 : print_bed_size;
+base_x_min = phone_slot_x_top - phone_slot_top_w_x - phone_slot_outer_wall_x;
+base_x_max = key_x(rest_adjust_range) + key_t_x / 2 + 7;
+joint_tongue_y = 30;
+joint_tongue_len_x = 12;
+joint_tongue_neck_w = 12;
+joint_tongue_head_w = 18;
+joint_fit = 0.2;
+joint_roof_t = 3;
+joint_tongue_z_max = deck_z - joint_roof_t - joint_fit;
+// Separation before the sockets catch the tongue flanks.
+joint_catch_travel = joint_fit
+    / sin(atan((joint_tongue_head_w - joint_tongue_neck_w) / 2 / joint_tongue_len_x));
+base_front_len = base_split_x + joint_tongue_len_x - base_x_min;
+base_rear_len = base_x_max - base_split_x;
+
+// Service access to the switch and USB through the open +Y side.
+service_w = 30;
+service_y_max = base_half_w_y + 20;
+
+// Brand engraved into the front base half, in the crimpdeq-case font: across
+// the deck between the phone stand and the anchor pocket, reading from the
+// palm-rest end, and on both side faces beside the grip trench.
+brand_font = "Inter:style=Bold";
+brand_depth = 0.8;
+top_brand_text = "crimpdeq";
+top_brand_size = 9.5;
+top_brand_x = (phone_stand_x_max + anchor_pocket_x_min) / 2;
+top_brand_y = 0;
+side_brand_text = "crimpdeq.com";
+side_brand_size = 8;
+side_brand_x = (stopper_well_x_max + base_split_x) / 2;
+side_brand_z = (base_z_min + deck_z) / 2;
+// Conservative Inter Bold extents per unit of text size: advance per
+// character, and ascender to descender.
+brand_char_w = 0.85;
+brand_line_h = 1.4;
+function brand_len(text, size) = len(text) * size * brand_char_w;
+
+// --- Structural screens at the design target -------------------------------
+// Nominal screens, not a strength qualification. Printed-material limits are
+// assumptions that need coupon tests in the actual print orientation.
 allowable_printed_bending_mpa = is_undef(allowable_printed_bending_mpa) ? 30 : allowable_printed_bending_mpa;
 allowable_printed_tension_mpa = is_undef(allowable_printed_tension_mpa) ? 12 : allowable_printed_tension_mpa;
-allowable_insert_bending_mpa = is_undef(allowable_insert_bending_mpa) ? 120 : allowable_insert_bending_mpa;
-allowable_collar_bearing_mpa = is_undef(allowable_collar_bearing_mpa) ? 90 : allowable_collar_bearing_mpa;
+allowable_printed_bearing_mpa = is_undef(allowable_printed_bearing_mpa) ? 12 : allowable_printed_bearing_mpa;
+// Conformal contact of the metal eye on a solid printed lug, about 40 % of
+// PETG's compressive yield. The governing assumption of the all-printed
+// load path.
+allowable_lug_bearing_mpa = is_undef(allowable_lug_bearing_mpa) ? 20 : allowable_lug_bearing_mpa;
 
-// The left anchor post, not the unloaded right end post, reacts the eye load.
-anchor_half_span = (frame_outer_y_max - frame_outer_y_min) / 2;
-anchor_section_modulus_mm3 = frame_depth_z * frame_left_post_t * frame_left_post_t / 6;
-anchor_design_bending_mpa = design_force_n * anchor_half_span / anchor_section_modulus_mm3;
-// Conservatively screen the relieved right post for the full frame force.
-wrist_post_section_modulus_mm3 = wrist_post_remaining_depth_z * pow(frame_palm_post_t, 2) / 6;
-wrist_post_design_bending_mpa = design_force_n * anchor_half_span / wrist_post_section_modulus_mm3;
-rail_net_tension_mpa = wrist_force_per_fastener_n / (frame_depth_z * wrist_index_remaining_web_y);
-rail_ligament_shear_mpa = wrist_force_per_fastener_n / (2 * frame_depth_z * wrist_index_ligament_x);
-service_net_tension_mpa = design_force_n /
-    (frame_rail_t * (frame_depth_z - (service_tunnel_z_max - service_tunnel_z_min)));
+// Anchor block and grip print upright, so the lug root and the tongue root
+// are loaded across the layers. The eye bears across the full lug diameter
+// and tab thickness; its resultant acts at the load-cell mid-plane.
+lug_bearing_mpa = design_force_n / (2 * lug_r * lc_T);
+lug_bending_mpa = design_force_n * (loadcell_center_z - loadcell_bottom_z)
+    / (PI * pow(2 * lug_r, 3) / 32);
+lug_shear_mpa = design_force_n / (PI * lug_r * lug_r);
+// Tongue root at the deck, taken as the tongue's width by its length
+// inside the case.
+tongue_root_len_x = case_x_half - (dyno_eye_x_right - tongue_r);
+tongue_bending_mpa = design_force_n * (loadcell_center_z - deck_z)
+    / (2 * tongue_r * pow(tongue_root_len_x, 2) / 6);
 
-// Screen one rail's lap joint for the entire frame force, as for the wrist
-// stations. Compression bears on a lap shoulder; the bolts (thread root taken
-// as 0.8 d) and the thinner tongue are also screened for it as shear and
-// tension. The eccentric tongue sees the force offset by a quarter depth.
-allowable_frame_bolt_shear_mpa =
-    is_undef(allowable_frame_bolt_shear_mpa) ? 150 : allowable_frame_bolt_shear_mpa;
-frame_split_bolts_per_rail = len(frame_split_bolt_x);
-frame_split_tongue_t = min(frame_split_upper_t, frame_split_lower_t);
-frame_split_bolt_design_shear_mpa = design_force_n /
-    (frame_split_bolts_per_rail * PI * pow(0.8 * frame_split_bolt_d, 2) / 4);
-frame_split_bolt_design_bearing_mpa = design_force_n /
-    (frame_split_bolts_per_rail * frame_split_bolt_d * frame_split_bolt_bearing_l);
-frame_split_shoulder_bearing_mpa = design_force_n / (frame_rail_t * frame_split_tongue_t);
-frame_split_tongue_net_tension_mpa = design_force_n / (frame_split_tongue_t *
-    (frame_rail_t - max(frame_split_bolt_cbore_d, frame_split_nut_pocket_af)));
-frame_split_tongue_design_bending_mpa = design_force_n * frame_depth_z / 4 /
-    (frame_rail_t * pow(frame_split_tongue_t, 2) / 6) + frame_split_shoulder_bearing_mpa;
+// The largest finger-pull offset tilts the grip. The clip reacts it against
+// the tongue seat, taken conservatively at tongue_r from the eye, bearing on
+// the outboard half of the flat ring under the lug head; the head then pulls
+// on the neck across the layers.
+clip_tilt_moment_nmm = design_force_n * max([for (o = edge_pull_offsets) abs(o)]);
+clip_tilt_force_n = clip_tilt_moment_nmm / tongue_r;
+clip_ring_area_mm2 = PI * (pow(lug_neck_r + lug_head_flat_w, 2) - pow(clip_seat_r, 2)) / 2;
+clip_ring_bearing_mpa = clip_tilt_force_n / clip_ring_area_mm2;
+lug_neck_tension_mpa = clip_tilt_force_n / (PI * lug_neck_r * lug_neck_r);
 
-// Sleeve as a simply supported annular beam between cheek midplanes, with
-// the sensor force applied at its actual (off-centre) Z datum. No credit for
-// the loose M8 retainer sharing bending.
-sleeve_support_low_z = frame_z_min + clevis_plate_t / 2;
-sleeve_support_high_z = frame_z_max - clevis_plate_t / 2;
-sleeve_span = sleeve_support_high_z - sleeve_support_low_z;
-sleeve_a = dyno_eye_z - sleeve_support_low_z;
-sleeve_b = sleeve_support_high_z - dyno_eye_z;
-// Offset sensor loads the lower cheek more heavily than the upper cheek.
-clevis_max_reaction_n = design_force_n * max(sleeve_a, sleeve_b) / sleeve_span;
-clevis_design_bearing_mpa = clevis_max_reaction_n / (clevis_plate_t * bushing_core_od);
-clevis_net_tension_mpa = clevis_max_reaction_n / (clevis_plate_t * (clevis_width_y - pin_hole_d));
-sleeve_section_modulus_mm3 = PI * (pow(bushing_core_od, 4) - pow(bushing_id, 4)) /
-    (32 * bushing_core_od);
-sleeve_design_bending_mpa = design_force_n * sleeve_a * sleeve_b /
-    (sleeve_span * sleeve_section_modulus_mm3);
-collar_design_bearing_mpa = design_force_n /
-    (2 * bushing_eye_collar_body_h * bushing_core_od);
+// Anchor block bearing on the pocket's +X wall below the case.
+anchor_bearing_mpa = design_force_n / (2 * anchor_half_w_y * (deck_z - anchor_z_min));
 
-// Full force at the pocket rim, distributed over its usable width. Local
-// one-finger loading, layer adhesion and stress concentrations are not covered.
-lip_section_modulus_mm3 = (hangboard_opening_y_max - hangboard_opening_y_min) *
-    pow(hangboard_lip_min_t, 2) / 6;
+// Full force at the pocket rim, over its usable width.
+lip_section_modulus_mm3 = hangboard_opening_w_y * pow(hangboard_lip_min_t, 2) / 6;
 lip_design_bending_mpa = design_force_n * hangboard_pocket_depth_z / lip_section_modulus_mm3;
-wrist_arm_lever_y = max(wrist_mount_y_top - wrist_pad_y_max,
-    wrist_pad_y_min - wrist_mount_y_bottom) + wrist_pad_corner_r;
-wrist_arm_section_modulus_mm3 = wrist_plate_t * pow(wrist_arm_w_x - wrist_mount_hole_d, 2) / 6;
-wrist_arm_design_bending_mpa = wrist_force_per_fastener_n / 2 * wrist_arm_lever_y /
-    wrist_arm_section_modulus_mm3;
-// Local heel-deck cantilever screen, using the full design force at its end
-// and only the full-thickness central width. Not a vertical system load rating.
-wrist_saddle_overhang = wrist_saddle_depth_x - wrist_pad_t_x;
-wrist_saddle_section_modulus_mm3 = wrist_saddle_core_width_y * pow(wrist_saddle_t, 2) / 6;
-wrist_saddle_design_bending_mpa = design_force_n * wrist_saddle_overhang /
-    wrist_saddle_section_modulus_mm3;
-// Palm bolster as a cantilever above the deck, with the full design force at
-// its top and only the full-thickness central width.
-wrist_palm_bolster_section_modulus_mm3 =
-    wrist_saddle_core_width_y * pow(wrist_palm_bolster_depth_x, 2) / 6;
-wrist_palm_bolster_design_bending_mpa = design_force_n * wrist_palm_bolster_rise /
-    wrist_palm_bolster_section_modulus_mm3;
+// Pocket side walls and back wall carry the lip force back to the lug.
+grip_net_area_mm2 = 2 * hangboard_side_wall_t * (hangboard_front_z - grip_z_min)
+    + 2 * grip_half_w_y * hangboard_back_wall_t;
+grip_net_tension_mpa = design_force_n / grip_net_area_mm2;
 
-assert(loadcell_rated_kg == 50, "This interface is restricted to the 50 kg sensor.");
+// Either key alone takes the whole palm force.
+key_shear_mpa = design_force_n / (key_t_x * key_w_y);
+key_wing_bearing_mpa = design_force_n / (key_w_y * (rest_wing_top_z - rest_z_min));
+key_slot_bearing_mpa = design_force_n / (key_w_y * key_slot_depth);
+key_ligament_x = rest_index_pitch - key_t_x - key_fit;
+key_ligament_shear_mpa = design_force_n / (2 * key_ligament_x * key_slot_depth);
+// Palm bolster root, with the force at mid-rise; stress across the layers.
+rest_bolster_bending_mpa = design_force_n * rest_bolster_rise / 2
+    / (2 * rest_half_w_y * pow(rest_bolster_depth_x, 2) / 6);
+// Tipping the rest about its front edge lifts its tail; the rail's two
+// overhanging flanks hold it over the shortest engaged length.
+rest_min_engaged_x = base_x_max - rest_face_x(rest_adjust_range);
+rest_uplift_n = design_force_n * (rest_bolster_z_max - deck_z) / rest_depth_x;
+rail_flank_shear_mpa = rest_uplift_n / (2 * rest_min_engaged_x * rail_h / 2);
+
+assert(platform_rated_kg == 49, "The printed platform is screened for 49 kg only.");
 assert(structural_safety_factor >= 2, "Use a structural design factor of at least 2.0.");
-assert(bushing_od < eye_d, "Eye-collar body must clear the load-cell eye.");
-assert(bushing_id > pin_nominal_d, "Pin spacer ID must clear the M8 retainer.");
-assert(bushing_core_od >= bushing_id + 3.5, "Pin-spacer wall is too thin.");
-assert(bushing_core_od < bushing_od, "Pin spacer must be smaller than the eye collar.");
-assert(bushing_collar_id > bushing_core_od, "Eye collar must slide over the pin spacer.");
-assert(bushing_eye_collar_flange_od < eye_d + 1.0,
-    "Eye-collar flange must fit the Ø18 mm enclosure access hole.");
-assert(pin_hole_d > bushing_core_od, "Clevis bores must clear the pin spacer.");
-assert(clevis_plate_t >= 4, "Clevis plates must be at least 4 mm thick.");
-assert(clevis_width_y >= 3 * pin_nominal_d,
-    "Clevis width must provide adequate pin edge distance.");
-assert(frame_case_clear_y >= 4,
-    "Frame rails must clear the enclosure by at least 4 mm in Y.");
-assert(grip_rail_gap_y >= 2 && grip_guide_bearing_y >= 3 &&
-    grip_guide_gap_z > 0 && grip_guide_gap_z <= 0.5 &&
-    grip_guide_x_min > frame_split_x_min + 1 &&
-    grip_guide_z_max < frame_split_lap_z - 2 &&
-    grip_guide_z_min > frame_z_min + 2 &&
-    grip_guide_x_max > hangboard_body_x_max + rated_preview_deflection,
-    "Grip guides must sit under the grip side walls with a small Z gap, inside the right half's lower lap tongue, and leave X free.");
-assert(hangboard_body_x_min > case_outer_x_max,
-    "Hangboard grip collides with the enclosure.");
-assert(hangboard_pocket_depth_z == 25,
-    "The hangboard pocket must remain 25 mm deep.");
-assert(hangboard_back_wall_t >= 6,
-    "Hangboard pocket back wall must be at least 6 mm thick.");
-assert(hangboard_opening_w_y >= 80 &&
-    abs(hangboard_opening_y_max - hangboard_opening_y_min - hangboard_opening_w_y) < 0.001,
-    "Four-finger opening must be at least 80 mm wide.");
-assert(hangboard_opening_x_max > hangboard_opening_x_min,
-    "Hangboard pocket opening collapsed in X.");
+assert(u_slot_clear >= 1 && tongue_r > lug_r + 1,
+    "Tongues must keep 1 mm from the case's U-slots and a seat ring round each lug.");
+assert(eye_bore_d < eye_d, "The eye ring's bore must be smaller than the eye.");
+assert(lug_fit >= 0.15 && lug_fit <= 0.4, "Lugs need a 0.15-0.4 mm radial fit in the eye.");
+assert(lug_bearing_mpa <= allowable_lug_bearing_mpa,
+    "Eye bearing on the printed lug exceeds the configured limit.");
+assert(lug_bending_mpa <= allowable_printed_tension_mpa &&
+    lug_shear_mpa <= allowable_printed_tension_mpa / 2 &&
+    tongue_bending_mpa <= allowable_printed_tension_mpa,
+    "Printed lug or tongue root exceeds configured cross-layer stress.");
+assert(lug_upper_flat_x < dyno_eye_x_right - lug_neck_r + 1 &&
+    lug_upper_flat_x <= dyno_eye_x_right - clip_tip_x &&
+    case_battery_wall_z_min > loadcell_top_z,
+    "The lid battery walls leave too little room for the lug neck or the clip.");
+assert(lug_neck_r >= 5 && lug_neck_r <= lug_r - 1.5 && lug_head_chamfer >= 0 &&
+    clip_seat_r > lug_neck_r && clip_seat_r + 2.5 <= tongue_r,
+    "The lug neck must leave a head over the clip and a clip ring round the neck.");
+assert(clip_snap >= 0.2 && clip_snap <= 0.5 && clip_t >= 2.5 &&
+    lug_neck_r - clip_tip_x > 0 &&
+    sqrt(pow(lug_neck_r, 2) - pow(clip_tip_x, 2)) < clip_mouth_w / 2,
+    "Clips need a light snap and fork tips clear of the seated neck.");
+assert(clip_ring_bearing_mpa <= allowable_printed_bearing_mpa &&
+    lug_neck_tension_mpa <= allowable_printed_tension_mpa,
+    "The clip ring or lug neck exceeds configured stress under the grip's tilt.");
+assert(clip_install_travel >= lug_r + 0.5 + clip_tip_x,
+    "Clips must drop in with their fork tips clear of the lug head.");
+assert(clip_access_x >= 5 && clip_tail_x >= clip_tip_x + 6 &&
+    dyno_eye_x_right + clip_tail_x <= lc_L / 2,
+    "Clips need finger room beside the fin, a tail over the load cell, and must end on it.");
+assert(lug_upper_flat_x <= dyno_eye_x_right - lug_neck_r,
+    "The flat that clears the lid walls must not cut the lug neck.");
+assert(clip_fin_top_z < case_z_max - 4 && clip_fin_top_z > lug_top_z + 4,
+    "Clip fins must stand clear of the lug and stay below the case top.");
+assert(grip_body_x_min >= case_x_half + 1 + clip_t,
+    "The grip body must stay clear of the case end.");
+assert(rest_catch_travel <= 0.6 && joint_catch_travel <= 1,
+    "Dovetail flanks are too shallow to hold their parts closely.");
+assert(case_float_gap >= 1, "The case must float at least 1 mm above the deck.");
+assert(hangboard_pocket_depth_z == 25, "The hangboard pocket must remain 25 mm deep.");
+assert(hangboard_back_wall_t >= 6, "Hangboard pocket back wall must be at least 6 mm thick.");
+assert(hangboard_opening_w_y >= 80, "Four-finger opening must be at least 80 mm wide.");
 assert(hangboard_lip_radius > 0 && hangboard_lip_radius <= 2,
     "Loading-edge radius must be in (0, 2] mm.");
 assert(hangboard_lip_min_t >= 8,
     "Rounded hangboard loading lip must retain at least 8 mm thickness.");
-assert(hangboard_opening_x_max - hangboard_opening_x_min - 2 * hangboard_draft >= 18,
+assert(hangboard_opening_w_x - 2 * hangboard_draft >= 18,
     "Finger pocket must retain at least 18 mm clearance at its floor.");
-assert(hangboard_opening_y_max - hangboard_opening_y_min - 2 * hangboard_draft >= 78,
-    "Finger pocket must retain at least 78 mm usable width at its floor.");
+assert(max([for (o = edge_pull_offsets) abs(o)]) <= edge_pull_offset_max,
+    "Every edge's mid-depth must stay near the load-cell plane.");
 assert(stopper_count == 2 &&
     (stopper_edge_depths == [20, 15, 10] || stopper_edge_depths == [15, 20, 10]),
     "Use two stoppers that give 20 and 15 mm edges alone and 10 mm stacked.");
@@ -574,155 +470,71 @@ assert(stopper_clearance >= 0.15 && stopper_clearance <= 0.4 &&
     stopper_r >= 2 && stopper_min_t >= 5,
     "Stoppers need a sliding fit and at least 5 mm thickness.");
 assert(stopper_tab_rise >= 4 && stopper_tab_rise <= 10 &&
-    stopper_tab_t_y >= 3 && stopper_tab_w_x >= 6 &&
     stopper_tab_slot_w_x <= stopper_x_max - stopper_x_min - 2 * stopper_r &&
     stopper_tab_slot_skin_y >= 1.8,
-    "Stopper pull tabs must stand proud enough to pinch, fit the straight ends, and leave at least 1.8 mm of pocket end wall behind their slots.");
-assert(hand_opening >= 40 && hand_opening <= 90,
-    "Nominal hand_opening should remain within 40-90 mm.");
-assert(hand_opening_min == 25 && hand_opening_max == 105 && wrist_index_count == 9,
-    "Preserve nine 25-105 mm opening positions.");
-assert(wrist_saddle_depth_x >= 50 && wrist_saddle_depth_x <= 65,
-    "Heel saddle must provide a 50-65 mm continuous contact surface.");
-assert(wrist_saddle_t >= 2 * wrist_pad_corner_r + 4 &&
-    wrist_saddle_z_max == hangboard_front_z &&
-    wrist_saddle_z_min < wrist_rest_z_max - 1 &&
-    wrist_palm_bolster_z_max > wrist_plate_z_max_2 + 2,
-    "Palm and finger contact decks must align and the bolster must enclose the upper arm plates.");
-assert(wrist_palm_bolster_z_max >= wrist_plate_z_max_2 + wrist_quick_pin_head_h
-        + wrist_quick_pin_button_h + 2,
-    "The palm bolster must rise at least 2 mm above the pin buttons.");
-assert(wrist_palm_bolster_design_bending_mpa <= allowable_printed_bending_mpa,
-    "Palm bolster exceeds configured nominal bending stress.");
-assert(wrist_post_channel_clearance >= 2 && wrist_post_channel_y_margin >= 2 &&
-    wrist_post_channel_y_max <= frame_inner_y_max &&
-    wrist_post_channel_y_min >= frame_inner_y_min &&
-    wrist_post_remaining_depth_z >= 25 && wrist_post_remaining_web_y >= 12 &&
-    wrist_post_design_bending_mpa <= allowable_printed_bending_mpa,
-    "Right-post palm channel leaves too little frame material or deck clearance.");
-assert(wrist_saddle_core_width_y >= 64 &&
-    wrist_arm_pad_overlap_y >= 4 && wrist_arm_pad_overlap_y <= wrist_cradle_edge_w &&
-    wrist_upper_arm_x_max >= wrist_arm_x_max &&
-    wrist_upper_arm_x_max > wrist_palm_bolster_x_max &&
-    wrist_upper_arm_joint_shear_mpa <= allowable_printed_tension_mpa / 2,
-    "Upper arms must stay outside the skin-contact deck and keep their bolster joint section.");
-assert(wrist_cradle_edge_w >= 4 && wrist_cradle_edge_w <= wrist_pad_corner_r &&
-    wrist_cradle_open_width_y >= 64 &&
-    wrist_cradle_open_depth_x >= wrist_cradle_open_depth_min_x,
-    "The palm cradle must retain a 38 mm open, uninterrupted heel deck.");
-assert(wrist_cradle_rise >= 1.5 && wrist_cradle_rise <= 4 &&
-    wrist_cradle_embed > 0 && wrist_cradle_embed < wrist_saddle_t / 2 &&
-    wrist_cradle_edge_radius >= 2 &&
-    wrist_cradle_edge_radius < min(wrist_cradle_edge_w,
-        wrist_cradle_rise + wrist_cradle_embed) / 2,
-    "Palm side rims must be low with broad rounded contact edges.");
-assert(wrist_palm_bolster_x_min == wrist_saddle_x_min &&
-    wrist_palm_bolster_flat_top_x >= 8 &&
-    wrist_palm_bolster_x_max - wrist_palm_bolster_rear_r - 1
-        >= wrist_saddle_x_min + wrist_pad_t_x &&
-    wrist_palm_bolster_x_max + wrist_palm_bolster_fillet_r
-        < wrist_saddle_x_max - wrist_cradle_edge_w,
-    "Palm bolster must start at the palm face, keep a nearly flat top, and cover the arm plates.");
-assert(wrist_palm_bolster_rise >= 18 && wrist_palm_bolster_rise <= 24 &&
-    wrist_palm_bolster_front_r >= 5 && wrist_palm_bolster_front_r <= 8 &&
-    wrist_palm_bolster_rear_r >= 4 &&
-    wrist_palm_bolster_rear_r <= wrist_palm_bolster_front_r &&
-    wrist_palm_bolster_fillet_r >= 3 &&
-    wrist_palm_bolster_fillet_r <= wrist_palm_bolster_rise
-        - max(wrist_palm_bolster_front_r, wrist_palm_bolster_rear_r) - 1,
-    "Palm bolster needs large rolled edges and a >=3 mm fillet on a vertical rear face.");
-assert(wrist_palm_bolster_embed > wrist_pad_corner_r &&
-    wrist_palm_bolster_embed <= wrist_saddle_t - 4,
-    "Palm bolster must root below the palm-face edge radius, inside the deck.");
-assert(support_foot_w_x <= min(frame_left_post_t, frame_palm_post_t) - 4 &&
-    support_foot_w_y <= frame_rail_t - 2 &&
-    support_foot_top_z > frame_z_min && support_foot_bottom_z < frame_z_min,
-    "Feet must overlap both posts and rails without exceeding their footprints.");
-assert(support_foot_x_right - support_foot_w_x / 2 >
-    wrist_pad_center_x + wrist_adjust_range + wrist_pad_t_x / 2,
-    "Right-hand feet obstruct the palm at maximum travel.");
-assert(support_foot_bottom_z + 5
-        <= min(wrist_pin_tip_low_z, loadcell_nut_low_z, loadcell_bolt_tip_z),
-    "Fasteners must remain at least 5 mm above the support plane.");
-// Two 1.25 mm M8 threads past the nyloc nut.
-assert(loadcell_bolt_protrusion >= 2 * 1.25,
-    "The M8 bolts must pass fully through their nyloc nuts.");
-assert(wrist_mount_y_top - wrist_pin_access_d / 2 > wrist_pad_y_max &&
-    wrist_mount_y_bottom + wrist_pin_access_d / 2 < wrist_pad_y_min,
-    "Keep pin heads and their extraction paths outside the contact saddle.");
-assert(wrist_saddle_design_bending_mpa <= allowable_printed_bending_mpa,
-    "Heel saddle exceeds configured nominal bending stress.");
-assert(wrist_quick_pin_d >= 6,
-    "Use quick-release pins at least 6 mm in diameter.");
-assert(wrist_mount_hole_d > wrist_quick_pin_d,
-    "Pad holes must clear the quick-release pins.");
-assert(abs(wrist_quick_pin_stack_h - wrist_quick_pin_grip_l) <= 0.2,
-    "Quick-release pin grip length must match the pad/frame stack.");
-assert(wrist_mount_hole_d < frame_rail_t - 4,
-    "Wrist mounting holes leave too little frame rail material.");
-assert(abs(
-    2 * wrist_adjust_range
-    - wrist_index_pitch * round(2 * wrist_adjust_range / wrist_index_pitch)
-) < 0.001,
-    "The wrist travel must divide evenly into indexed positions.");
-assert(wrist_pad_center_x - wrist_adjust_range - wrist_pad_t_x / 2
-    >= hangboard_body_x_max + 25,
-    "Palm pad gets too close to the hangboard pocket at minimum adjustment.");
-assert(wrist_pad_center_x + wrist_adjust_range + wrist_pad_t_x / 2
-    <= frame_palm_post_inner_x - wrist_post_clear_x + 0.001,
-    "Palm pad collides with the fixed outer post at maximum adjustment.");
-assert(wrist_index_remaining_web_y >= 8,
-    "Index holes leave too little top/bottom rail material.");
-assert(wrist_index_ligament_x >= 3.5,
-    "Index holes are too close together.");
-assert(wrist_pin_design_shear_mpa <= allowable_quick_pin_shear_mpa,
-    "Wrist quick-release pins exceed the configured design shear stress.");
-assert(wrist_arm_design_bearing_mpa <= allowable_printed_bearing_mpa,
-    "Wrist-pad arms exceed the configured printed bearing stress.");
-assert(wrist_rail_design_bearing_mpa <= allowable_printed_bearing_mpa,
-    "Frame rails exceed the configured printed bearing stress.");
-assert(service_tunnel_w > usb_cable_boot_w + 2,
-    "Service tunnel is too narrow for the USB cable boot.");
-assert(anchor_design_bending_mpa <= allowable_printed_bending_mpa,
-    "Left anchor post exceeds configured bending stress.");
-assert(clevis_design_bearing_mpa <= allowable_printed_bearing_mpa &&
-    clevis_net_tension_mpa <= allowable_printed_tension_mpa,
-    "Clevis cheeks exceed configured bearing/net-section stress.");
-assert(rail_net_tension_mpa <= allowable_printed_tension_mpa &&
-    service_net_tension_mpa <= allowable_printed_tension_mpa &&
-    rail_ligament_shear_mpa <= allowable_printed_tension_mpa / 2,
-    "Perforated rails or service bridge exceed configured nominal stress.");
-assert(sleeve_a > 0 && sleeve_b > 0 &&
-    sleeve_design_bending_mpa <= allowable_insert_bending_mpa,
-    "Metal pin sleeve exceeds configured bending stress or sensor is outside supports.");
-assert(collar_design_bearing_mpa <= allowable_collar_bearing_mpa,
-    "Metal eye collars exceed configured bearing stress.");
+    "Stopper pull tabs must stand proud, fit the straight ends, and leave 1.8 mm of pocket end wall behind their slots.");
+assert(grip_pull_gap_x >= 5 * (lug_fit + anchor_play_x + rated_preview_deflection),
+    "The grip needs free travel in the pull direction of at least five times its play and rated deflection.");
+assert(grip_guide_gap_z >= 0.8 && grip_guide_gap_z <= 1.2 && grip_guide_bearing_y >= 3 &&
+    trench_floor_z > base_z_min + 5,
+    "Grip guides need a small Z gap, a real bearing width and a solid trench floor.");
+assert(anchor_z_min > base_z_min + 5 && anchor_bearing_mpa <= allowable_printed_bearing_mpa,
+    "Anchor pocket needs a solid floor and bearing area.");
 assert(lip_design_bending_mpa <= allowable_printed_bending_mpa &&
-    wrist_arm_design_bending_mpa <= allowable_printed_bending_mpa,
-    "Finger lip or wrist arms exceed configured nominal bending stress.");
-assert(frame_split_x_min - 3 > service_tunnel_w / 2 &&
-    frame_split_x_min - 3 > fixed_clevis_x_max &&
-    frame_split_x_max + 3 <= wrist_arm_x_min - wrist_adjust_range &&
-    frame_split_left_len <= frame_split_bed_max &&
-    frame_split_right_len <= frame_split_bed_max,
-    "Frame lap joint must cross plain rails only, clear the wrist arms and leave both halves printable.");
+    grip_net_tension_mpa <= allowable_printed_tension_mpa,
+    "Finger lip or grip body exceeds configured nominal stress.");
+assert(hand_opening_min == 25 && hand_opening_max == 85 && rest_index_count == 7,
+    "Preserve seven 25-85 mm hand openings.");
+assert(abs(2 * rest_adjust_range
+    - rest_index_pitch * round(2 * rest_adjust_range / rest_index_pitch)) < 0.001,
+    "The rest travel must divide evenly into indexed positions.");
+assert(rest_face_x(-rest_adjust_range) >= trench_x_max + 15,
+    "The palm rest gets too close to the grip trench at its smallest opening.");
+assert(rest_bolster_rise >= 10 && rest_bolster_rise <= 14 &&
+    rest_bolster_depth_x >= 20 && rest_bolster_depth_x < rest_depth_x - 30,
+    "The palm bolster must rise 10-14 mm and leave a 30 mm heel deck behind it.");
+assert(rest_bolster_z_max >= key_head_z_max + 2,
+    "The palm bolster must rise at least 2 mm above the key heads.");
+assert(key_y - key_w_y / 2 - key_fit > rest_half_w_y + 1 &&
+    key_y + key_w_y / 2 + key_fit < base_half_w_y - 3,
+    "Keys must sit outside the palm area with at least 3 mm of outer wall.");
+assert(key_ligament_x >= 3 &&
+    key_shear_mpa <= allowable_printed_tension_mpa &&
+    key_wing_bearing_mpa <= allowable_printed_bearing_mpa &&
+    key_slot_bearing_mpa <= allowable_printed_bearing_mpa &&
+    key_ligament_shear_mpa <= allowable_printed_tension_mpa,
+    "Index keys, wings, slots or slot ligaments exceed configured stress.");
+assert(key_slot_z_min > base_z_min + 5, "Key slots need a solid floor.");
+assert(rest_bolster_bending_mpa <= allowable_printed_tension_mpa,
+    "Palm bolster exceeds configured cross-layer stress.");
+assert(rest_min_engaged_x >= 20 && rail_flank_shear_mpa <= allowable_printed_tension_mpa / 2,
+    "The rest must keep 20 mm of rail engagement and the rail flanks their strength.");
+assert(rail_top_z + rail_top_clear < rest_deck_z - 6 && rail_top_w + 2 * rail_fit <= 30,
+    "The rail groove must leave 6 mm of rest above it and a bridge of at most 30 mm.");
+assert(base_front_len <= base_split_bed_max && base_rear_len <= base_split_bed_max,
+    "Each base half must fit the printable length.");
+assert(base_split_x >= trench_x_max + 6,
+    "The grip trench must end at least 6 mm before the base joint.");
+assert(base_split_x + joint_tongue_len_x + 3 < key_x(-rest_adjust_range) - key_t_x / 2,
+    "Base joint sockets must clear the first key slot.");
 assert(phone_slot_w >= 13 && phone_slot_w <= 16 &&
-    phone_slot_depth_z >= 12 && phone_slot_z_min > stopper_well_z_min - 20 &&
-    phone_slot_tilt >= 5 && phone_slot_tilt <= 25 &&
-    stopper_well_z_min >= frame_z_min + 8 && phone_slot_z_min >= frame_z_min + 8,
-    "Phone slot must fit a phone in its case, lean it back, and keep solid floors under the slot and stopper well.");
-assert(frame_split_bolt_end_dist >= 2 * frame_split_bolt_hole_d &&
-    frame_split_bolt_pitch >= 3 * frame_split_bolt_d &&
-    frame_split_bolt_side_wall_y >= 2.5 &&
-    frame_split_bolt_bearing_l >= 2 * frame_split_bolt_d &&
-    frame_split_nut_pocket_depth >= frame_split_nut_h &&
-    frame_split_bolt_cbore_depth >= frame_split_bolt_head_h + 0.5 &&
-    frame_split_bolt_tip_recess >= 0.5 &&
-    frame_split_nut_start_engagement >= frame_split_nut_h / 2,
-    "Frame lap bolts need edge distance, rail walls, bearing length, recessed heads and nuts, and a screw that reaches a nut at the pocket mouth.");
-assert(frame_split_bolt_design_shear_mpa <= allowable_frame_bolt_shear_mpa &&
-    frame_split_bolt_design_bearing_mpa <= allowable_printed_bearing_mpa &&
-    frame_split_shoulder_bearing_mpa <= allowable_printed_bearing_mpa &&
-    frame_split_tongue_net_tension_mpa <= allowable_printed_tension_mpa &&
-    frame_split_tongue_design_bending_mpa <= allowable_printed_bending_mpa,
-    "Frame lap joint exceeds configured bolt shear or printed bearing, tension or bending stress.");
+    phone_slot_depth_z >= 12 && phone_slot_tilt >= 5 && phone_slot_tilt <= 25,
+    "Phone slot must fit a phone in its case and lean it back.");
+assert(phone_slot_z_min > deck_z + phone_slot_depth_z &&
+    phone_view_elevation <= phone_view_max_elevation &&
+    phone_stand_clear_x >= 5 && phone_stand_half_w_y >= phone_probe_w / 2 + 2,
+    "The phone stand must lift the slot so the case hides the phone only from low viewpoints, leave finger room by the stopper well, and span a phone in portrait.");
+assert(phone_stand_cheek_w_y >= 15 && phone_stand_gap_half_y >= 10 &&
+    phone_min_w / 2 - phone_stand_gap_half_y >= phone_min_rest_y,
+    "Phone stand cheeks must be at least 15 mm wide, leave a cable gap, and carry a narrow phone on both.");
+assert(top_brand_y - brand_len(top_brand_text, top_brand_size) / 2 >= stopper_well_y_max + 3 &&
+    top_brand_y + brand_len(top_brand_text, top_brand_size) / 2 <= base_half_w_y - 3 &&
+    top_brand_size * brand_line_h + 6 <= anchor_pocket_x_min - phone_stand_x_max,
+    "The top brand must fit the deck strip between the phone stand, the anchor pocket and the stopper well.");
+assert(abs(side_brand_x - stopper_well_x_max) >= brand_len(side_brand_text, side_brand_size) / 2 + 3 &&
+    side_brand_size * brand_line_h + 6 <= deck_z - base_z_min &&
+    base_half_w_y - trench_half_w_y - brand_depth >= 6,
+    "The side brand must fit the base side face beside the trench and keep its wall solid.");
+assert(stopper_well_y_max < case_y_min - 3 && stopper_well_x_min > base_x_min + 2 &&
+    stopper_well_z_min > base_z_min + 5,
+    "The stopper well must stay clear of the case and keep solid walls and floor.");

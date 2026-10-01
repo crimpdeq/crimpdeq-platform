@@ -3,7 +3,7 @@
 
 Exports every part at its place on its print plate (export-parts.sh with
 ON_PLATE=true), checks the plate layout, lets the Bambu Studio CLI assemble
-the three plates with the print settings from docs/src/build/printing.md, and
+the two plates with the print settings from docs/src/build/printing.md, and
 slices the project to confirm that every plate is printable.
 
 Usage: python3 export-bambu-project.py [--output FILE.3mf] [--skip-slice]
@@ -40,21 +40,43 @@ PROCESS_OVERRIDES = {
     "wall_loops": "6",
     "top_shell_layers": "6",
     "bottom_shell_layers": "6",
-    "sparse_infill_density": "50%",
-    "enable_support": "1",
-    "support_type": "tree(auto)",
-    "support_threshold_angle": "30",
-    "support_on_build_plate_only": "0",
+    "sparse_infill_density": "20%",
+    # No part needs support; the joint sockets and the rest's rail groove are
+    # bridged, and support in the groove would scar a sliding face.
+    "enable_support": "0",
     "brim_type": "outer_only",
     "brim_width": "5",
 }
 SOLID = {"sparse_infill_density": "100%"}
+REST = {"sparse_infill_density": "50%"}
+BASE = {"top_shell_layers": "4", "bottom_shell_layers": "4"}
+# Height ranges that print parts of an object sparser, as (min Z, max Z,
+# settings) with the heights as dynamometer_dimensions.scad expressions in the
+# part's print Z. Bambu Studio reads the layer height of every height range.
+RANGE_BASE = {"layer_height": PROCESS_OVERRIDES["layer_height"]}
+HEIGHT_RANGES = {
+    # The phone stand's cheeks, the only part of the front half above the
+    # deck, carry only the phone.
+    "base_front": [("deck_z - base_z_min", "phone_stand_top_z - base_z_min",
+                    {**RANGE_BASE, "sparse_infill_density": "10%"})],
+    # The upper heel and the bolster, above the key wings and the rail groove.
+    "rest": [("rest_wing_top_z - rest_z_min", "rest_bolster_z_max - rest_z_min",
+              {**RANGE_BASE, "sparse_infill_density": "15%"})],
+    # The anchor block's lower body only bears on its pocket; its top 5 mm
+    # stays solid under the tongue root.
+    "anchor": [("0", "deck_z - 5 - anchor_z_min",
+                {**RANGE_BASE, "sparse_infill_density": "40%"})],
+}
 
 # Bambu Studio drops plate names containing any of ILLEGAL_NAME_CHARS.
 PLATES = [
-    ("Left frame half", [("frame_left", {})]),
-    ("Right frame half", [("frame_right", {})]),
-    ("Wrist rest, grip and stoppers", [("wrist_rest", SOLID), ("grip", SOLID), ("stoppers", SOLID)]),
+    ("Front base and small parts", [
+        ("base_front", BASE), ("grip", SOLID), ("anchor", SOLID), ("clips", SOLID),
+        ("keys", SOLID),
+    ]),
+    ("Rear base, palm rest and stoppers", [
+        ("stoppers", {}), ("base_rear", BASE), ("rest", REST),
+    ]),
 ]
 ILLEGAL_NAME_CHARS = '<>:/\\|?*"'
 # Minimum gap between parts that share a plate (docs/src/build/printing.md).
@@ -173,6 +195,28 @@ def bed_size(presets: Presets) -> tuple[float, float]:
     return max(x for x, _ in corners), max(y for _, y in corners)
 
 
+def height_ranges(work: Path) -> dict[str, list[dict]]:
+    """HEIGHT_RANGES with their heights evaluated from the model."""
+    expressions = [z for ranges in HEIGHT_RANGES.values()
+                   for min_z, max_z, _ in ranges for z in (min_z, max_z)]
+    probe = work / "height_ranges.scad"
+    probe.write_text(
+        f"include <{PROJECT_ROOT / 'dynamometer_dimensions.scad'}>\n"
+        f"echo(height_ranges = [{', '.join(expressions)}]);\n",
+        encoding="utf-8",
+    )
+    echo = work / "height_ranges.echo"
+    subprocess.run(["openscad", "-o", str(echo), str(probe)], check=True,
+                   capture_output=True)
+    line = next(l for l in echo.read_text().splitlines() if "height_ranges" in l)
+    heights = iter(json.loads(line.split("=", 1)[1]))
+    return {
+        part: [{"min_z": next(heights), "max_z": next(heights), "range_params": params}
+               for _, _, params in ranges]
+        for part, ranges in HEIGHT_RANGES.items()
+    }
+
+
 def export_parts(stl_dir: Path) -> None:
     env = dict(os.environ, EXPORT_DIR=str(stl_dir), ON_PLATE="true")
     parts = [part for _, objects in PLATES for part, _ in objects]
@@ -245,6 +289,7 @@ def main() -> int:
         check_layout(stl_dir, bed_size(presets))
 
         machine, process, filament = write_settings(presets, work)
+        ranges = height_ranges(work)
         assemble_list = {
             "plates": [
                 {
@@ -257,6 +302,7 @@ def main() -> int:
                             "count": 1,
                             "filaments": [1],
                             "print_params": params,
+                            "height_ranges": ranges.get(part, []),
                         }
                         for part, params in objects
                     ],

@@ -1,36 +1,39 @@
 # Stoppers and phone
 
-## Pocket stoppers
+## Stoppers
 
-![Stacking the stoppers in the pocket](../images/stoppers.png)
+![Fitting the stoppers](../images/stoppers.png)
 
-The finger pocket is 25 mm deep. The stoppers raise its floor to give a
-shallower edge:
+The pocket gives a 25 mm edge on its own. For a shallower edge, drop a
+stopper onto the pocket floor with its pull tab in the slot at the end of the
+pocket:
 
-| Stopper | Edge |
+| Edge | Stoppers in the pocket |
 |---|---|
-| None | 25 mm |
-| 5 mm | 20 mm |
-| 10 mm | 15 mm |
-| 5 mm and 10 mm, stacked | 10 mm |
+| 25 mm | none |
+| 20 mm | 5 mm stopper |
+| 15 mm | 10 mm stopper |
+| 10 mm | both, in either order |
 
-1. Drop a stopper flat into the pocket, with its tab in the slot at one end of
-   the pocket. The pocket walls hold it in place.
-2. For the 10 mm edge, drop the other stopper on top, with its tab in the slot
-   at the other end. Either can go at the bottom.
-3. To take a stopper out, pinch its tab and pull it straight up. Take the top
-   one out first.
+When stacking, the two pull tabs go to opposite ends of the pocket. To
+remove a stopper, pinch its tab and pull it straight up.
 
-Tare the instrument again after fitting or removing a stopper.
-
-Store both stoppers stacked the same way in the well at the left end of the
-frame, with the tabs in the slots at opposite ends.
+When not in use, stack both stoppers in the well beside the case, tabs up.
 
 ## Phone
 
-![Phone in the slot at the left end of the frame](../images/phone.png)
+![Phone in its slot](../images/phone.png)
 
-Stand the phone in the slot at the far left end of the frame, screen facing
-the grip. It leans back by itself and fits in portrait or landscape. The slot
-takes phones up to about 13 mm thick in their case. The phone sits well away
-from the hand and carries no load, but don't lean on it.
+Stand your phone, in its case, in the slot across the two cheeks of the stand
+at the far end of the base, in portrait or landscape. The stand lifts it so
+the case doesn't hide the screen from where you sit, and the slot leans back
+15° so the screen faces you while you pull. It takes phones up to about
+13 mm thick. In portrait, a charging cable fits through the gap between the
+cheeks.
+
+## Check
+
+- [ ] Each stopper, and both stacked, lie flat and stay put under the
+      fingers.
+- [ ] The tabs don't catch your index or little finger above the grip.
+- [ ] Your phone stays put in the slot while you pull on the grip.
