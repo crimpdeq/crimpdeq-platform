@@ -40,7 +40,7 @@ Each release also includes `crimpdeq-platform.3mf`, a Bambu Studio project
 with both plates already laid out and the [print settings](#print-settings)
 applied, including the per-part infill. It's set up for a Bambu Lab A1 with
 a 0.4 mm nozzle, Generic PETG, and the textured PEI plate. It takes about
-720 g of PETG.
+700 g of PETG.
 
 1. Open it with **File → Open Project**.
 2. Select your printer, filament and plate. Changing the printer can reset
@@ -77,6 +77,11 @@ Per-object override (select the object, switch Process to **Objects**):
 | `grip`, `anchor`, `clips`, `keys` | 100% infill |
 | `rest` | 50% infill |
 | `base_front`, `base_rear` | 4 top and 4 bottom layers |
+
+The phone stand only holds the phone, so it can print sparser. Right-click
+`base_front`, choose **Height range Modifier**, set the range from the deck
+(22.6 mm) to the top of the stand (59.6 mm), and give that range 10%
+infill. Only the stand's cheeks rise above the deck.
 
 The lugs must be solid: the load cell's eyes bear on them directly. The
 base halves and palm rest can be sparse because the six walls print their

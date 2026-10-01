@@ -46,7 +46,7 @@ rotated or the model changed. Re-import the release files.
 - [ ] In the **Line Type** preview, the grip, anchor block, clips and keys
       show solid infill all the way through.
 - [ ] The palm rest shows 50% sparse infill, and the base halves and
-      stoppers 20%.
+      stoppers 20%. Above the deck, the phone stand's cheeks show 10%.
 - [ ] On the rear half, the walls between neighbouring key slots print
       solid, with no sparse infill.
 
