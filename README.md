@@ -48,6 +48,12 @@ Validate the geometry after any change to the model:
 CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash check-collisions.sh
 ```
 
+## Safety
+
+Never load the platform above its 49 kg rating, and pull only with both clips
+and both keys fitted. Printed parts can fail: inspect them before each session
+and stop using any part that cracks or deforms.
+
 ## License
 
 This repository is source-available under the
