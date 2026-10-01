@@ -4,6 +4,8 @@
 //
 
 include <dynamometer_dimensions.scad>
+// Bundled so every machine engraves the brand in Inter, not a fallback font.
+use <fonts/Inter-Bold.ttf>
 
 render_fn = is_undef(render_fn) ? 96 : render_fn;
 $fn = render_fn;

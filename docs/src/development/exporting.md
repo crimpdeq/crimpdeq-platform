@@ -24,8 +24,9 @@ openscad -D 'part="grip"' -o /tmp/dynamometer_grip.stl dynamometer_assembly.scad
 | `stoppers` | Two stackable pocket stoppers, laid out flat |
 
 The engraved brand on the front base half uses Inter Bold, like the case.
-Install [Inter](https://rsms.me/inter/) or point `OPENSCAD_FONT_PATH` at its
-TTF files; otherwise OpenSCAD substitutes another font.
+`dynamometer_parts.scad` loads it from `fonts/Inter-Bold.ttf`, so every
+export uses the same font without installing it. [Inter](https://rsms.me/inter/)
+is under the SIL Open Font License; see `fonts/Inter-LICENSE.txt`.
 
 `export-parts.sh` exports every part in the table (or only the parts given as
 arguments) as `crimpdeq-platform-<part>.stl` into `exports/`, which is ignored

@@ -55,3 +55,5 @@ This repository is source-available under the
 and build the design for personal, educational, and research use, and share
 modified versions non-commercially. Commercial manufacture or sale of printed
 parts, kits, or assembled devices requires prior written permission.
+The bundled Inter font in `fonts/` is under its own
+[SIL Open Font License](fonts/Inter-LICENSE.txt).

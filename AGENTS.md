@@ -36,6 +36,8 @@
 - `export-bambu-project.py`: builds and slice-checks the two-plate Bambu
   Studio project from the plate layout in `print_plate_placement()`; used
   by the release workflow.
+- `fonts/`: the bundled Inter Bold used by the brand engraving, with its
+  OFL license.
 - `.github/workflows/`: CI checks, release STL publication, and a weekly
   OpenSCAD 2021.01 compatibility check.
 - `.github/actions/setup-openscad/`: the pinned OpenSCAD snapshot used by CI
