@@ -45,7 +45,8 @@ them replaces testing printed parts.
 - The four-finger hangboard pocket is exactly 25 mm deep, with an opening at
   least 80 mm wide, a 6 mm back wall and an 8 mm loading lip. Its +Z opening
   stays clear.
-- The mid-depth of every edge is within 5 mm of the load-cell plane.
+- The mid-depth of every edge is within 5 mm of the load-cell plane. The
+  current model is at most 4 mm off, on the 10 mm edge.
 - Two stackable drop-in stoppers, 5 and 10 mm thick, give 20, 15 and 10 mm
   edges. The closed pocket walls locate them.
 - Their pull tabs run in slots in the pocket end walls and stand proud of the
@@ -78,3 +79,38 @@ them replaces testing printed parts.
 
 - The base, anchor block, grip, clips, rest, keys, phone and case are
   collision-free except at explicitly modelled contact surfaces.
+
+## Structural screening
+
+`dynamometer_dimensions.scad` fails with an assertion when a parameter change
+takes any of these checks past its limit. Values are at the 961 N design
+target: the 481 N rating times the 2.0 design factor.
+
+| Check | Stress | Limit |
+|---|---|---|
+| Eye bearing on each lug (14.3 mm × 4 mm) | 16.8 MPa | 20 MPa, lug bearing |
+| Lug root bending across the layers, eye force at the load-cell mid-plane | 6.7 MPa | 12 MPa |
+| Lug root shear across the layers | 5.98 MPa | 6 MPa |
+| Tongue root at the deck, bending across the layers | 3.1 MPa | 12 MPa |
+| Anchor block bearing on its pocket | 1.1 MPa | 12 MPa, bearing |
+| Clip on the flat ring under the lug head, largest finger-pull tilt | 11.1 MPa | 12 MPa, bearing |
+| Lug neck pulled by the clip, across the layers | 4.4 MPa | 12 MPa |
+| Finger lip bending over the full 25 mm edge | 18.0 MPa | 30 MPa, bending |
+| Grip side and back walls in tension | 1.2 MPa | 12 MPa |
+| Either index key alone, in shear | 10.0 MPa | 12 MPa |
+| Key bearing in the rest wing / base slot | 5.5 / 4.3 MPa | 12 MPa, bearing |
+| Base slot ligament between positions, in shear | 9.3 MPa | 12 MPa |
+| Palm bolster root, across the layers | 0.9 MPa | 12 MPa |
+| Rail flanks holding the rest down at its shortest engagement | 3.6 MPa | 6 MPa |
+
+The clip check takes the 10 mm edge's 4 mm offset, reacted between the clip
+and the tongue seat 10 mm from the eye centre. The base joint is in
+compression and is not screened; the stoppers, grip guides, stopper well and
+phone stand are outside the load path.
+
+The printed-material limits (`allowable_printed_*` and
+`allowable_lug_bearing_mpa`) are assumptions that need coupon tests. The
+calculations leave out the 3D stress field, notches, one-finger loading,
+print defects, creep, fatigue and temperature, and they are not FEA or proof
+tests. The design factor is not a demonstrated safety factor and never
+permits loading the platform above 49 kg.
