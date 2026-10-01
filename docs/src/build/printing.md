@@ -40,7 +40,7 @@ Each release also includes `crimpdeq-platform.3mf`, a Bambu Studio project
 with both plates already laid out and the [print settings](#print-settings)
 applied, including the per-part infill. It's set up for a Bambu Lab A1 with
 a 0.4 mm nozzle, Generic PETG, and the textured PEI plate. It takes about
-700 g of PETG.
+680 g of PETG.
 
 1. Open it with **File → Open Project**.
 2. Select your printer, filament and plate. Changing the printer can reset
@@ -78,13 +78,19 @@ Per-object override (select the object, switch Process to **Objects**):
 | `rest` | 50% infill |
 | `base_front`, `base_rear` | 4 top and 4 bottom layers |
 
-The phone stand only holds the phone, so it can print sparser. Right-click
-`base_front`, choose **Height range Modifier**, set the range from the deck
-(22.6 mm) to the top of the stand (59.6 mm), and give that range 10%
-infill. Only the stand's cheeks rise above the deck.
+Height ranges print the lightly loaded parts of three objects sparser.
+Right-click the object, choose **Height range Modifier**, set the range, and
+give it the listed infill:
 
-The lugs must be solid: the load cell's eyes bear on them directly. The
-base halves and palm rest can be sparse because the six walls print their
+| Object | Range | Infill | Covers |
+|---|---|---|---|
+| `base_front` | 22.6–59.6 mm | 10% | The phone stand's cheeks, the only part above the deck |
+| `rest` | 11–29.5 mm | 15% | The upper heel and the bolster, above the key wings and rail groove |
+| `anchor` | 0–11.5 mm | 40% | The lower body in the pocket, below its solid top 5 mm |
+
+The lugs must be solid: the load cell's eyes bear on them directly, and the
+anchor block stays solid for 5 mm under its tongue root. The anchor's lower
+body only bears on its pocket. The base halves and palm rest can be sparse because the six walls print their
 loaded features solid: the key slots and the ligaments between them, the
 rail, the joints, the anchor pocket and the rest's key wings. Don't reduce
 the walls, or the top and bottom layers below these values. The stoppers

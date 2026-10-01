@@ -75,8 +75,9 @@ Copy this table into a comment or a new note.
 >   This is the design's governing assumption and needs coupon and proof
 >   tests with the real load cell. Printed parts under sustained load also
 >   creep: don't leave the device loaded, and check the lugs for flattening.
-> - **Sparse base and palm rest.** The screening assumes solid sections. The
->   base halves (20% infill) and palm rest (50%) have solid loaded features
+> - **Sparse base, palm rest and anchor body.** The screening assumes solid
+>   sections. The base halves (20% infill), palm rest (50%, 15% above the key
+>   wings) and the anchor block's lower body (40%) have solid loaded features
 >   but sparse interiors, so their real margin is lower than screened and is
 >   untested.
 > - **Physical validation is still pending:** fit with the real case, comfort,

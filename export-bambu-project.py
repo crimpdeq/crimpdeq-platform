@@ -50,10 +50,23 @@ PROCESS_OVERRIDES = {
 SOLID = {"sparse_infill_density": "100%"}
 REST = {"sparse_infill_density": "50%"}
 BASE = {"top_shell_layers": "4", "bottom_shell_layers": "4"}
-# The phone stand's cheeks are the only part of the front half above the deck
-# and carry only the phone, so a height range over them prints them sparser.
-# Bambu Studio reads the layer height of every height range.
-PHONE_STAND = {"layer_height": PROCESS_OVERRIDES["layer_height"], "sparse_infill_density": "10%"}
+# Height ranges that print parts of an object sparser, as (min Z, max Z,
+# settings) with the heights as dynamometer_dimensions.scad expressions in the
+# part's print Z. Bambu Studio reads the layer height of every height range.
+RANGE_BASE = {"layer_height": PROCESS_OVERRIDES["layer_height"]}
+HEIGHT_RANGES = {
+    # The phone stand's cheeks, the only part of the front half above the
+    # deck, carry only the phone.
+    "base_front": [("deck_z - base_z_min", "phone_stand_top_z - base_z_min",
+                    {**RANGE_BASE, "sparse_infill_density": "10%"})],
+    # The upper heel and the bolster, above the key wings and the rail groove.
+    "rest": [("rest_wing_top_z - rest_z_min", "rest_bolster_z_max - rest_z_min",
+              {**RANGE_BASE, "sparse_infill_density": "15%"})],
+    # The anchor block's lower body only bears on its pocket; its top 5 mm
+    # stays solid under the tongue root.
+    "anchor": [("0", "deck_z - 5 - anchor_z_min",
+                {**RANGE_BASE, "sparse_infill_density": "40%"})],
+}
 
 # Bambu Studio drops plate names containing any of ILLEGAL_NAME_CHARS.
 PLATES = [
@@ -182,20 +195,26 @@ def bed_size(presets: Presets) -> tuple[float, float]:
     return max(x for x, _ in corners), max(y for _, y in corners)
 
 
-def phone_stand_range(work: Path) -> dict:
-    """Height range over the phone stand, in the front half's print Z."""
-    probe = work / "phone_stand_range.scad"
+def height_ranges(work: Path) -> dict[str, list[dict]]:
+    """HEIGHT_RANGES with their heights evaluated from the model."""
+    expressions = [z for ranges in HEIGHT_RANGES.values()
+                   for min_z, max_z, _ in ranges for z in (min_z, max_z)]
+    probe = work / "height_ranges.scad"
     probe.write_text(
         f"include <{PROJECT_ROOT / 'dynamometer_dimensions.scad'}>\n"
-        "echo(phone_stand_z = [deck_z - base_z_min, phone_stand_top_z - base_z_min]);\n",
+        f"echo(height_ranges = [{', '.join(expressions)}]);\n",
         encoding="utf-8",
     )
-    echo = work / "phone_stand_range.echo"
+    echo = work / "height_ranges.echo"
     subprocess.run(["openscad", "-o", str(echo), str(probe)], check=True,
                    capture_output=True)
-    line = next(l for l in echo.read_text().splitlines() if "phone_stand_z" in l)
-    min_z, max_z = json.loads(line.split("=", 1)[1])
-    return {"min_z": min_z, "max_z": max_z, "range_params": PHONE_STAND}
+    line = next(l for l in echo.read_text().splitlines() if "height_ranges" in l)
+    heights = iter(json.loads(line.split("=", 1)[1]))
+    return {
+        part: [{"min_z": next(heights), "max_z": next(heights), "range_params": params}
+               for _, _, params in ranges]
+        for part, ranges in HEIGHT_RANGES.items()
+    }
 
 
 def export_parts(stl_dir: Path) -> None:
@@ -270,7 +289,7 @@ def main() -> int:
         check_layout(stl_dir, bed_size(presets))
 
         machine, process, filament = write_settings(presets, work)
-        height_ranges = {"base_front": [phone_stand_range(work)]}
+        ranges = height_ranges(work)
         assemble_list = {
             "plates": [
                 {
@@ -283,7 +302,7 @@ def main() -> int:
                             "count": 1,
                             "filaments": [1],
                             "print_params": params,
-                            "height_ranges": height_ranges.get(part, []),
+                            "height_ranges": ranges.get(part, []),
                         }
                         for part, params in objects
                     ],
