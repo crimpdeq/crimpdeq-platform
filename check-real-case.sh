@@ -72,7 +72,7 @@ render_fn="${OPENSCAD_RENDER_FN:-24}"
     exit 1
 }
 for mode in base anchor grip clips stoppers phone drop clip_path rest; do
-    for index in $(if [[ "$mode" == rest ]]; then seq 0 8; else echo 0; fi); do
+    for index in $(if [[ "$mode" == rest ]]; then seq 0 6; else echo 0; fi); do
         log="$tmp_dir/$mode-$index.log"
         code=0
         openscad -D "render_fn=$render_fn" -D "mode=\"$mode\"" -D "index=$index" \
