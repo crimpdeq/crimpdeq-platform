@@ -17,8 +17,3 @@ The illustrations use the same colours throughout:
 - **Eye clips** (yellow): hold the load cell down on the lugs.
 - **Palm rest** (orange) and **index keys** (green): set the hand opening.
 - **Pocket stoppers** (teal): make the 25 mm edge shallower.
-
-## Steps
-
-1. [Print](printing.md) both plates.
-2. [Assemble](assembly.md) the platform.
