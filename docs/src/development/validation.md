@@ -52,6 +52,10 @@ git -C ../crimpdeq-case switch --detach v2.0.0
 CRIMPDEQ_CASE_DIR=../crimpdeq-case/case bash check-real-case.sh
 ```
 
+Earlier crimpdeq-case releases also pass. `v0.1.0` and `v0.2.0` name their
+sources `enclosure_main.scad` and `enclosure_lid.scad` instead of
+`case_main.scad` and `case_lid.scad`, so the script cannot read them as-is.
+
 ## Continuous integration
 
 `.github/workflows/ci.yml` runs `check-collisions.sh`, runs `check-real-case.sh`

@@ -4,7 +4,7 @@
 
 The device is isometric and fully printed. It holds the
 [crimpdeq-case v2.0.0](https://github.com/crimpdeq/crimpdeq-case/tree/v2.0.0)
-enclosure, which lies flat, lid up, in the middle of a printed base. The
+enclosure or any earlier release, which lies flat, lid up, in the middle of a printed base. The
 case encloses the whole load cell. Each Ø17 mm eye holds a pressed-in ring
 with a Ø15 mm bore, and is reached through a vertical U-slot, Ø22 mm round
 the eye and open to the case end, through the full height of the case. Printed lugs rise through those slots into the eyes:

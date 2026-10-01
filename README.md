@@ -5,7 +5,8 @@
 A parametric OpenSCAD platform that turns the [Crimpdeq](https://github.com/crimpdeq)
 portable force sensor into an isometric finger dynamometer, printed
 entirely in plastic with no hardware to buy. The Crimpdeq case
-([crimpdeq-case v2.0.0](https://github.com/crimpdeq/crimpdeq-case/tree/v2.0.0))
+([crimpdeq-case v2.0.0](https://github.com/crimpdeq/crimpdeq-case/tree/v2.0.0)
+or earlier)
 lies flat on a printed base, and printed lugs rise through the slots in the
 case into the two eyes of its load cell: one on a fixed anchor block,
 the other on a four-finger hangboard grip that the fingers pull toward the

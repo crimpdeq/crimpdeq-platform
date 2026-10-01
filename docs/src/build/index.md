@@ -16,8 +16,8 @@ is printed; there is nothing to buy apart from filament.
 ## What you are building
 
 The Crimpdeq case, from
-[crimpdeq-case v2.0.0](https://github.com/crimpdeq/crimpdeq-case/tree/v2.0.0),
-lies on the **base** (grey), printed as a front and a rear half. Lugs rise
+[crimpdeq-case v2.0.0](https://github.com/crimpdeq/crimpdeq-case/tree/v2.0.0)
+or any earlier release, lies on the **base** (grey), printed as a front and a rear half. Lugs rise
 through the slots at both ends of the case into its load-cell eyes:
 
 - the left eye drops onto the lug of the **anchor block** (red), which sits

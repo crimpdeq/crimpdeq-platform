@@ -23,7 +23,8 @@ them replaces testing printed parts.
 
 ## Case and load path
 
-- The platform holds the crimpdeq-case `v2.0.0` enclosure.
+- The platform holds the crimpdeq-case `v2.0.0` enclosure and every
+  earlier release.
 - The case lies flat, lid up, and floats at least 1 mm above the deck and
   clear of every printed part. Its shell, lid and screws never carry load.
 - Hand force passes through printed round lugs in the Ø15 mm ring bores
