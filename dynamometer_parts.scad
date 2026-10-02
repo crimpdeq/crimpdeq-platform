@@ -359,42 +359,42 @@ module grip_trench_cut() {
               deck_z - trench_floor_z + 0.1]);
 }
 
-module rest_rail_2d(grow = 0) {
-    // YZ profile of the dovetail rail, flaring upward and rooted 1 mm into
-    // the base.
-    offset(delta = grow)
-        polygon([
-            [-rail_root_w / 2, deck_z - 1],
-            [rail_root_w / 2, deck_z - 1],
-            [rail_root_w / 2, deck_z],
-            [rail_top_w / 2, rail_top_z],
-            [-rail_top_w / 2, rail_top_z],
-            [-rail_root_w / 2, deck_z]
-        ]);
+module rest_plate_2d(gap_y = 0, top_z = rest_heel_z) {
+    // YZ profile of the heel plate, flaring toward its sole. A positive
+    // gap_y widens it into the channel.
+    half_w = rest_half_w_y + gap_y;
+    top_w = half_w + rest_flare_y * (rest_heel_z - top_z) / rest_plate_t;
+    polygon([
+        [-half_w - rest_flare_y, rest_z_min],
+        [half_w + rest_flare_y, rest_z_min],
+        [top_w, top_z],
+        [-top_w, top_z]
+    ]);
 }
 
-module rest_rail(x_min, x_max, grow = 0) {
-    // A positive grow cuts the rest's groove, with rail_top_clear of
-    // headroom.
+module along_x(x_min, x_max) {
+    // Extrudes a YZ profile along X.
     translate([x_min, 0, 0])
         rotate([90, 0, 90])
             linear_extrude(height = x_max - x_min)
-                union() {
-                    rest_rail_2d(grow);
-                    if (grow > 0)
-                        translate([0, rail_top_clear - grow]) rest_rail_2d(grow);
-                }
+                children();
 }
 
-module key_slot(x_pos, y_pos, z_min, z_max) {
-    translate([x_pos - (key_t_x + key_fit) / 2, y_pos - (key_w_y + key_fit) / 2, z_min])
-        cube([key_t_x + key_fit, key_w_y + key_fit, z_max - z_min]);
+module rest_channel_cut() {
+    // The heel deck, lowered across the full width, and the dovetail channel
+    // under it, open at the rear end.
+    x_max = base_x_max + 1;
+    translate([rest_channel_x_min, -base_half_w_y - 1, rest_heel_z])
+        cube([x_max - rest_channel_x_min, 2 * base_half_w_y + 2,
+              deck_z - rest_heel_z + 0.1]);
+    along_x(rest_channel_x_min, x_max)
+        rest_plate_2d(rest_side_gap_y, rest_heel_z + 0.1);
 }
 
-module base_key_slots() {
+module base_key_grooves() {
+    // Across the channel floor and through both side walls.
     for (i = [0 : rest_index_count - 1])
-        for (y_pos = [-key_y, key_y])
-            key_slot(key_x(rest_offset(i)), y_pos, key_slot_z_min, deck_z + 0.1);
+        key_groove(key_x(rest_offset(i)), base_half_w_y + 1, key_z_min);
 }
 
 module brand_text_2d(text, size) {
@@ -443,10 +443,10 @@ module base_rear() {
                 base_slab();
                 base_split_region();
             }
-            rest_rail(base_split_x, base_x_max - 1);
         }
         joint_tongues(joint_fit);
-        base_key_slots();
+        rest_channel_cut();
+        base_key_grooves();
     }
 }
 
@@ -464,7 +464,7 @@ module palm_bolster(face_x) {
     shoulder_z = rest_bolster_z_max - max(rest_bolster_front_r, rest_bolster_rear_r);
     hull() {
         dyno_rounded_prism_xy(face_x, x_max, -rest_half_w_y, rest_half_w_y,
-            rest_deck_z - rest_bolster_embed, shoulder_z, rest_corner_r);
+            rest_z_min, shoulder_z, rest_corner_r);
         for (edge = [[face_x + rest_bolster_front_r, rest_bolster_front_r],
                      [x_max - rest_bolster_rear_r, rest_bolster_rear_r]])
             for (y_pos = [-rest_half_w_y + edge[1], rest_half_w_y - edge[1]])
@@ -473,49 +473,41 @@ module palm_bolster(face_x) {
     }
 }
 
+module key_groove(x_pos, half_w_y, z_min) {
+    // Across the full width, with key_fit over the bar.
+    translate([x_pos - (key_t_x + key_fit) / 2, -half_w_y, z_min])
+        cube([key_t_x + key_fit, 2 * half_w_y, key_z_max + key_fit - z_min]);
+}
+
 module palm_rest(offset = 0) {
     face_x = rest_face_x(offset);
     difference() {
         union() {
-            // Solid heel deck with rounded top edges and a flat sole.
-            intersection() {
-                dyno_rounded_box_xyz(
-                    [face_x + rest_depth_x / 2, 0,
-                     (rest_z_min - rest_corner_r + rest_deck_z) / 2],
-                    [rest_depth_x, 2 * rest_half_w_y,
-                     rest_deck_z - rest_z_min + rest_corner_r],
-                    rest_corner_r);
-                translate([face_x - 1, -rest_half_w_y - 1, rest_z_min])
-                    cube([rest_depth_x + 2, 2 * rest_half_w_y + 2,
-                          rest_deck_z - rest_z_min + 1]);
-            }
+            // Heel plate, captured in the base's dovetail channel.
+            along_x(face_x, face_x + rest_depth_x) rest_plate_2d();
             palm_bolster(face_x);
-            // Key wings outside the palm area.
-            for (s = [-1, 1])
-                dyno_rounded_prism_xy(face_x, face_x + rest_wing_len_x,
-                    s > 0 ? rest_half_w_y - 4 : -rest_wing_y_max,
-                    s > 0 ? rest_wing_y_max : -rest_half_w_y + 4,
-                    rest_z_min, rest_wing_top_z, 3);
         }
-        rest_rail(face_x - 1, face_x + rest_depth_x + 1, rail_fit);
-        for (y_pos = [-key_y, key_y])
-            key_slot(key_x(offset), y_pos, rest_z_min - 0.1, rest_wing_top_z + 0.1);
+        // The keys' groove across the sole, under the bolster.
+        key_groove(key_x(offset), rest_half_w_y + rest_flare_y + 1, rest_z_min - 0.1);
     }
 }
 
-module index_key(offset = 0, y_pos = key_y) {
-    // Shank through the rest wing into a base slot; the head sits on the
-    // wing and extends away from the fingers.
+module index_key(offset = 0) {
+    // Bar from the centreline out through the +Y side of the base, and a
+    // head outside it that extends away from the fingers.
     x0 = key_x(offset) - key_t_x / 2;
-    translate([x0, y_pos - key_w_y / 2, key_bottom_z])
-        cube([key_t_x, key_w_y, rest_wing_top_z - key_bottom_z + 0.01]);
-    translate([x0, y_pos - key_w_y / 2, rest_wing_top_z])
-        dyno_rounded_prism_xy(0, key_head_x, 0, key_w_y, 0, key_head_h, 2);
+    translate([x0, key_y_min, key_z_min])
+        cube([key_t_x, key_bar_y_max - key_y_min + 0.01, key_h_z]);
+    translate([x0, key_bar_y_max, key_head_z_min])
+        rotate([-90, 0, 0])
+            translate([0, -key_head_h, 0])
+                dyno_rounded_prism_xy(0, key_head_x, 0, key_head_h, 0, key_head_y, 2);
 }
 
-module index_keys(offset = 0, lift = 0) {
-    for (y_pos = [-key_y, key_y])
-        translate([0, 0, lift]) index_key(offset, y_pos);
+module index_keys(offset = 0, pull = 0) {
+    // One key from each side; pull draws them out along Y.
+    for (s = [0, 1])
+        mirror([0, s, 0]) translate([0, pull, 0]) index_key(offset);
 }
 
 // --- Print layouts -------------------------------------------------------
@@ -545,11 +537,12 @@ module print_layout(part) {
                        -loadcell_top_z])
                 eye_clip_right();
     else if (part == "keys")
-        // On their sides, heads toward +X.
+        // On their -X faces, side by side, so the shear plane at the channel
+        // floor lies across the layers.
         for (i = [0, 1])
-            translate([(i - 0.5) * 24, 0, 0])
-                on_side_layout(key_w_y / 2)
-                    translate([-key_x(0), -key_y, -key_bottom_z])
+            translate([(i - 0.5) * 20, -(key_y_min + key_bar_y_max + key_head_y) / 2, 0])
+                rotate([0, -90, 0])
+                    translate([-(key_x(0) - key_t_x / 2), 0, -(key_z_min + key_z_max) / 2])
                         index_key();
     else if (part == "rest")
         translate([-rest_face_x() - rest_depth_x / 2, 0, -rest_z_min]) palm_rest();
@@ -571,9 +564,9 @@ function print_layout_min(part) =
     : part == "anchor" ? [-(anchor_x_max - anchor_x_min) / 2, -anchor_half_w_y]
     : part == "grip" ? [-(grip_x_max - grip_x_min) / 2, -grip_half_w_y]
     : part == "clips" ? [-clip_tip_x, -2 * tongue_r - 4]
-    : part == "keys" ? [-12 - key_t_x / 2, 0]
+    : part == "keys" ? [-10 - key_head_h / 2, -(key_bar_y_max + key_head_y - key_y_min) / 2]
     : part == "stoppers" ? [stopper_tab_y_min(0), -(stopper_x_max - stopper_x_min) - 4]
-    : part == "rest" ? [-rest_depth_x / 2, -rest_wing_y_max]
+    : part == "rest" ? [-rest_depth_x / 2, -(rest_half_w_y + rest_flare_y)]
     : undef;
 
 // Front-left corner of each part on its plate, origin at the front-left bed
@@ -588,7 +581,7 @@ function print_plate_corner(part) =
     : part == "keys" ? [199, 150]
     : part == "stoppers" ? [10, 10]
     : part == "base_rear" ? [10, 68]
-    : part == "rest" ? [145, 68]
+    : part == "rest" ? [160, 68]
     : undef;
 
 module print_plate_placement(part) {

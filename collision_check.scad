@@ -181,15 +181,16 @@ if (mode == "anchor_case") {
         union() { fixed_parts(); palm_rest(o); finger_grip(); }
     }
 } else if (mode == "rest_locked") {
-    // At both travel ends, each key catches its base slot and wing slot in X.
+    // At both travel ends, each key catches its floor groove and the plate's
+    // groove in X.
     assert(test_position < 4, "Lock index must be 0-3.");
     o = test_position < 2 ? -rest_adjust_range : rest_adjust_range;
     shift = (test_position % 2 == 0 ? -1 : 1) * (key_fit / 2 + 0.05);
     intersection() { translate([shift, 0, 0.02]) index_keys(o); base_rear(); }
     intersection() { translate([shift, 0, 0.02]) index_keys(o); palm_rest(o); }
 } else if (mode == "rest_retained") {
-    // Lifted off the deck at its least-engaged position, the rest's groove
-    // tongue catches the groove.
+    // Lifted off the channel floor at its least-engaged position, the
+    // plate's flanks catch the channel's lips.
     intersection() {
         translate([0, 0, rest_catch_travel + 0.05]) palm_rest(rest_adjust_range);
         base_rear();
