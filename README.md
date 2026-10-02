@@ -22,7 +22,7 @@ entirely in plastic with no hardware to buy.
 
 ## Documentation
 
-The [book](docs/src/SUMMARY.md) covers the design requirements, a
+The [book](https://platform.crimpdeq.com) ([source](docs/src/SUMMARY.md)) covers the design requirements, a
 step-by-step guide to printing and assembling the parts on a 256 mm printer,
 and the development workflow. Build it locally with [mdBook](https://rust-lang.github.io/mdBook/):
 
