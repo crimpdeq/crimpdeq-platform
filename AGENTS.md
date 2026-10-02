@@ -38,8 +38,9 @@
   by the release workflow.
 - `fonts/`: the bundled Inter Bold used by the brand engraving, with its
   OFL license.
-- `.github/workflows/`: CI checks, release STL publication, and a weekly
-  OpenSCAD 2021.01 compatibility check.
+- `.github/workflows/`: CI checks, release STL publication, book
+  publication to platform.crimpdeq.com, and a weekly OpenSCAD 2021.01
+  compatibility check.
 - `.github/actions/setup-openscad/`: the pinned OpenSCAD snapshot used by CI
   and releases.
 - `.github/actions/setup-bambu-studio/`: the pinned Bambu Studio used to

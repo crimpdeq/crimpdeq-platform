@@ -1,0 +1,40 @@
+name: Deploy book
+
+# Publishes the mdBook to Cloudflare Pages, served at platform.crimpdeq.com.
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - docs/**
+            - .github/workflows/book.yml
+    workflow_dispatch:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+    deployments: write
+
+jobs:
+    deploy:
+        name: Build and publish book
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
+            - name: Install mdBook
+              uses: taiki-e/install-action@v2
+              with:
+                  tool: mdbook
+            - name: Build book
+              run: mdbook build docs
+            - name: Publish to Cloudflare Pages
+              uses: cloudflare/wrangler-action@v3
+              with:
+                  apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+                  accountId: 2fc7f8105c4c2a621b320949cae125ae
+                  gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+                  command: pages deploy docs/book --project-name=crimpdeq-platform --branch=main
