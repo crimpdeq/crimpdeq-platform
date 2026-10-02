@@ -41,8 +41,8 @@ PROCESS_OVERRIDES = {
     "top_shell_layers": "6",
     "bottom_shell_layers": "6",
     "sparse_infill_density": "20%",
-    # No part needs support; the joint sockets and the rest's rail groove are
-    # bridged, and support in the groove would scar a sliding face.
+    # No part needs support; the joint sockets, the key tunnels and the rest's
+    # key groove are bridged, and support in them would scar a bearing face.
     "enable_support": "0",
     "brim_type": "outer_only",
     "brim_width": "5",
@@ -59,8 +59,8 @@ HEIGHT_RANGES = {
     # deck, carry only the phone.
     "base_front": [("deck_z - base_z_min", "phone_stand_top_z - base_z_min",
                     {**RANGE_BASE, "sparse_infill_density": "10%"})],
-    # The upper heel and the bolster, above the key wings and the rail groove.
-    "rest": [("rest_wing_top_z - rest_z_min", "rest_bolster_z_max - rest_z_min",
+    # The bolster, above the heel plate.
+    "rest": [("rest_heel_z - rest_z_min", "rest_bolster_z_max - rest_z_min",
               {**RANGE_BASE, "sparse_infill_density": "15%"})],
     # The anchor block's lower body only bears on its pocket; its top 5 mm
     # stays solid under the tongue root.

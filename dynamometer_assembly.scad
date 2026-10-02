@@ -84,7 +84,7 @@ module dynamometer_complete() {
         translate([30 * explode, 0, 30 * explode]) {
             color([0.95, 0.55, 0.15]) palm_rest(rest_x_offset);
             color([0.45, 0.80, 0.45])
-                translate([0, 0, 30 * explode]) index_keys(rest_x_offset);
+                index_keys(rest_x_offset, 30 * explode);
         }
 
     if (show_phone)

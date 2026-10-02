@@ -45,7 +45,7 @@ sparser, using height range modifiers:
 | Object | Range | Infill |
 |---|---|---|
 | `base_front` | 22.6–59.6 mm | 10% |
-| `rest` | 11–29.5 mm | 15% |
+| `rest` | 6–18 mm | 15% |
 | `anchor` | 0–11.5 mm | 40% |
 
 No part needs supports. Keep them off: they would scar the faces that the
