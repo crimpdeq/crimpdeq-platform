@@ -1,6 +1,6 @@
 [book]
 title = "Crimpdeq Platform"
-description = "Design, printing, assembly, and validation of the Crimpdeq hand dynamometer platform."
+description = "Requirements, printing, assembly, and validation of the Crimpdeq hand dynamometer platform."
 authors = ["Sergio Gasquez"]
 language = "en"
 

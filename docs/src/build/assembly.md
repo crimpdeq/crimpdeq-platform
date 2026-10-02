@@ -28,6 +28,10 @@ lug toward the middle.
 The case must not touch the deck or any printed part; only the load cell
 rests on the lugs.
 
+The grip must hang free on the load cell: a strip of paper slides between
+each guide ledge and the grip's side walls. If the grip rests on a ledge,
+friction there takes part of the pull and the Crimpdeq reads low.
+
 ## 4. Fit the clips
 
 ![Fitting the clips](../images/clips_in.png)
