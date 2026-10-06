@@ -511,6 +511,10 @@ assert(rest_plate_t >= 5 && rest_z_min > base_z_min + 8,
 assert(rest_channel_x_min >= base_split_x + 3 &&
     joint_tongue_z_max - base_z_min >= 8,
     "The rest channel needs a deck before it and tongues under it.");
+assert(base_half_w_y - rest_channel_half_w_y >= 6,
+    "The rest channel needs a 6 mm side wall in the base.");
+assert(key_t_x > 0 && key_floor_depth > 0 && key_plate_engage_z > 0 && key_engage_y > 0,
+    "Index keys need a positive size and must engage both the channel floor and the plate.");
 assert(key_offset_x - (key_t_x + key_fit) / 2 >= 3 &&
     key_offset_x + (key_t_x + key_fit) / 2 <= rest_bolster_depth_x - 3,
     "The plate's key groove must lie under the bolster.");
