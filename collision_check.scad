@@ -127,7 +127,7 @@ if (mode == "anchor_case") {
         if (test_position < 2)
             translate([0, 0, clip_head_gap + 0.05]) eye_clip(side);
         else
-            eye_clip(side, dx = 1);
+            lifted() eye_clip(side, dx = 1);
         if (side == "left") anchor_block(); else finger_grip();
     }
 } else if (mode == "clip_path") {
