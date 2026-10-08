@@ -14,8 +14,8 @@ replaces testing printed parts.
   rating is better.
 - The printed structure is sized with a 2.0 structural design factor, but the
   platform is never loaded above its rating.
-- The base stays flat on the table under any pull up to the rating, on every
-  edge depth; neither half lifts.
+- The base stays flat on the table under a horizontal pull up to the rating,
+  on every edge depth; neither half lifts.
 
 ## Printing
 
