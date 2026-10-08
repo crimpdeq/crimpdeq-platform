@@ -72,10 +72,9 @@ HEIGHT_RANGES = {
 PLATES = [
     ("Front base and small parts", [
         ("base_front", BASE), ("grip", SOLID), ("anchor", SOLID), ("clips", SOLID),
-        ("keys", SOLID),
     ]),
-    ("Rear base, palm rest and stoppers", [
-        ("stoppers", {}), ("base_rear", BASE), ("rest", REST),
+    ("Rear base, palm rest, stoppers and key", [
+        ("stoppers", {}), ("base_rear", BASE), ("rest", REST), ("key", SOLID),
     ]),
 ]
 ILLEGAL_NAME_CHARS = '<>:/\\|?*"'

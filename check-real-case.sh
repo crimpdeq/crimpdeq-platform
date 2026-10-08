@@ -59,7 +59,7 @@ if (mode == "drop") {
     else if (mode == "stoppers") stored_pocket_stoppers();
     else if (mode == "rest") {
         palm_rest(rest_offset(index));
-        index_keys(rest_offset(index));
+        index_key(rest_offset(index));
     }
     else assert(false, str("Unknown mode ", mode));
     real_case();

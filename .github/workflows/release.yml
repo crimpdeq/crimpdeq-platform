@@ -26,13 +26,13 @@ jobs:
 
             - name: Check STL files
               run: |
-                  for part in base_front base_rear anchor grip clips keys rest stoppers; do
+                  for part in base_front base_rear anchor grip clips key rest stoppers; do
                       test -f "artifacts/crimpdeq-platform-${part}.stl"
                   done
                   python3 check-stl-components.py \
-                      artifacts/crimpdeq-platform-{base_front,base_rear,anchor,grip,rest}.stl
+                      artifacts/crimpdeq-platform-{base_front,base_rear,anchor,grip,key,rest}.stl
                   python3 check-stl-components.py --expect 2 \
-                      artifacts/crimpdeq-platform-{clips,keys,stoppers}.stl
+                      artifacts/crimpdeq-platform-{clips,stoppers}.stl
 
             - name: Install Bambu Studio
               uses: ./.github/actions/setup-bambu-studio
@@ -68,7 +68,7 @@ jobs:
 
             - name: Verify release assets exist
               run: |
-                  for part in base_front base_rear anchor grip clips keys rest stoppers; do
+                  for part in base_front base_rear anchor grip clips key rest stoppers; do
                       test -f "release-assets/platform/crimpdeq-platform-${part}.stl"
                   done
                   test -f release-assets/platform/crimpdeq-platform.3mf

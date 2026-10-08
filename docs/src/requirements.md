@@ -64,11 +64,11 @@ them replaces testing printed parts.
 - The rest has seven positively locked positions, for hand openings of 25 to
   85 mm.
 - The rest slides in a dovetail channel sunk into the rear base half, which
-  carries the whole heel plate at every position. Two printed index keys,
-  pushed in under the deck from the sides of the base, lock it. Adjustment
-  needs no tools.
-- Either index key alone is screened for the entire design force, and both
-  travel extremes are checked after every geometry change.
+  carries the whole heel plate at every position. One printed index key,
+  pushed in under the deck across the full width of the base, locks it.
+  Adjustment needs no tools.
+- The index key is screened for the entire design force, and both travel
+  extremes are checked after every geometry change.
 
 ## Phone stand
 
@@ -81,7 +81,7 @@ them replaces testing printed parts.
 
 ## Clearances
 
-- The base, anchor block, grip, clips, rest, keys, phone and case are
+- The base, anchor block, grip, clips, rest, key, phone and case are
   collision-free except at explicitly modelled contact surfaces.
 
 ## Structural screening
@@ -101,9 +101,9 @@ target: the 481 N rating times the 2.0 design factor.
 | Lug neck pulled by the clip, across the layers | 4.4 MPa | 12 MPa |
 | Finger lip bending over the full 25 mm edge | 18.0 MPa | 30 MPa, bending |
 | Grip side and back walls in tension | 1.2 MPa | 12 MPa |
-| Either index key alone, in shear at the channel floor | 4.3 MPa | 12 MPa |
-| Key bearing in the rest's groove / the floor groove | 10.4 / 7.4 MPa | 12 MPa, bearing |
-| Rib between neighbouring floor grooves, in shear | 7.0 MPa | 12 MPa |
+| Index key, in shear at the channel floor | 2.1 MPa | 12 MPa |
+| Key bearing in the rest's groove / the floor groove | 5.1 / 3.6 MPa | 12 MPa, bearing |
+| Rib between neighbouring floor grooves, in shear | 3.4 MPa | 12 MPa |
 | Palm bolster root, across the layers | 1.1 MPa | 12 MPa |
 | Channel lips holding the rest down | 0.8 MPa | 6 MPa |
 
