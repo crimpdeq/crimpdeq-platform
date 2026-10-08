@@ -405,13 +405,10 @@ base_rear_len = base_x_max - base_split_x;
 service_w = 30;
 service_y_max = base_half_w_y + 20;
 
-// Brand engraved into the front base half, in the crimpdeq-case font: on its
-// -X end face, under the phone stand, and on both side faces beside the grip
-// trench.
+// Brand engraved into both side faces of the front base half, beside the
+// grip trench, in the crimpdeq-case font.
 brand_font = "Inter:style=Bold";
 brand_depth = 0.8;
-end_brand_text = "crimpdeq";
-end_brand_size = 9.5;
 side_brand_text = "crimpdeq.com";
 side_brand_size = 5.5;
 side_brand_x = (liner_well_x_max + base_split_x) / 2;
@@ -629,9 +626,6 @@ assert(phone_slot_z_min > deck_z + phone_slot_depth_z &&
 assert(phone_stand_cheek_w_y >= 15 && phone_stand_gap_half_y >= 10 &&
     phone_min_w / 2 - phone_stand_gap_half_y >= phone_min_rest_y,
     "Phone stand cheeks must be at least 15 mm wide, leave a cable gap, and carry a narrow phone on both.");
-assert(brand_len(end_brand_text, end_brand_size) / 2 <= base_half_w_y - base_corner_r - 3 &&
-    end_brand_size * brand_line_h + 6 <= deck_z - base_z_min,
-    "The end brand must fit the base's -X end face.");
 assert(abs(side_brand_x - liner_well_x_max) >= brand_len(side_brand_text, side_brand_size) / 2 + 3 &&
     base_split_x - side_brand_x >= brand_len(side_brand_text, side_brand_size) / 2 + 3 &&
     side_brand_size * brand_line_h + 6 <= deck_z - base_z_min &&

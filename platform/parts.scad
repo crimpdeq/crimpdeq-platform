@@ -496,12 +496,7 @@ module brand_text_2d(text, size) {
 
 module brand_engravings() {
     // Each reading from outside its face, cut from inside the wall outward
-    // so the depth stays controlled. End:
-    translate([base_x_min + brand_depth, 0, side_brand_z])
-        rotate([90, 0, -90])
-            linear_extrude(height = brand_depth + 0.1)
-                brand_text_2d(end_brand_text, end_brand_size);
-    // Sides:
+    // so the depth stays controlled.
     for (angle = [0, 180])
         translate([side_brand_x, 0, side_brand_z])
             rotate([0, 0, angle])
