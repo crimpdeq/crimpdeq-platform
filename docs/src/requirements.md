@@ -14,9 +14,8 @@ them replaces testing printed parts.
 
 ## Printing
 
-- Every part is 3D-printed. There are no bolts, pins, inserts or other
-  purchased hardware.
-- Every part prints without supports.
+- Prefer 3D-printed parts over bolts, pins, inserts or other purchased
+  hardware; add hardware only when it has a clear benefit.
 - Each base half fits within the 240 mm printable length of a 256 mm bed
   (Bambu Lab A1). The halves join with vertical dovetails whose joint faces
   are in compression under load.
