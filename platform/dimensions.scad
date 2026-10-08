@@ -136,7 +136,7 @@ hangboard_lip_min_t = hangboard_right_lip_t - hangboard_lip_radius;
 // Base. The grip hangs in a trench, and ledges under its side walls catch
 // tilt with a small Z gap while leaving X free.
 base_z_min = is_undef(base_z_min) ? deck_z - 22.6 : base_z_min;
-base_half_w_y = is_undef(base_half_w_y) ? 61 : base_half_w_y;
+base_half_w_y = is_undef(base_half_w_y) ? 65 : base_half_w_y;
 base_corner_r = 6;
 grip_guide_gap_z = is_undef(grip_guide_gap_z) ? 1.0 : grip_guide_gap_z;
 grip_guide_bearing_y = is_undef(grip_guide_bearing_y) ? 4 : grip_guide_bearing_y;
@@ -271,7 +271,7 @@ function rest_face_x(offset = 0) = grip_x_max + hand_opening + offset;
 function rest_offset(i) = -rest_adjust_range + i * rest_index_pitch;
 rest_depth_x = is_undef(rest_depth_x) ? 60 : rest_depth_x;
 // As wide as an adult palm, and wider than the finger pocket.
-rest_half_w_y = is_undef(rest_half_w_y) ? 44 : rest_half_w_y;
+rest_half_w_y = is_undef(rest_half_w_y) ? 54 : rest_half_w_y;
 // Heel deck: the plate top, and the rear base half's deck beside it.
 rest_heel_z = is_undef(rest_heel_z) ? -10 : rest_heel_z;
 rest_plate_t = is_undef(rest_plate_t) ? 6 : rest_plate_t;
