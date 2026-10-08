@@ -322,6 +322,11 @@ key_head_h = 12;
 key_head_z_min = (key_z_min + key_z_max - key_head_h) / 2;
 // Length of the bar in the plate, across the plate's sole.
 key_engage_y = 2 * (rest_half_w_y + rest_flare_y);
+// Each position's hand opening, engraved on both side faces under its key
+// hole and below the key head, so the fitted key shows its setting.
+function rest_opening(i) = hand_opening + rest_offset(i);
+opening_label_size = 4;
+opening_label_z = (base_z_min + key_head_z_min) / 2;
 
 // Two-piece base for a 256 mm bed (Bambu Lab A1). Two vertical dovetail
 // tongues on the front half drop into sockets in the rear half. Under load
@@ -576,6 +581,10 @@ assert(abs(side_brand_x - stopper_well_x_max) >= brand_len(side_brand_text, side
     side_brand_size * brand_line_h + 6 <= deck_z - base_z_min &&
     base_half_w_y - trench_half_w_y - brand_depth >= 6,
     "The side brand must fit the base side face beside the trench and keep its wall solid.");
+assert(opening_label_size * brand_line_h <= min(key_head_z_min, key_z_min) - base_z_min &&
+    brand_len(str(rest_opening(rest_index_count - 1)), opening_label_size)
+        <= rest_index_pitch - 2,
+    "The opening labels must fit below the key heads and between their neighbours.");
 assert(stopper_well_y_max < case_y_min - 3 && stopper_well_x_min > base_x_min + 2 &&
     stopper_well_z_min > base_z_min + 5,
     "The stopper well must stay clear of the case and keep solid walls and floor.");

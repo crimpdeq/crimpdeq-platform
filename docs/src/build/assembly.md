@@ -51,8 +51,9 @@ grip. Push the key, tip first, into the side of the base, through the groove
 under the bolster, until its head meets the base. It fits from either side,
 with its head pointing away from the grip.
 
-The seven key holes along each side, counted from the grip, set the opening
-between the finger lip and the palm face: 25 to 85 mm in 10 mm steps. To
+The seven key holes along each side set the opening between the finger lip
+and the palm face: 25 to 85 mm in 10 mm steps, engraved under each hole and
+read below the key's head. To
 change it, pull the key out by its head, slide the rest until its groove
 lines up with the new hole, and push the key in again.
 
