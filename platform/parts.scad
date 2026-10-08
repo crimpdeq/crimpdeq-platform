@@ -336,6 +336,30 @@ module stopper_well_cut() {
     }
 }
 
+module stopper_leaf_cut() {
+    // Relief behind the leaf and the bridged gap under it, open to the well.
+    x0 = stopper_well_x_max;
+    leaf_z_min = deck_z - stopper_leaf_h_z;
+    translate([0, -stopper_leaf_len_y / 2, 0])
+        difference() {
+            translate([x0 - 0.01, 0, leaf_z_min - stopper_leaf_gap_z])
+                cube([stopper_leaf_t_x + stopper_leaf_relief_x + 0.01, stopper_leaf_len_y,
+                      stopper_leaf_h_z + stopper_leaf_gap_z + 0.1]);
+            translate([x0 - 1, -1, leaf_z_min])
+                cube([stopper_leaf_t_x + 1, stopper_leaf_len_y + 2, stopper_leaf_h_z + 1]);
+        }
+}
+
+module stopper_snap_ridge() {
+    // On the leaf's well face, above the stack: a 45-degree lead-in on top
+    // and a 45-degree catch underneath.
+    x0 = stopper_well_x_max + 0.01;
+    r = stopper_snap_ridge;
+    xz_profile_along_y(stopper_snap_len_y)
+        polygon([[x0, stopper_snap_z], [x0 - r, stopper_snap_z + r],
+                 [x0, stopper_snap_z + 2 * r]]);
+}
+
 module liner_well_transform() {
     // From the liner's own frame into its storage well, its length along X.
     translate([liner_well_center_x, liner_well_y_max - liner_well_clearance, liner_well_z_min])
@@ -495,8 +519,21 @@ module rest_channel_cut() {
 
 module base_key_grooves() {
     // Across the channel floor and through both side walls.
-    for (i = [0 : rest_index_count - 1])
+    for (i = [0 : rest_index_count - 1]) {
         key_groove(key_x(rest_offset(i)), base_half_w_y + 1, key_z_min);
+        key_snap_recesses(key_x(rest_offset(i)));
+    }
+}
+
+module key_snap_recesses(x_pos) {
+    // For the barb of a seated key: in the tunnel floor of the -Y wall, and
+    // in the roof of the +Y wall for a key turned over.
+    half_y = key_snap_barb + key_snap_clearance;
+    depth = key_snap_barb + key_snap_clearance;
+    for (recess = [[key_snap_barb_y, key_z_min - depth, key_z_min + 0.01],
+                   [-key_snap_barb_y, key_z_max + key_fit - 0.01, key_z_max + depth]])
+        translate([x_pos - (key_t_x + key_fit) / 2, recess[0] - half_y, recess[1]])
+            cube([key_t_x + key_fit, 2 * half_y, recess[2] - recess[1]]);
 }
 
 module engraved_text_2d(text, size) {
@@ -538,10 +575,12 @@ module base_front() {
         anchor_pocket_cut();
         grip_trench_cut();
         stopper_well_cut();
+        stopper_leaf_cut();
         liner_well_cut();
         phone_slot_cut();
         brand_engravings();
     }
+    stopper_snap_ridge();
 }
 
 module base_rear() {
@@ -610,17 +649,26 @@ module palm_rest(offset = 0) {
 
 module index_key(offset = 0, pull = 0) {
     // Bar across the base with a chamfered tip at the -Y side, and a head
-    // outside the +Y side that extends away from the fingers. pull draws it
-    // out along +Y.
+    // outside the +Y side that extends away from the fingers, and a snap
+    // prong with a barb behind the tip. pull draws it out along +Y.
     x0 = key_x(offset) - key_t_x / 2;
     c = key_tip_chamfer;
+    b = key_snap_barb;
     translate([x0, pull, 0]) {
-        hull() {
-            translate([0, key_y_min + c, key_z_min])
-                cube([key_t_x, key_bar_y_max - key_y_min - c + 0.01, key_h_z]);
-            translate([c, key_y_min, key_z_min + c])
-                cube([key_t_x - 2 * c, c, key_h_z - 2 * c]);
+        difference() {
+            hull() {
+                translate([0, key_y_min + c, key_z_min])
+                    cube([key_t_x, key_bar_y_max - key_y_min - c + 0.01, key_h_z]);
+                translate([c, key_y_min, key_z_min + c])
+                    cube([key_t_x - 2 * c, c, key_h_z - 2 * c]);
+            }
+            translate([-1, key_y_min - 1, key_z_min + key_snap_prong_t])
+                cube([key_t_x + 2, key_snap_len_y + 1, key_snap_gap_z]);
         }
+        along_x(0, key_t_x)
+            polygon([[key_snap_barb_y - b, key_z_min + 0.01],
+                     [key_snap_barb_y, key_z_min - b],
+                     [key_snap_barb_y + b, key_z_min + 0.01]]);
         translate([0, key_bar_y_max, key_head_z_min])
             rotate([-90, 0, 0])
                 translate([0, -key_head_h, 0])

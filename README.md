@@ -17,7 +17,7 @@ entirely in plastic with no hardware to buy.
   the 20 and 25 mm edges.
 - **Phone slot:** phones up to about 13 mm thick in their case, portrait or
   landscape, leaned back 15°.
-- **Size:** 369 × 122 mm base (130 mm wide with the key fitted), 57 mm tall
+- **Size:** 371 × 122 mm base (130 mm wide with the key fitted), 57 mm tall
   at the phone stand.
 - **Printing:** no hardware, and supports only under the palm rest's wings;
   the base splits into two halves for a 256 mm bed; about 690 g of PETG.
