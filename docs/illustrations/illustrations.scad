@@ -62,7 +62,7 @@ module clips() { color(c_clip) render() eye_clips(); }
 module rest(offset = 0, dx = 0) { color(c_rest) translate([dx, 0, 0]) render() palm_rest(offset); }
 module key(offset = 0, pull = 0) { color(c_key) index_key(offset, pull); }
 module stored_stoppers() { color(c_stopper) stored_pocket_stoppers(); }
-module liner(fit = "level") { color(c_liner) edge_liner(fit); }
+module liner(fit = "right") { color(c_liner) edge_liner(fit); }
 
 module full_assembly(offset = 0) {
     base_halves();
@@ -153,14 +153,13 @@ if (view == "overview") {
           [key_x(0), base_half_w_y + 60, key_z], 3);
 } else if (view == "liner") {
     // From the palm rest: the liner against the finger lip for an unlevel
-    // edge, right hand; its level place against the far wall as a ghost.
+    // edge, right hand.
     base_halves();
     anchor();
     grip();
     clips();
     case_model();
     liner("right");
-    color(c_ghost) edge_liner("level");
 } else if (view == "stoppers") {
     // Beside the unlevel liner, the 5 mm stopper in the pocket and the 10 mm
     // one lowered onto it.

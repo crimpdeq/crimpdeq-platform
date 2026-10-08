@@ -33,8 +33,8 @@ show_rest = true;
 show_stoppers = true;
 // Stoppers fitted in the finger pocket, by thickness in mm
 pocket_stoppers = "none"; // [none, 5, 10, both]
-// Edge liner: unlevel for either hand, or against the back wall for a level edge
-liner_fit = "level"; // [level, right, left]
+// Edge liner: unlevel against the finger lip for either hand, or against the far wall for a level edge
+liner_fit = "right"; // [right, left, level]
 // Largest supported phone in its slot
 show_phone = false;
 
