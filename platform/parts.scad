@@ -490,20 +490,30 @@ module base_key_grooves() {
         key_groove(key_x(rest_offset(i)), base_half_w_y + 1, key_z_min);
 }
 
-module brand_text_2d(text, size) {
+module engraved_text_2d(text, size) {
     text(text, size = size, font = brand_font, halign = "center", valign = "center");
 }
 
-module brand_engravings() {
-    // Each reading from outside its face, cut from inside the wall outward
-    // so the depth stays controlled.
+module side_engraving(x_pos, z_pos, text, size) {
+    // On both side faces, each reading from outside its face, cut from
+    // inside the wall outward so the depth stays controlled.
     for (angle = [0, 180])
-        translate([side_brand_x, 0, side_brand_z])
+        translate([x_pos, 0, z_pos])
             rotate([0, 0, angle])
                 translate([0, -base_half_w_y + brand_depth, 0])
                     rotate([90, 0, 0])
                         linear_extrude(height = brand_depth + 0.1)
-                            brand_text_2d(side_brand_text, side_brand_size);
+                            engraved_text_2d(text, size);
+}
+
+module brand_engravings() {
+    side_engraving(side_brand_x, side_brand_z, side_brand_text, side_brand_size);
+}
+
+module opening_labels() {
+    for (i = [0 : rest_index_count - 1])
+        side_engraving(key_x(rest_offset(i)), opening_label_z,
+            str(rest_opening(i)), opening_label_size);
 }
 
 module base_front() {
@@ -537,6 +547,7 @@ module base_rear() {
         grip_trench_cut();
         rest_channel_cut();
         base_key_grooves();
+        opening_labels();
     }
 }
 
@@ -548,18 +559,24 @@ module base() {
 // --- Palm rest and key ---------------------------------------------------
 
 module palm_bolster(face_x) {
-    // Full-width bolster with a nearly flat top and rolled long edges. Its
-    // -X face continues the palm face.
+    // Bolster with a nearly flat top and rolled long edges, on the plate's top
+    // and, past the plate, on wings that lie on the deck. Its -X face
+    // continues the palm face.
     x_max = face_x + rest_bolster_depth_x;
+    w = rest_bolster_half_w_y;
     shoulder_z = rest_bolster_z_max - max(rest_bolster_front_r, rest_bolster_rear_r);
-    hull() {
-        dyno_rounded_prism_xy(face_x, x_max, -rest_half_w_y, rest_half_w_y,
-            rest_z_min, shoulder_z, rest_corner_r);
-        for (edge = [[face_x + rest_bolster_front_r, rest_bolster_front_r],
-                     [x_max - rest_bolster_rear_r, rest_bolster_rear_r]])
-            for (y_pos = [-rest_half_w_y + edge[1], rest_half_w_y - edge[1]])
-                translate([edge[0], y_pos, rest_bolster_z_max - edge[1]])
-                    sphere(r = edge[1], $fn = max(render_fn, 32));
+    intersection() {
+        hull() {
+            dyno_rounded_prism_xy(face_x, x_max, -w, w, rest_heel_z, shoulder_z, rest_corner_r);
+            for (edge = [[face_x + rest_bolster_front_r, rest_bolster_front_r],
+                         [x_max - rest_bolster_rear_r, rest_bolster_rear_r]])
+                for (y_pos = [-w + edge[1], w - edge[1]])
+                    translate([edge[0], y_pos, rest_bolster_z_max - edge[1]])
+                        sphere(r = edge[1], $fn = max(render_fn, 32));
+        }
+        // The rounds' lower halves would reach into the channel's walls.
+        translate([face_x, -w, rest_heel_z])
+            cube([rest_bolster_depth_x, 2 * w, rest_bolster_rise]);
     }
 }
 
@@ -637,7 +654,9 @@ module print_layout(part) {
                     translate([-(key_x(0) - key_t_x / 2), 0, -(key_z_min + key_z_max) / 2])
                         index_key();
     else if (part == "rest")
-        translate([-rest_face_x() - rest_depth_x / 2, 0, -rest_z_min]) palm_rest();
+        // Turned so its wide bolster runs along X.
+        rotate([0, 0, 90])
+            translate([-rest_face_x() - rest_depth_x / 2, 0, -rest_z_min]) palm_rest();
     else if (part == "liner")
         // On their back faces, steps up, side by side along X.
         for (i = [0 : liner_piece_count - 1])
@@ -667,7 +686,7 @@ function print_layout_min(part) =
     : part == "clips" ? [-clip_tip_x, -2 * tongue_r - 4]
     : part == "key" ? [-(key_bar_y_max + key_head_y - key_y_min) / 2, -key_head_h / 2]
     : part == "stoppers" ? [stopper_tab_y_min(0), -(stopper_x_max - stopper_x_min) - 4]
-    : part == "rest" ? [-rest_depth_x / 2, -(rest_half_w_y + rest_flare_y)]
+    : part == "rest" ? [-max(rest_bolster_half_w_y, rest_half_w_y + rest_flare_y), -rest_depth_x / 2]
     : part == "liner" ? [-liner_layout_w / 2, liner_y_min]
     : undef;
 
@@ -684,8 +703,8 @@ function print_plate_corner(part) =
     : part == "base_rear" ? [10, 10]
     : part == "liner" ? [195, 10]
     : part == "rest" ? [10, 147]
-    : part == "stoppers" ? [85, 147]
-    : part == "key" ? [85, 227]
+    : part == "stoppers" ? [133, 147]
+    : part == "key" ? [10, 227]
     : undef;
 
 module print_plate_placement(part) {

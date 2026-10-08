@@ -50,6 +50,7 @@ checks=(
     "base_joint_bears nonempty"
     "rest_retained nonempty"
     "rest_slide_on empty"
+    "rest_wings_seated nonempty"
     "pocket_floor nonempty"
     "phone_slot empty"
     "phone_seated nonempty"
@@ -244,11 +245,14 @@ invalid_parameters=(
     'rest_bolster_rise=16'
     'rest_heel_z=-5'
     'rest_heel_z=-15'
+    'rest_half_w_y=38'
     'rest_half_w_y=58'
+    'rest_bolster_half_w_y=47'
+    'rest_bolster_half_w_y=62'
     'key_t_x=8'
     'key_t_x=2'
     'key_t_x=-1'
-    'key_plate_engage_z=1'
+    'key_plate_engage_z=0.5'
     'key_plate_engage_z=-1'
     'base_z_min=-24'
     'base_split_x=92.75'

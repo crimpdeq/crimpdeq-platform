@@ -37,13 +37,18 @@ replaces testing printed parts.
 
 - The four-finger hangboard pocket is 25 mm deep and at least 80 mm wide.
 - The edge depth can be changed to 20, 15 and 10 mm without tools.
+- Every edge depth (25, 20, 15 and 10 mm) also comes as an unleveled edge:
+  the edge follows the different finger lengths, so every finger rests at
+  about the same angle and trains the same way.
 - The mid-depth of every edge is within 5 mm of the load-cell plane.
 
 ## Palm rest
 
 - The palm rests comfortably at the height of the fingertips on the 20 and
   25 mm edges (Z = −10 mm), so the heel and the fingers pull in line.
-- A raised stop gives the palm a face to push against during a pull.
+- A raised stop gives the palm a face to push against during a pull. It is
+  at least as wide as the finger pocket and rounded where the palm touches
+  it.
 - The rest has seven positively locked positions, for hand openings of 25 to
   85 mm, adjustable without tools.
 
