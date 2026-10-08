@@ -11,12 +11,14 @@ entirely in plastic with no hardware to buy.
 - **Edge depths:** 25, 20, 15 and 10 mm, set with two stackable stoppers (5
   and 10 mm).
 - **Palm rest:** 25–85 mm from the outside of the finger lip to the palm face,
-  seven positions in 10 mm steps.
+  seven positions in 10 mm steps, with the heel level with the fingertips on
+  the 20 and 25 mm edges.
 - **Phone slot:** phones up to about 13 mm thick in their case, portrait or
   landscape, leaned back 15°.
-- **Size:** 311 × 122 mm base, 60 mm tall at the phone stand.
+- **Size:** 349 × 122 mm base (138 mm wide with the keys fitted), 60 mm tall
+  at the phone stand.
 - **Printing:** no supports and no hardware; the base splits into two halves
-  for a 256 mm bed; about 680 g of PETG.
+  for a 256 mm bed; about 640 g of PETG.
 - **Compatibility:** [crimpdeq-case](https://github.com/crimpdeq/crimpdeq-case)
   v2.0.0 and earlier.
 

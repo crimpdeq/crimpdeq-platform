@@ -59,7 +59,7 @@ module anchor(dz = 0) { color(c_anchor) translate([0, 0, dz]) render() anchor_bl
 module grip(dx = 0, dz = 0, c = c_grip) { color(c) translate([dx, 0, dz]) render() finger_grip(); }
 module clips() { color(c_clip) render() eye_clips(); }
 module rest(offset = 0, dx = 0) { color(c_rest) translate([dx, 0, 0]) render() palm_rest(offset); }
-module keys(offset = 0, lift = 0) { color(c_key) index_keys(offset, lift); }
+module keys(offset = 0, pull = 0) { color(c_key) index_keys(offset, pull); }
 module stored_stoppers() { color(c_stopper) stored_pocket_stoppers(); }
 
 module full_assembly(offset = 0) {
@@ -133,19 +133,21 @@ if (view == "overview") {
     arrow([x_drop, 0, 75], [x_drop, 0, 58], 3);
     arrow([x_drop + 6, 0, 45], [dyno_eye_x_right + clip_tail_x / 2 + 2, 0, 45], 3);
 } else if (view == "rest_on") {
-    // The palm rest slides onto the rail from the rear end, then the keys
-    // drop through its wings.
+    // The palm rest slides into its channel from the rear end, then a key
+    // slides in under it from each side.
     base_halves();
     anchor();
     grip();
     clips();
     case_model();
     rest(0, 70);
-    keys(0, 45);
+    keys(0, 40);
     arrow([rest_face_x() + rest_depth_x + 90, 0, 45],
           [rest_face_x() + rest_depth_x + 40, 0, 45], 4);
-    for (y_pos = [-key_y, key_y])
-        arrow([key_x(0) + 3, y_pos, 95], [key_x(0) + 3, y_pos, 68], 3);
+    key_z = (key_z_min + key_z_max) / 2;
+    for (s = [-1, 1])
+        arrow([key_x(0), s * (base_half_w_y + 85), key_z],
+              [key_x(0), s * (base_half_w_y + 60), key_z], 3);
 } else if (view == "stoppers") {
     // The 5 mm stopper in the pocket, the 10 mm one lowered onto it.
     base_halves();

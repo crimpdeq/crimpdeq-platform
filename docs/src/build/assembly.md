@@ -46,12 +46,14 @@ up.
 
 ![Sliding the palm rest onto the rail](../images/rest_on.png)
 
-Slide the palm rest onto the rail from the rear end, bolster toward the grip.
-Drop one key through each side wing into the deck slot below.
+Slide the palm rest into the channel from the rear end, bolster toward the
+grip. Push one key into the side of the base from each side, through the
+groove under the bolster, until its head meets the base.
 
-The seven slots set the opening between the finger lip and the palm face,
-from 25 to 85 mm in 10 mm steps. To change it, lift out both keys, slide the
-rest, and drop them in again.
+The seven key holes along each side, counted from the grip, set the opening
+between the finger lip and the palm face: 25 to 85 mm in 10 mm steps. To
+change it, pull both keys out by their heads, slide the rest until its groove
+lines up with the new holes, and push them in again.
 
 ## 6. Stoppers and phone
 

@@ -255,8 +255,11 @@ phone_probe_l = 165;
 phone_probe_w = 80;
 
 // Palm rest. Its upright palm face sits hand_opening from the outside of the
-// finger lip; seven positions give 25-85 mm in 10 mm steps. The rest slides
-// on a dovetail rail and two printed keys lock it through its side wings.
+// finger lip; seven positions give 25-85 mm in 10 mm steps. The heel rests
+// behind the bolster on a plate level with the fingertips on the 20 and 25 mm
+// edges, so the heel and the fingers pull in line. The plate slides in a
+// dovetail channel sunk into the rear base half, and two printed keys pushed
+// in from the base's sides lock it under the deck, clear of the hand.
 hand_opening = is_undef(hand_opening) ? 55 : hand_opening;
 rest_adjust_range = is_undef(rest_adjust_range) ? 30 : rest_adjust_range;
 rest_index_pitch = is_undef(rest_index_pitch) ? 10 : rest_index_pitch;
@@ -266,47 +269,53 @@ hand_opening_max = hand_opening + rest_adjust_range;
 function rest_face_x(offset = 0) = grip_x_max + hand_opening + offset;
 function rest_offset(i) = -rest_adjust_range + i * rest_index_pitch;
 rest_depth_x = is_undef(rest_depth_x) ? 60 : rest_depth_x;
-rest_half_w_y = is_undef(rest_half_w_y) ? 39 : rest_half_w_y;
-rest_z_min = deck_z;
-rest_deck_z = hangboard_front_z;
-rest_corner_r = 5;
+rest_half_w_y = is_undef(rest_half_w_y) ? 34 : rest_half_w_y;
+// Heel deck: the plate top, and the rear base half's deck beside it.
+rest_heel_z = is_undef(rest_heel_z) ? -10 : rest_heel_z;
+rest_plate_t = is_undef(rest_plate_t) ? 6 : rest_plate_t;
+rest_z_min = rest_heel_z - rest_plate_t;
+// The plate's sides flare toward its sole under the channel's lips.
+rest_flare_y = 4;
+rest_fit = 0.3;
+rest_flare_angle = atan(rest_flare_y / rest_plate_t);
+// Horizontal side gap that leaves rest_fit normal to the flanks.
+rest_side_gap_y = rest_fit / cos(rest_flare_angle);
+rest_channel_half_w_y = rest_half_w_y + rest_side_gap_y + rest_flare_y;
+// The channel and the lowered deck start just before the rest's front at its
+// smallest opening.
+rest_channel_x_min = rest_face_x(-rest_adjust_range) - 1;
+// Lift before the plate's flanks catch the channel's lips.
+rest_catch_travel = rest_fit / sin(rest_flare_angle);
 rest_bolster_depth_x = is_undef(rest_bolster_depth_x) ? 22 : rest_bolster_depth_x;
 rest_bolster_rise = is_undef(rest_bolster_rise) ? 12 : rest_bolster_rise;
+rest_corner_r = 5;
 rest_bolster_front_r = 6;
 rest_bolster_rear_r = 5;
-rest_bolster_embed = 6;
-rest_bolster_z_max = rest_deck_z + rest_bolster_rise;
-rest_wing_len_x = 24;
-rest_wing_top_z = is_undef(rest_wing_top_z) ? 5 : rest_wing_top_z;
-rest_wing_y_max = base_half_w_y;
+rest_bolster_z_max = rest_heel_z + rest_bolster_rise;
 
-// Dovetail rail on the rear half of the base, flaring upward; the groove
-// under the rest captures it. The groove roof prints as a bridge.
-rail_root_w = 16;
-rail_top_w = 24;
-rail_h = 6;
-rail_fit = 0.3;
-// Headroom over the rail, so the bridged groove roof can sag without rubbing.
-rail_top_clear = 1;
-rail_top_z = deck_z + rail_h;
-// Lift before the rest's groove catches the rail flanks.
-rest_catch_travel = rail_fit / sin(atan((rail_top_w - rail_root_w) / 2 / rail_h));
-
-// Printed index keys: a rectangular shank with a head, printed on its side
-// so the shear plane lies across the layers' long direction.
+// Printed index keys: a square bar pushed in from each side of the base, half
+// in a groove across the channel floor and half in a groove across the
+// plate's sole, under the bolster. The bars print on their sides so the shear
+// plane lies across the layers. A head outside the base pulls each one out.
 key_t_x = is_undef(key_t_x) ? 6 : key_t_x;
-key_w_y = is_undef(key_w_y) ? 16 : key_w_y;
+key_floor_depth = is_undef(key_floor_depth) ? 3.5 : key_floor_depth;
+key_plate_engage_z = is_undef(key_plate_engage_z) ? 2.5 : key_plate_engage_z;
+key_h_z = key_floor_depth + key_plate_engage_z;
 key_fit = 0.3;
-key_y = is_undef(key_y) ? 49 : key_y;
-key_offset_x = rest_wing_len_x / 2;
+key_offset_x = rest_bolster_depth_x / 2;
 function key_x(offset = 0) = rest_face_x(offset) + key_offset_x;
-key_slot_depth = is_undef(key_slot_depth) ? 14 : key_slot_depth;
-key_slot_z_min = deck_z - key_slot_depth;
-key_bottom_z = key_slot_z_min + 0.5;
-key_head_x = 14;
-key_head_h = 8;
-key_head_z_max = rest_wing_top_z + key_head_h;
-key_shank_l = rest_wing_top_z - key_bottom_z;
+key_z_min = rest_z_min - key_floor_depth;
+key_z_max = key_z_min + key_h_z;
+// The two bars meet with a gap on the centreline.
+key_y_min = 1;
+key_head_gap_y = 0.2;
+key_bar_y_max = base_half_w_y + key_head_gap_y;
+key_head_x = 16;
+key_head_y = 8;
+key_head_h = 12;
+key_head_z_min = (key_z_min + key_z_max - key_head_h) / 2;
+// Length of each bar in the plate, out to the plate's sole edge.
+key_engage_y = rest_half_w_y + rest_flare_y - key_y_min;
 
 // Two-piece base for a 256 mm bed (Bambu Lab A1). Two vertical dovetail
 // tongues on the front half drop into sockets in the rear half. Under load
@@ -315,14 +324,16 @@ base_split_x = is_undef(base_split_x) ? 111 : base_split_x;
 base_split_bed_max = is_undef(base_split_bed_max) ? 240 : base_split_bed_max;
 print_bed_size = is_undef(print_bed_size) ? 256 : print_bed_size;
 base_x_min = phone_slot_x_top - phone_slot_top_w_x - phone_slot_outer_wall_x;
-base_x_max = key_x(rest_adjust_range) + key_t_x / 2 + 7;
+// The base carries the whole heel plate at the largest opening.
+base_x_max = rest_face_x(rest_adjust_range) + rest_depth_x;
 joint_tongue_y = 30;
 joint_tongue_len_x = 12;
 joint_tongue_neck_w = 12;
 joint_tongue_head_w = 18;
 joint_fit = 0.2;
 joint_roof_t = 3;
-joint_tongue_z_max = deck_z - joint_roof_t - joint_fit;
+// The sockets' heads reach under the rest channel's floor.
+joint_tongue_z_max = rest_z_min - joint_roof_t - joint_fit;
 // Separation before the sockets catch the tongue flanks.
 joint_catch_travel = joint_fit
     / sin(atan((joint_tongue_head_w - joint_tongue_neck_w) / 2 / joint_tongue_len_x));
@@ -397,20 +408,22 @@ grip_net_area_mm2 = 2 * hangboard_side_wall_t * (hangboard_front_z - grip_z_min)
     + 2 * grip_half_w_y * hangboard_back_wall_t;
 grip_net_tension_mpa = design_force_n / grip_net_area_mm2;
 
-// Either key alone takes the whole palm force.
-key_shear_mpa = design_force_n / (key_t_x * key_w_y);
-key_wing_bearing_mpa = design_force_n / (key_w_y * (rest_wing_top_z - rest_z_min));
-key_slot_bearing_mpa = design_force_n / (key_w_y * key_slot_depth);
+// Either key alone takes the whole palm force, over its length in the plate:
+// shear at the channel floor, bearing on the plate's and the floor's grooves,
+// and shear through the rib between neighbouring floor grooves.
+key_shear_mpa = design_force_n / (key_t_x * key_engage_y);
+key_plate_bearing_mpa = design_force_n / (key_plate_engage_z * key_engage_y);
+key_slot_bearing_mpa = design_force_n / (key_floor_depth * key_engage_y);
 key_ligament_x = rest_index_pitch - key_t_x - key_fit;
-key_ligament_shear_mpa = design_force_n / (2 * key_ligament_x * key_slot_depth);
+key_ligament_shear_mpa = design_force_n / (key_ligament_x * key_engage_y);
 // Palm bolster root, with the force at mid-rise; stress across the layers.
 rest_bolster_bending_mpa = design_force_n * rest_bolster_rise / 2
     / (2 * rest_half_w_y * pow(rest_bolster_depth_x, 2) / 6);
-// Tipping the rest about its front edge lifts its tail; the rail's two
-// overhanging flanks hold it over the shortest engaged length.
+// Tipping the rest about its front edge lifts its tail; the channel's two
+// overhanging lips hold it over the shortest engaged length.
 rest_min_engaged_x = base_x_max - rest_face_x(rest_adjust_range);
-rest_uplift_n = design_force_n * (rest_bolster_z_max - deck_z) / rest_depth_x;
-rail_flank_shear_mpa = rest_uplift_n / (2 * rest_min_engaged_x * rail_h / 2);
+rest_uplift_n = design_force_n * (rest_bolster_z_max - rest_z_min) / rest_depth_x;
+rest_flank_shear_mpa = rest_uplift_n / (2 * rest_min_engaged_x * rest_plate_t / 2);
 
 assert(platform_rated_kg == 49, "The printed platform is screened for 49 kg only.");
 assert(structural_safety_factor >= 2, "Use a structural design factor of at least 2.0.");
@@ -490,27 +503,41 @@ assert(abs(2 * rest_adjust_range
     "The rest travel must divide evenly into indexed positions.");
 assert(rest_face_x(-rest_adjust_range) >= trench_x_max + 15,
     "The palm rest gets too close to the grip trench at its smallest opening.");
+assert(rest_heel_z <= hangboard_front_z - 20 && rest_heel_z >= hangboard_front_z - 25 &&
+    rest_heel_z < deck_z,
+    "The heel deck must lie between the fingertips on the 20 and 25 mm edges.");
+assert(rest_plate_t >= 5 && rest_z_min > base_z_min + 8,
+    "The heel plate needs 5 mm and the channel a solid floor.");
+assert(rest_channel_x_min >= base_split_x + 3 &&
+    joint_tongue_z_max - base_z_min >= 8,
+    "The rest channel needs a deck before it and tongues under it.");
+assert(base_half_w_y - rest_channel_half_w_y >= 6,
+    "The rest channel needs a 6 mm side wall in the base.");
+assert(key_t_x > 0 && key_floor_depth > 0 && key_plate_engage_z > 0 && key_engage_y > 0,
+    "Index keys need a positive size and must engage both the channel floor and the plate.");
+assert(key_offset_x - (key_t_x + key_fit) / 2 >= 3 &&
+    key_offset_x + (key_t_x + key_fit) / 2 <= rest_bolster_depth_x - 3,
+    "The plate's key groove must lie under the bolster.");
+assert(rest_heel_z - (key_z_max + key_fit) >= 2.5 && key_z_min - base_z_min >= 8,
+    "The key tunnels need a 2.5 mm roof under the deck and the grooves a solid floor.");
+assert(key_head_z_min >= base_z_min + 2 && key_head_z_min + key_head_h <= rest_heel_z,
+    "The key heads must stay below the deck and clear of the table.");
+assert(base_x_max >= key_x(rest_adjust_range) + key_t_x / 2 + 7,
+    "The last key groove needs a solid end wall.");
 assert(rest_bolster_rise >= 10 && rest_bolster_rise <= 14 &&
     rest_bolster_depth_x >= 20 && rest_bolster_depth_x < rest_depth_x - 30,
     "The palm bolster must rise 10-14 mm and leave a 30 mm heel deck behind it.");
-assert(rest_bolster_z_max >= key_head_z_max + 2,
-    "The palm bolster must rise at least 2 mm above the key heads.");
-assert(key_y - key_w_y / 2 - key_fit > rest_half_w_y + 1 &&
-    key_y + key_w_y / 2 + key_fit < base_half_w_y - 3,
-    "Keys must sit outside the palm area with at least 3 mm of outer wall.");
 assert(key_ligament_x >= 3 &&
     key_shear_mpa <= allowable_printed_tension_mpa &&
-    key_wing_bearing_mpa <= allowable_printed_bearing_mpa &&
+    key_plate_bearing_mpa <= allowable_printed_bearing_mpa &&
     key_slot_bearing_mpa <= allowable_printed_bearing_mpa &&
     key_ligament_shear_mpa <= allowable_printed_tension_mpa,
-    "Index keys, wings, slots or slot ligaments exceed configured stress.");
-assert(key_slot_z_min > base_z_min + 5, "Key slots need a solid floor.");
+    "Index keys, their grooves or the ribs between them exceed configured stress.");
 assert(rest_bolster_bending_mpa <= allowable_printed_tension_mpa,
     "Palm bolster exceeds configured cross-layer stress.");
-assert(rest_min_engaged_x >= 20 && rail_flank_shear_mpa <= allowable_printed_tension_mpa / 2,
-    "The rest must keep 20 mm of rail engagement and the rail flanks their strength.");
-assert(rail_top_z + rail_top_clear < rest_deck_z - 6 && rail_top_w + 2 * rail_fit <= 30,
-    "The rail groove must leave 6 mm of rest above it and a bridge of at most 30 mm.");
+assert(rest_min_engaged_x >= rest_depth_x &&
+    rest_flank_shear_mpa <= allowable_printed_tension_mpa / 2,
+    "The base must carry the whole heel plate and the channel lips their strength.");
 assert(base_front_len <= base_split_bed_max && base_rear_len <= base_split_bed_max,
     "Each base half must fit the printable length.");
 assert(base_split_x >= trench_x_max + 6,

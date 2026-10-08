@@ -57,12 +57,16 @@ them replaces testing printed parts.
 
 ## Palm rest
 
-- The solid heel deck is level with the pocket mouth. The palm bolster rises
-  10–14 mm above it and at least 2 mm above the key heads.
+- The heel deck (the rest's plate and the rear deck beside it) lies between
+  the fingertips on the 20 and 25 mm edges (Z = −10 mm), so the heel and the
+  fingers pull in line. The palm bolster rises 10–14 mm above it.
+- Nothing but the bolster stands above the heel deck around the hand.
 - The rest has seven positively locked positions, for hand openings of 25 to
   85 mm.
-- The rest is captured on a dovetail rail and locked by two printed index
-  keys in deck slots outside the palm area. Adjustment needs no tools.
+- The rest slides in a dovetail channel sunk into the rear base half, which
+  carries the whole heel plate at every position. Two printed index keys,
+  pushed in under the deck from the sides of the base, lock it. Adjustment
+  needs no tools.
 - Either index key alone is screened for the entire design force, and both
   travel extremes are checked after every geometry change.
 
@@ -97,11 +101,11 @@ target: the 481 N rating times the 2.0 design factor.
 | Lug neck pulled by the clip, across the layers | 4.4 MPa | 12 MPa |
 | Finger lip bending over the full 25 mm edge | 18.0 MPa | 30 MPa, bending |
 | Grip side and back walls in tension | 1.2 MPa | 12 MPa |
-| Either index key alone, in shear | 10.0 MPa | 12 MPa |
-| Key bearing in the rest wing / base slot | 5.5 / 4.3 MPa | 12 MPa, bearing |
-| Base slot ligament between positions, in shear | 9.3 MPa | 12 MPa |
-| Palm bolster root, across the layers | 0.9 MPa | 12 MPa |
-| Rail flanks holding the rest down at its shortest engagement | 3.6 MPa | 6 MPa |
+| Either index key alone, in shear at the channel floor | 4.3 MPa | 12 MPa |
+| Key bearing in the rest's groove / the floor groove | 10.4 / 7.4 MPa | 12 MPa, bearing |
+| Rib between neighbouring floor grooves, in shear | 7.0 MPa | 12 MPa |
+| Palm bolster root, across the layers | 1.1 MPa | 12 MPa |
+| Channel lips holding the rest down | 0.8 MPa | 6 MPa |
 
 The clip check takes the 10 mm edge's 4 mm offset, reacted between the clip
 and the tongue seat 10 mm from the eye centre. The base joint is in
