@@ -406,8 +406,20 @@ module base_key_grooves() {
         key_groove(key_x(rest_offset(i)), base_half_w_y + 1, key_z_min);
 }
 
-module brand_text_2d(text, size) {
+module engraved_text_2d(text, size) {
     text(text, size = size, font = brand_font, halign = "center", valign = "center");
+}
+
+module side_engraving(x_pos, z_pos, text, size) {
+    // On both side faces, each reading from outside its face, cut from
+    // inside the wall outward so the depth stays controlled.
+    for (angle = [0, 180])
+        translate([x_pos, 0, z_pos])
+            rotate([0, 0, angle])
+                translate([0, -base_half_w_y + brand_depth, 0])
+                    rotate([90, 0, 0])
+                        linear_extrude(height = brand_depth + 0.1)
+                            engraved_text_2d(text, size);
 }
 
 module brand_engravings() {
@@ -415,16 +427,14 @@ module brand_engravings() {
     translate([top_brand_x, top_brand_y, deck_z - brand_depth])
         linear_extrude(height = brand_depth + 0.1)
             rotate([0, 0, 90])
-                brand_text_2d(top_brand_text, top_brand_size);
-    // Sides: each reading from outside its face, cut from inside the wall
-    // outward so the depth stays controlled.
-    for (angle = [0, 180])
-        translate([side_brand_x, 0, side_brand_z])
-            rotate([0, 0, angle])
-                translate([0, -base_half_w_y + brand_depth, 0])
-                    rotate([90, 0, 0])
-                        linear_extrude(height = brand_depth + 0.1)
-                            brand_text_2d(side_brand_text, side_brand_size);
+                engraved_text_2d(top_brand_text, top_brand_size);
+    side_engraving(side_brand_x, side_brand_z, side_brand_text, side_brand_size);
+}
+
+module opening_labels() {
+    for (i = [0 : rest_index_count - 1])
+        side_engraving(key_x(rest_offset(i)), opening_label_z,
+            str(rest_opening(i)), opening_label_size);
 }
 
 module base_front() {
@@ -457,6 +467,7 @@ module base_rear() {
         grip_trench_cut();
         rest_channel_cut();
         base_key_grooves();
+        opening_labels();
     }
 }
 
