@@ -41,14 +41,18 @@ PROCESS_OVERRIDES = {
     "top_shell_layers": "6",
     "bottom_shell_layers": "6",
     "sparse_infill_density": "20%",
-    # No part needs support; the joint sockets, the key tunnels and the rest's
-    # key groove are bridged, and support in them would scar a bearing face.
+    # Only the palm rest's wings need support (REST); the joint sockets, the
+    # key tunnels and the rest's key groove are bridged, and support in them
+    # would scar a bearing face.
     "enable_support": "0",
     "brim_type": "outer_only",
     "brim_width": "5",
 }
 SOLID = {"sparse_infill_density": "100%"}
-REST = {"sparse_infill_density": "50%"}
+# Support from the bed under the bolster's wings only; the key groove across
+# the sole stays a bridge. Tree support ignores bridge_no_support and fills it.
+REST = {"sparse_infill_density": "50%", "enable_support": "1", "support_type": "normal(auto)",
+        "support_on_build_plate_only": "1", "bridge_no_support": "1"}
 BASE = {"top_shell_layers": "4", "bottom_shell_layers": "4"}
 # Height ranges that print parts of an object sparser, as (min Z, max Z,
 # settings) with the heights as platform/dimensions.scad expressions in the

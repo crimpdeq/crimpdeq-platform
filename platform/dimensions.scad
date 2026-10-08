@@ -270,7 +270,6 @@ hand_opening_max = hand_opening + rest_adjust_range;
 function rest_face_x(offset = 0) = grip_x_max + hand_opening + offset;
 function rest_offset(i) = -rest_adjust_range + i * rest_index_pitch;
 rest_depth_x = is_undef(rest_depth_x) ? 60 : rest_depth_x;
-// As wide as an adult palm, and wider than the finger pocket.
 rest_half_w_y = is_undef(rest_half_w_y) ? 44 : rest_half_w_y;
 // Heel deck: the plate top, and the rear base half's deck beside it.
 rest_heel_z = is_undef(rest_heel_z) ? -10 : rest_heel_z;
@@ -296,6 +295,9 @@ rest_corner_r = 10;
 rest_bolster_front_r = 9;
 rest_bolster_rear_r = 8;
 rest_bolster_z_max = rest_heel_z + rest_bolster_rise;
+// As wide as an adult palm: wings past the heel plate lie on the deck beside
+// the channel. Their undersides print on support.
+rest_bolster_half_w_y = is_undef(rest_bolster_half_w_y) ? 54 : rest_bolster_half_w_y;
 
 // Printed index key: a square bar pushed in from the +Y side across the full
 // width of the base, half in a groove across the channel floor and half in a
@@ -562,9 +564,12 @@ assert(rest_bolster_rise >= 10 && rest_bolster_rise <= 14 &&
     "The palm bolster must rise 10-14 mm and leave a 30 mm heel deck behind it.");
 assert(2 * rest_half_w_y >= hangboard_opening_w_y &&
     rest_bolster_front_r + rest_bolster_rear_r <= rest_bolster_depth_x &&
-    rest_bolster_z_max - 2 * max(rest_bolster_front_r, rest_bolster_rear_r) >= rest_z_min &&
+    rest_bolster_z_max - max(rest_bolster_front_r, rest_bolster_rear_r) >= rest_heel_z &&
     rest_corner_r <= rest_bolster_depth_x / 2,
-    "The palm bolster must span the finger pocket and keep its rounds above the sole.");
+    "The palm bolster must span the finger pocket and keep its rounds above the deck.");
+assert(rest_bolster_half_w_y >= rest_half_w_y + rest_side_gap_y + 3 &&
+    rest_bolster_half_w_y <= base_half_w_y,
+    "The bolster wings must lie at least 3 mm onto the deck and stay within the base.");
 assert(key_ligament_x >= 3 &&
     key_shear_mpa <= allowable_printed_tension_mpa &&
     key_plate_bearing_mpa <= allowable_printed_bearing_mpa &&

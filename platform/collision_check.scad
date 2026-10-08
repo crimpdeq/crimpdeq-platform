@@ -195,6 +195,14 @@ if (mode == "anchor_case") {
         translate([0, 0, rest_catch_travel + 0.05]) palm_rest(rest_adjust_range);
         base_rear();
     }
+} else if (mode == "rest_wings_seated") {
+    // Pressed down, the bolster's wings bear on the deck beside the channel.
+    intersection() {
+        lifted(-0.02) palm_rest(rest_adjust_range);
+        base_rear();
+        translate([rest_channel_x_min, rest_channel_half_w_y, rest_heel_z - 1])
+            cube([base_x_max - rest_channel_x_min, base_half_w_y, 2]);
+    }
 } else if (mode == "rest_slide_on") {
     // Without the key, the rest slides on from the rear end to its first position.
     start = base_x_max + 1 - rest_face_x(0);

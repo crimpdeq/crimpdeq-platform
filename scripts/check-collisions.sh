@@ -50,6 +50,7 @@ checks=(
     "base_joint_bears nonempty"
     "rest_retained nonempty"
     "rest_slide_on empty"
+    "rest_wings_seated nonempty"
     "finger_entry empty"
     "pocket_floor nonempty"
     "phone_slot empty"
@@ -234,6 +235,8 @@ invalid_parameters=(
     'rest_heel_z=-15'
     'rest_half_w_y=38'
     'rest_half_w_y=58'
+    'rest_bolster_half_w_y=47'
+    'rest_bolster_half_w_y=62'
     'key_t_x=8'
     'key_t_x=2'
     'key_t_x=-1'

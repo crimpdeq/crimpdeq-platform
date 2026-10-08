@@ -47,9 +47,10 @@ up.
 ![Sliding the palm rest onto the rail](../images/rest_on.png)
 
 Slide the palm rest into the channel from the rear end, bolster toward the
-grip. Push the key, tip first, into the side of the base, through the groove
-under the bolster, until its head meets the base. It fits from either side,
-with its head pointing away from the grip.
+grip, with the bolster's wings resting on the deck on both sides. Push the
+key, tip first, into the side of the base, through the groove under the
+bolster, until its head meets the base. It fits from either side, with its
+head pointing away from the grip.
 
 The seven key holes along each side, counted from the grip, set the opening
 between the finger lip and the palm face: 25 to 85 mm in 10 mm steps. To
