@@ -86,7 +86,7 @@ them replaces testing printed parts.
 
 ## Structural screening
 
-`dynamometer_dimensions.scad` fails with an assertion when a parameter change
+`platform/dimensions.scad` fails with an assertion when a parameter change
 takes any of these checks past its limit. Values are at the 961 N design
 target: the 481 N rating times the 2.0 design factor.
 
