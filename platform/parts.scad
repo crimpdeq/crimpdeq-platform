@@ -315,6 +315,15 @@ module phone_reference(portrait = false, drop = 0) {
 module base_slab() {
     dyno_rounded_prism_xy(base_x_min, base_x_max, -base_half_w_y, base_half_w_y,
         base_z_min, deck_z, base_corner_r);
+    // Joint cheeks, raising the trench side walls across the split.
+    for (y_sign = [-1, 1])
+        dyno_rounded_box_xyz(
+            [(joint_cheek_x_min + joint_cheek_x_max) / 2,
+             y_sign * (base_half_w_y - joint_cheek_w_y / 2),
+             (base_z_min + joint_cheek_top_z) / 2],
+            [joint_cheek_x_max - joint_cheek_x_min, joint_cheek_w_y,
+             joint_cheek_top_z - base_z_min],
+            joint_cheek_r);
 }
 
 module joint_tongue_2d(grow = 0) {
@@ -445,6 +454,7 @@ module base_rear() {
             }
         }
         joint_tongues(joint_fit);
+        grip_trench_cut();
         rest_channel_cut();
         base_key_grooves();
     }
@@ -582,7 +592,7 @@ function print_plate_corner(part) =
     : part == "clips" ? [163, 150]
     : part == "stoppers" ? [10, 10]
     : part == "base_rear" ? [10, 68]
-    : part == "rest" ? [160, 68]
+    : part == "rest" ? [190, 68]
     : part == "key" ? [10, 205]
     : undef;
 

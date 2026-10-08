@@ -320,10 +320,22 @@ key_head_z_min = (key_z_min + key_z_max - key_head_h) / 2;
 // Length of the bar in the plate, across the plate's sole.
 key_engage_y = 2 * (rest_half_w_y + rest_flare_y);
 
-// Two-piece base for a 256 mm bed (Bambu Lab A1). Two vertical dovetail
-// tongues on the front half drop into sockets in the rear half. Under load
-// the butt faces are in compression.
-base_split_x = is_undef(base_split_x) ? 111 : base_split_x;
+// Two-piece base for a 256 mm bed (Bambu Lab A1), split beside the grip.
+// Two vertical dovetail tongues on the front half drop into sockets under
+// the rear half's trench floor. The pull crosses the joint as compression
+// along the finger line, above the deck, so the trench side walls rise into
+// cheeks across the joint; with the line inside their butt faces, the joint
+// stays shut without tension and the halves cannot rock up off the table.
+// The cheeks stand beside the grip's upper body, no higher than its top,
+// clear of the hand.
+base_split_x = is_undef(base_split_x) ? (grip_body_x_min + grip_x_max) / 2 : base_split_x;
+joint_cheek_x_min = grip_body_x_min;
+joint_cheek_x_max = grip_x_max;
+joint_cheek_top_z = is_undef(joint_cheek_top_z) ? hangboard_front_z : joint_cheek_top_z;
+joint_cheek_r = 3;
+joint_cheek_w_y = base_half_w_y - trench_half_w_y;
+// Finger-pull line, at the mid-depth of the shallowest edge.
+joint_pull_z = loadcell_center_z + max(edge_pull_offsets);
 base_split_bed_max = is_undef(base_split_bed_max) ? 240 : base_split_bed_max;
 print_bed_size = is_undef(print_bed_size) ? 256 : print_bed_size;
 base_x_min = phone_slot_x_top - phone_slot_top_w_x - phone_slot_outer_wall_x;
@@ -335,8 +347,8 @@ joint_tongue_neck_w = 12;
 joint_tongue_head_w = 18;
 joint_fit = 0.2;
 joint_roof_t = 3;
-// The sockets' heads reach under the rest channel's floor.
-joint_tongue_z_max = rest_z_min - joint_roof_t - joint_fit;
+// The sockets lie under the rear half's trench floor.
+joint_tongue_z_max = trench_floor_z - joint_roof_t - joint_fit;
 // Separation before the sockets catch the tongue flanks.
 joint_catch_travel = joint_fit
     / sin(atan((joint_tongue_head_w - joint_tongue_neck_w) / 2 / joint_tongue_len_x));
@@ -357,7 +369,7 @@ top_brand_size = 9.5;
 top_brand_x = (phone_stand_x_max + anchor_pocket_x_min) / 2;
 top_brand_y = 0;
 side_brand_text = "crimpdeq.com";
-side_brand_size = 8;
+side_brand_size = 5.5;
 side_brand_x = (stopper_well_x_max + base_split_x) / 2;
 side_brand_z = (base_z_min + deck_z) / 2;
 // Conservative Inter Bold extents per unit of text size: advance per
@@ -427,6 +439,11 @@ rest_bolster_bending_mpa = design_force_n * rest_bolster_rise / 2
 rest_min_engaged_x = base_x_max - rest_face_x(rest_adjust_range);
 rest_uplift_n = design_force_n * (rest_bolster_z_max - rest_z_min) / rest_depth_x;
 rest_flank_shear_mpa = rest_uplift_n / (2 * rest_min_engaged_x * rest_plate_t / 2);
+// Each joint cheek takes half the pull at the finger line and passes it to
+// the base through its root at the deck, across the layers.
+joint_cheek_root_len_x = (joint_cheek_x_max - joint_cheek_x_min) / 2;
+joint_cheek_bending_mpa = design_force_n / 2 * (joint_pull_z - deck_z)
+    / (joint_cheek_w_y * pow(joint_cheek_root_len_x, 2) / 6);
 
 assert(platform_rated_kg >= 45 && platform_rated_force_n <= loadcell_rated_force_n,
     "The platform must be rated for at least 45 kg and no more than the 1500 N load cell.");
@@ -512,9 +529,15 @@ assert(rest_heel_z <= hangboard_front_z - 20 && rest_heel_z >= hangboard_front_z
     "The heel deck must lie between the fingertips on the 20 and 25 mm edges.");
 assert(rest_plate_t >= 5 && rest_z_min > base_z_min + 8,
     "The heel plate needs 5 mm and the channel a solid floor.");
-assert(rest_channel_x_min >= base_split_x + 3 &&
-    joint_tongue_z_max - base_z_min >= 8,
-    "The rest channel needs a deck before it and tongues under it.");
+assert(joint_tongue_z_max - base_z_min >= 4,
+    "The joint tongues need 4 mm of height under the trench floor.");
+assert(joint_cheek_top_z >= joint_pull_z + 4 && joint_cheek_top_z <= hangboard_front_z,
+    "The joint cheeks must rise 4 mm above the finger pull and no higher than the grip.");
+assert(base_split_x - joint_tongue_len_x >= joint_cheek_x_min &&
+    base_split_x + joint_tongue_len_x <= joint_cheek_x_max,
+    "The base joint and its tongues must lie between the cheeks.");
+assert(joint_cheek_bending_mpa <= allowable_printed_tension_mpa,
+    "Joint cheek roots exceed configured cross-layer stress.");
 assert(base_half_w_y - rest_channel_half_w_y >= 6,
     "The rest channel needs a 6 mm side wall in the base.");
 assert(key_t_x > 0 && key_floor_depth > 0 && key_plate_engage_z > 0 && key_engage_y > 0,
@@ -546,10 +569,6 @@ assert(rest_min_engaged_x >= rest_depth_x &&
     "The base must carry the whole heel plate and the channel lips their strength.");
 assert(base_front_len <= base_split_bed_max && base_rear_len <= base_split_bed_max,
     "Each base half must fit the printable length.");
-assert(base_split_x >= trench_x_max + 6,
-    "The grip trench must end at least 6 mm before the base joint.");
-assert(base_split_x + joint_tongue_len_x + 3 < key_x(-rest_adjust_range) - key_t_x / 2,
-    "Base joint sockets must clear the first key slot.");
 assert(phone_slot_w >= 13 && phone_slot_w <= 16 &&
     phone_slot_depth_z >= 12 && phone_slot_tilt >= 5 && phone_slot_tilt <= 25,
     "Phone slot must fit a phone in its case and lean it back.");
@@ -565,6 +584,7 @@ assert(top_brand_y - brand_len(top_brand_text, top_brand_size) / 2 >= stopper_we
     top_brand_size * brand_line_h + 6 <= anchor_pocket_x_min - phone_stand_x_max,
     "The top brand must fit the deck strip between the phone stand, the anchor pocket and the stopper well.");
 assert(abs(side_brand_x - stopper_well_x_max) >= brand_len(side_brand_text, side_brand_size) / 2 + 3 &&
+    base_split_x - side_brand_x >= brand_len(side_brand_text, side_brand_size) / 2 + 3 &&
     side_brand_size * brand_line_h + 6 <= deck_z - base_z_min &&
     base_half_w_y - trench_half_w_y - brand_depth >= 6,
     "The side brand must fit the base side face beside the trench and keep its wall solid.");

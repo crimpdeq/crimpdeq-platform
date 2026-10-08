@@ -55,9 +55,8 @@ BASE = {"top_shell_layers": "4", "bottom_shell_layers": "4"}
 # part's print Z. Bambu Studio reads the layer height of every height range.
 RANGE_BASE = {"layer_height": PROCESS_OVERRIDES["layer_height"]}
 HEIGHT_RANGES = {
-    # The phone stand's cheeks, the only part of the front half above the
-    # deck, carry only the phone.
-    "base_front": [("deck_z - base_z_min", "phone_stand_top_z - base_z_min",
+    # The phone stand's cheeks, above the joint cheeks, carry only the phone.
+    "base_front": [("joint_cheek_top_z - base_z_min", "phone_stand_top_z - base_z_min",
                     {**RANGE_BASE, "sparse_infill_density": "10%"})],
     # The bolster, above the heel plate.
     "rest": [("rest_heel_z - rest_z_min", "rest_bolster_z_max - rest_z_min",
