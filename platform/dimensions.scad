@@ -243,11 +243,10 @@ function liner_piece_z(pieces, k) = k == 0 ? 0
 function stoppers_h(stoppers) = sum_list([for (i = stoppers) stopper_t_list[i]]);
 
 // Storage well for the stacked stoppers in the deck beyond the anchor pocket,
-// past a strip for the top brand, long side along Y as in the pocket. Their
-// pull tabs stand proud of the deck.
-top_brand_strip_x = 22;
+// long side along Y as in the pocket. Their pull tabs stand proud of the
+// deck at its middle.
 stopper_well_clearance = 0.5;
-stopper_well_x_max = anchor_pocket_x_min - top_brand_strip_x;
+stopper_well_x_max = anchor_pocket_x_min - 3;
 stopper_well_x_min = stopper_well_x_max
     - (stopper_x_max - stopper_x_min + 2 * stopper_well_clearance);
 stopper_well_center_x = (stopper_well_x_min + stopper_well_x_max) / 2;
@@ -275,7 +274,7 @@ phone_slot_depth_z = is_undef(phone_slot_depth_z) ? 16 : phone_slot_depth_z;
 phone_slot_tilt = is_undef(phone_slot_tilt) ? 15 : phone_slot_tilt;
 phone_slot_inner_wall_x = 4;
 phone_slot_outer_wall_x = 5;
-phone_slot_z_min = is_undef(phone_slot_z_min) ? 15 : phone_slot_z_min;
+phone_slot_z_min = is_undef(phone_slot_z_min) ? 12 : phone_slot_z_min;
 phone_stand_top_z = phone_slot_z_min + phone_slot_depth_z;
 phone_stand_half_w_y = is_undef(phone_stand_half_w_y) ? 42 : phone_stand_half_w_y;
 // The stand is two slotted cheeks; the phone spans the gap between them,
@@ -285,8 +284,8 @@ phone_stand_cheek_w_y = phone_stand_half_w_y - phone_stand_gap_half_y;
 // Narrowest phone, in its case, that must still rest on both cheeks.
 phone_min_w = 64;
 phone_min_rest_y = 8;
-// Finger room between the stand and the stopper well's pull tabs.
-phone_stand_clear_x = is_undef(phone_stand_clear_x) ? 6 : phone_stand_clear_x;
+// Wall between the stopper well and the stand.
+phone_stand_clear_x = is_undef(phone_stand_clear_x) ? 2 : phone_stand_clear_x;
 phone_stand_x_max = stopper_well_x_min - phone_stand_clear_x;
 // The slot's +X face meets the stand top here and leans toward -X.
 phone_slot_x_top = phone_stand_x_max
@@ -406,15 +405,13 @@ base_rear_len = base_x_max - base_split_x;
 service_w = 30;
 service_y_max = base_half_w_y + 20;
 
-// Brand engraved into the front base half, in the crimpdeq-case font: across
-// the deck between the stopper well and the anchor pocket, reading from the
-// palm-rest end, and on both side faces beside the grip trench.
+// Brand engraved into the front base half, in the crimpdeq-case font: on its
+// -X end face, under the phone stand, and on both side faces beside the grip
+// trench.
 brand_font = "Inter:style=Bold";
 brand_depth = 0.8;
-top_brand_text = "crimpdeq";
-top_brand_size = 9.5;
-top_brand_x = (stopper_well_x_max + anchor_pocket_x_min) / 2;
-top_brand_y = 0;
+end_brand_text = "crimpdeq";
+end_brand_size = 9.5;
 side_brand_text = "crimpdeq.com";
 side_brand_size = 5.5;
 side_brand_x = (liner_well_x_max + base_split_x) / 2;
@@ -627,15 +624,14 @@ assert(phone_slot_w >= 13 && phone_slot_w <= 16 &&
     "Phone slot must fit a phone in its case and lean it back.");
 assert(phone_slot_z_min > deck_z + phone_slot_depth_z &&
     phone_view_elevation <= phone_view_max_elevation &&
-    phone_stand_clear_x >= 5 && phone_stand_half_w_y >= phone_probe_w / 2 + 2,
-    "The phone stand must lift the slot so the case hides the phone only from low viewpoints, leave finger room by the stopper well, and span a phone in portrait.");
+    phone_stand_clear_x >= 2 && phone_stand_half_w_y >= phone_probe_w / 2 + 2,
+    "The phone stand must lift the slot so the case hides the phone only from low viewpoints, keep a wall by the stopper well, and span a phone in portrait.");
 assert(phone_stand_cheek_w_y >= 15 && phone_stand_gap_half_y >= 10 &&
     phone_min_w / 2 - phone_stand_gap_half_y >= phone_min_rest_y,
     "Phone stand cheeks must be at least 15 mm wide, leave a cable gap, and carry a narrow phone on both.");
-assert(top_brand_y - brand_len(top_brand_text, top_brand_size) / 2 >= liner_well_y_max + 3 &&
-    top_brand_y + brand_len(top_brand_text, top_brand_size) / 2 <= base_half_w_y - 3 &&
-    top_brand_size * brand_line_h + 6 <= top_brand_strip_x,
-    "The top brand must fit the deck strip between the stopper well, the anchor pocket and the liner well.");
+assert(brand_len(end_brand_text, end_brand_size) / 2 <= base_half_w_y - base_corner_r - 3 &&
+    end_brand_size * brand_line_h + 6 <= deck_z - base_z_min,
+    "The end brand must fit the base's -X end face.");
 assert(abs(side_brand_x - liner_well_x_max) >= brand_len(side_brand_text, side_brand_size) / 2 + 3 &&
     base_split_x - side_brand_x >= brand_len(side_brand_text, side_brand_size) / 2 + 3 &&
     side_brand_size * brand_line_h + 6 <= deck_z - base_z_min &&
@@ -643,6 +639,6 @@ assert(abs(side_brand_x - liner_well_x_max) >= brand_len(side_brand_text, side_b
     "The side brand must fit the base side face beside the trench and keep its wall solid.");
 assert(stopper_well_x_max < -case_x_half - 3 && stopper_well_z_min > base_z_min + 5,
     "The stopper well must stay clear of the case and keep a solid floor.");
-assert(liner_well_y_max < case_y_min - 3 && liner_well_x_min > stopper_well_x_max + 3 &&
+assert(liner_well_y_max < case_y_min - 3 && liner_well_y_max < stopper_tab_slot_y_min - 3 &&
     liner_well_z_min > base_z_min + 5 && liner_well_proud_z >= 5,
     "The liner well must stay clear of the case and the stopper well, keep a solid floor, and leave the stack proud.");

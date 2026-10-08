@@ -44,7 +44,7 @@ sparser, using height range modifiers:
 
 | Object | Range | Infill |
 |---|---|---|
-| `base_front` | 40.1–59.6 mm | 10% |
+| `base_front` | 40.1–56.6 mm | 10% |
 | `rest` | 6–18 mm | 15% |
 | `anchor` | 0–11.5 mm | 40% |
 

@@ -3,7 +3,7 @@
 ![Assembled platform](../images/overview.png)
 
 The platform prints on a Bambu Lab A1, or any printer with a 256 mm bed, in
-about 715 g of PETG. There is nothing else to buy. It holds the Crimpdeq case
+about 690 g of PETG. There is nothing else to buy. It holds the Crimpdeq case
 from [crimpdeq-case v2.0.0](https://github.com/crimpdeq/crimpdeq-case/tree/v2.0.0)
 or any earlier release.
 
