@@ -234,6 +234,7 @@ invalid_parameters=(
     'rest_heel_z=-15'
     'rest_half_w_y=58'
     'key_t_x=8'
+    'key_t_x=2'
     'key_t_x=-1'
     'key_plate_engage_z=1'
     'key_plate_engage_z=-1'
