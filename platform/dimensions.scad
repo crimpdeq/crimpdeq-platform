@@ -440,8 +440,9 @@ rest_min_engaged_x = base_x_max - rest_face_x(rest_adjust_range);
 rest_uplift_n = design_force_n * (rest_bolster_z_max - rest_z_min) / rest_depth_x;
 rest_flank_shear_mpa = rest_uplift_n / (2 * rest_min_engaged_x * rest_plate_t / 2);
 // Each joint cheek takes half the pull at the finger line and passes it to
-// the base through its root at the deck, across the layers.
-joint_cheek_root_len_x = (joint_cheek_x_max - joint_cheek_x_min) / 2;
+// the base through its root at the deck, across the layers; the shorter
+// half's root governs.
+joint_cheek_root_len_x = min(base_split_x - joint_cheek_x_min, joint_cheek_x_max - base_split_x);
 joint_cheek_bending_mpa = design_force_n / 2 * (joint_pull_z - deck_z)
     / (joint_cheek_w_y * pow(joint_cheek_root_len_x, 2) / 6);
 
