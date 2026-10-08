@@ -15,7 +15,7 @@ entirely in plastic with no hardware to buy.
   the 20 and 25 mm edges.
 - **Phone slot:** phones up to about 13 mm thick in their case, portrait or
   landscape, leaned back 15°.
-- **Size:** 349 × 122 mm base (138 mm wide with the keys fitted), 60 mm tall
+- **Size:** 349 × 122 mm base (130 mm wide with the key fitted), 60 mm tall
   at the phone stand.
 - **Printing:** no supports and no hardware; the base splits into two halves
   for a 256 mm bed; about 640 g of PETG.
@@ -40,20 +40,20 @@ are attached to each
 the model or export the parts yourself:
 
 ```bash
-openscad dynamometer_assembly.scad
-bash export-parts.sh
+openscad platform/assembly.scad
+bash scripts/export-parts.sh
 ```
 
 Validate the geometry after any change to the model:
 
 ```bash
-CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash check-collisions.sh
+CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash scripts/check-collisions.sh
 ```
 
 ## Safety
 
 Never load the platform above its 49 kg rating, and pull only with both clips
-and both keys fitted. Printed parts can fail: inspect them before each session
+and the key fitted. Printed parts can fail: inspect them before each session
 and stop using any part that cracks or deforms.
 
 ## License
@@ -63,5 +63,5 @@ This repository is source-available under the
 and build the design for personal, educational, and research use, and share
 modified versions non-commercially. Commercial manufacture or sale of printed
 parts, kits, or assembled devices requires prior written permission.
-The bundled Inter font in `fonts/` is under its own
-[SIL Open Font License](fonts/Inter-LICENSE.txt).
+The bundled Inter font in `platform/fonts/` is under its own
+[SIL Open Font License](platform/fonts/Inter-LICENSE.txt).

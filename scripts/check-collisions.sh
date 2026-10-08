@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
 
@@ -105,7 +105,7 @@ check_mode() {
 
     openscad -D "render_fn=${render_fn}" -D "mode=\"${scad_mode}\"" \
         -D "test_position=${test_position}" \
-        -o "$out_file" "$project_root/collision_check.scad" >"$log_file" 2>&1 || exit_code=$?
+        -o "$out_file" "$project_root/platform/collision_check.scad" >"$log_file" 2>&1 || exit_code=$?
     log_text="$(<"$log_file")"
     # An assertion failure may ALSO report an empty top-level object.
     # Never accept that as a passing collision test.
@@ -174,12 +174,12 @@ fi
 echo "Collision checks passed."
 
 # Each single part must be one body; the paired parts export as two bodies.
-single_parts=(base_front base_rear anchor grip rest)
-paired_parts=(clips keys stoppers)
+single_parts=(base_front base_rear anchor grip key rest)
+paired_parts=(clips stoppers)
 for part in "${single_parts[@]}" "${paired_parts[@]}"; do
     log_file="$tmp_dir/export_${part}.log"
     if ! openscad -D "render_fn=${render_fn}" -D "part=\"${part}\"" \
-        -o "$tmp_dir/dynamometer_${part}.stl" "$project_root/dynamometer_assembly.scad" \
+        -o "$tmp_dir/dynamometer_${part}.stl" "$project_root/platform/assembly.scad" \
         >"$log_file" 2>&1 || grep -Eq 'ERROR:|WARNING:' "$log_file"; then
         printf 'Export failed: %s\n' "$part" >&2
         while IFS= read -r line; do printf '%s\n' "$line" >&2; done <"$log_file"
@@ -191,8 +191,8 @@ single_stls=()
 for part in "${single_parts[@]}"; do single_stls+=("$tmp_dir/dynamometer_${part}.stl"); done
 paired_stls=()
 for part in "${paired_parts[@]}"; do paired_stls+=("$tmp_dir/dynamometer_${part}.stl"); done
-python3 "$project_root/check-stl-components.py" "${single_stls[@]}"
-python3 "$project_root/check-stl-components.py" --expect 2 "${paired_stls[@]}"
+python3 "$project_root/scripts/check-stl-components.py" "${single_stls[@]}"
+python3 "$project_root/scripts/check-stl-components.py" --expect 2 "${paired_stls[@]}"
 
 echo "STL connectivity checks passed."
 
@@ -248,7 +248,7 @@ invalid_parameters=(
 for parameter in "${invalid_parameters[@]}"; do
     log_file="$tmp_dir/invalid.log"
     openscad -D "render_fn=${render_fn}" -D 'part="base_front"' -D "$parameter" \
-        -o "$tmp_dir/invalid.csg" "$project_root/dynamometer_assembly.scad" \
+        -o "$tmp_dir/invalid.csg" "$project_root/platform/assembly.scad" \
         >"$log_file" 2>&1 || true
     if ! grep -q 'ERROR: Assertion' "$log_file"; then
         printf 'Expected assertion for %s\n' "$parameter" >&2

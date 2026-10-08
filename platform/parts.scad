@@ -1,9 +1,9 @@
 //
 // Printable parts of the all-printed Crimpdeq finger dynamometer.
-// No top-level geometry: use dynamometer_assembly.scad for preview/export.
+// No top-level geometry: use assembly.scad for preview/export.
 //
 
-include <dynamometer_dimensions.scad>
+include <dimensions.scad>
 // Bundled so every machine engraves the brand in Inter, not a fallback font.
 use <fonts/Inter-Bold.ttf>
 
@@ -455,7 +455,7 @@ module base() {
     base_rear();
 }
 
-// --- Palm rest and keys --------------------------------------------------
+// --- Palm rest and key ---------------------------------------------------
 
 module palm_bolster(face_x) {
     // Full-width bolster with a nearly flat top and rolled long edges. Its
@@ -487,27 +487,29 @@ module palm_rest(offset = 0) {
             along_x(face_x, face_x + rest_depth_x) rest_plate_2d();
             palm_bolster(face_x);
         }
-        // The keys' groove across the sole, under the bolster.
+        // The key's groove across the sole, under the bolster.
         key_groove(key_x(offset), rest_half_w_y + rest_flare_y + 1, rest_z_min - 0.1);
     }
 }
 
-module index_key(offset = 0) {
-    // Bar from the centreline out through the +Y side of the base, and a
-    // head outside it that extends away from the fingers.
+module index_key(offset = 0, pull = 0) {
+    // Bar across the base with a chamfered tip at the -Y side, and a head
+    // outside the +Y side that extends away from the fingers. pull draws it
+    // out along +Y.
     x0 = key_x(offset) - key_t_x / 2;
-    translate([x0, key_y_min, key_z_min])
-        cube([key_t_x, key_bar_y_max - key_y_min + 0.01, key_h_z]);
-    translate([x0, key_bar_y_max, key_head_z_min])
-        rotate([-90, 0, 0])
-            translate([0, -key_head_h, 0])
-                dyno_rounded_prism_xy(0, key_head_x, 0, key_head_h, 0, key_head_y, 2);
-}
-
-module index_keys(offset = 0, pull = 0) {
-    // One key from each side; pull draws them out along Y.
-    for (s = [0, 1])
-        mirror([0, s, 0]) translate([0, pull, 0]) index_key(offset);
+    c = key_tip_chamfer;
+    translate([x0, pull, 0]) {
+        hull() {
+            translate([0, key_y_min + c, key_z_min])
+                cube([key_t_x, key_bar_y_max - key_y_min - c + 0.01, key_h_z]);
+            translate([c, key_y_min, key_z_min + c])
+                cube([key_t_x - 2 * c, c, key_h_z - 2 * c]);
+        }
+        translate([0, key_bar_y_max, key_head_z_min])
+            rotate([-90, 0, 0])
+                translate([0, -key_head_h, 0])
+                    dyno_rounded_prism_xy(0, key_head_x, 0, key_head_h, 0, key_head_y, 2);
+    }
 }
 
 // --- Print layouts -------------------------------------------------------
@@ -536,11 +538,11 @@ module print_layout(part) {
             translate([-dyno_eye_x_right, (i - 0.5) * (2 * tongue_r + 8),
                        -loadcell_top_z])
                 eye_clip_right();
-    else if (part == "keys")
-        // On their -X faces, side by side, so the shear plane at the channel
+    else if (part == "key")
+        // On its -X face, lying along X, so the shear plane at the channel
         // floor lies across the layers.
-        for (i = [0, 1])
-            translate([(i - 0.5) * 20, -(key_y_min + key_bar_y_max + key_head_y) / 2, 0])
+        rotate([0, 0, -90])
+            translate([0, -(key_y_min + key_bar_y_max + key_head_y) / 2, 0])
                 rotate([0, -90, 0])
                     translate([-(key_x(0) - key_t_x / 2), 0, -(key_z_min + key_z_max) / 2])
                         index_key();
@@ -564,24 +566,24 @@ function print_layout_min(part) =
     : part == "anchor" ? [-(anchor_x_max - anchor_x_min) / 2, -anchor_half_w_y]
     : part == "grip" ? [-(grip_x_max - grip_x_min) / 2, -grip_half_w_y]
     : part == "clips" ? [-clip_tip_x, -2 * tongue_r - 4]
-    : part == "keys" ? [-10 - key_head_h / 2, -(key_bar_y_max + key_head_y - key_y_min) / 2]
+    : part == "key" ? [-(key_bar_y_max + key_head_y - key_y_min) / 2, -key_head_h / 2]
     : part == "stoppers" ? [stopper_tab_y_min(0), -(stopper_x_max - stopper_x_min) - 4]
     : part == "rest" ? [-rest_depth_x / 2, -(rest_half_w_y + rest_flare_y)]
     : undef;
 
 // Front-left corner of each part on its plate, origin at the front-left bed
-// corner. Plate 1 holds the front base half, the grip, the anchor block, the
-// clips and the keys; plate 2 the stoppers, the rear base half and the palm
-// rest. Shared by the book's plate images and the Bambu Studio project.
+// corner. Plate 1 holds the front base half, the grip, the anchor block and
+// the clips; plate 2 the stoppers, the rear base half, the palm rest and the
+// key. Shared by the book's plate images and the Bambu Studio project.
 function print_plate_corner(part) =
     part == "base_front" ? [10, 10]
     : part == "grip" ? [10, 150]
     : part == "anchor" ? [106, 150]
     : part == "clips" ? [163, 150]
-    : part == "keys" ? [199, 150]
     : part == "stoppers" ? [10, 10]
     : part == "base_rear" ? [10, 68]
     : part == "rest" ? [160, 68]
+    : part == "key" ? [10, 205]
     : undef;
 
 module print_plate_placement(part) {

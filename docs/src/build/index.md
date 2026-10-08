@@ -9,7 +9,7 @@ or any earlier release.
 
 > [!WARNING]
 > Never load the platform above its 49 kg rating, and pull only with both
-> clips and both keys fitted. Printed parts can fail: inspect them before each
+> clips and the key fitted. Printed parts can fail: inspect them before each
 > session and stop using any part that cracks or deforms.
 
 ## Parts
@@ -20,5 +20,5 @@ The illustrations use the same colours throughout:
 - **Anchor block** (red) and **finger grip** (blue): their lugs go into the
   two eyes of the load cell.
 - **Eye clips** (yellow): hold the load cell down on the lugs.
-- **Palm rest** (orange) and **index keys** (green): set the hand opening.
+- **Palm rest** (orange) and **index key** (green): set the hand opening.
 - **Pocket stoppers** (teal): make the 25 mm edge shallower.

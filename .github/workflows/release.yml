@@ -22,23 +22,23 @@ jobs:
               uses: ./.github/actions/setup-openscad
 
             - name: Build STL files
-              run: EXPORT_DIR=artifacts bash export-parts.sh
+              run: EXPORT_DIR=artifacts bash scripts/export-parts.sh
 
             - name: Check STL files
               run: |
-                  for part in base_front base_rear anchor grip clips keys rest stoppers; do
+                  for part in base_front base_rear anchor grip clips key rest stoppers; do
                       test -f "artifacts/crimpdeq-platform-${part}.stl"
                   done
-                  python3 check-stl-components.py \
-                      artifacts/crimpdeq-platform-{base_front,base_rear,anchor,grip,rest}.stl
-                  python3 check-stl-components.py --expect 2 \
-                      artifacts/crimpdeq-platform-{clips,keys,stoppers}.stl
+                  python3 scripts/check-stl-components.py \
+                      artifacts/crimpdeq-platform-{base_front,base_rear,anchor,grip,key,rest}.stl
+                  python3 scripts/check-stl-components.py --expect 2 \
+                      artifacts/crimpdeq-platform-{clips,stoppers}.stl
 
             - name: Install Bambu Studio
               uses: ./.github/actions/setup-bambu-studio
 
             - name: Build Bambu Studio project
-              run: python3 export-bambu-project.py --output artifacts/crimpdeq-platform.3mf
+              run: python3 scripts/export-bambu-project.py --output artifacts/crimpdeq-platform.3mf
 
             - name: Upload platform release files
               uses: actions/upload-artifact@v6
@@ -68,7 +68,7 @@ jobs:
 
             - name: Verify release assets exist
               run: |
-                  for part in base_front base_rear anchor grip clips keys rest stoppers; do
+                  for part in base_front base_rear anchor grip clips key rest stoppers; do
                       test -f "release-assets/platform/crimpdeq-platform-${part}.stl"
                   done
                   test -f release-assets/platform/crimpdeq-platform.3mf

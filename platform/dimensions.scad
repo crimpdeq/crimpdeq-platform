@@ -258,8 +258,8 @@ phone_probe_w = 80;
 // finger lip; seven positions give 25-85 mm in 10 mm steps. The heel rests
 // behind the bolster on a plate level with the fingertips on the 20 and 25 mm
 // edges, so the heel and the fingers pull in line. The plate slides in a
-// dovetail channel sunk into the rear base half, and two printed keys pushed
-// in from the base's sides lock it under the deck, clear of the hand.
+// dovetail channel sunk into the rear base half, and a printed key pushed in
+// from the base's side locks it under the deck, clear of the hand.
 hand_opening = is_undef(hand_opening) ? 55 : hand_opening;
 rest_adjust_range = is_undef(rest_adjust_range) ? 30 : rest_adjust_range;
 rest_index_pitch = is_undef(rest_index_pitch) ? 10 : rest_index_pitch;
@@ -293,10 +293,11 @@ rest_bolster_front_r = 6;
 rest_bolster_rear_r = 5;
 rest_bolster_z_max = rest_heel_z + rest_bolster_rise;
 
-// Printed index keys: a square bar pushed in from each side of the base, half
-// in a groove across the channel floor and half in a groove across the
-// plate's sole, under the bolster. The bars print on their sides so the shear
-// plane lies across the layers. A head outside the base pulls each one out.
+// Printed index key: a square bar pushed in from the +Y side across the full
+// width of the base, half in a groove across the channel floor and half in a
+// groove across the plate's sole, under the bolster. The bar prints on its
+// side so the shear plane lies across the layers. Its chamfered tip finds the
+// far wall's groove, and a head outside the base pulls it out.
 key_t_x = is_undef(key_t_x) ? 6 : key_t_x;
 key_floor_depth = is_undef(key_floor_depth) ? 3.5 : key_floor_depth;
 key_plate_engage_z = is_undef(key_plate_engage_z) ? 2.5 : key_plate_engage_z;
@@ -306,16 +307,17 @@ key_offset_x = rest_bolster_depth_x / 2;
 function key_x(offset = 0) = rest_face_x(offset) + key_offset_x;
 key_z_min = rest_z_min - key_floor_depth;
 key_z_max = key_z_min + key_h_z;
-// The two bars meet with a gap on the centreline.
-key_y_min = 1;
+// The tip ends flush with the far (-Y) side of the base.
+key_y_min = -base_half_w_y;
+key_tip_chamfer = 1;
 key_head_gap_y = 0.2;
 key_bar_y_max = base_half_w_y + key_head_gap_y;
 key_head_x = 16;
 key_head_y = 8;
 key_head_h = 12;
 key_head_z_min = (key_z_min + key_z_max - key_head_h) / 2;
-// Length of each bar in the plate, out to the plate's sole edge.
-key_engage_y = rest_half_w_y + rest_flare_y - key_y_min;
+// Length of the bar in the plate, across the plate's sole.
+key_engage_y = 2 * (rest_half_w_y + rest_flare_y);
 
 // Two-piece base for a 256 mm bed (Bambu Lab A1). Two vertical dovetail
 // tongues on the front half drop into sockets in the rear half. Under load
@@ -408,7 +410,7 @@ grip_net_area_mm2 = 2 * hangboard_side_wall_t * (hangboard_front_z - grip_z_min)
     + 2 * grip_half_w_y * hangboard_back_wall_t;
 grip_net_tension_mpa = design_force_n / grip_net_area_mm2;
 
-// Either key alone takes the whole palm force, over its length in the plate:
+// The key takes the whole palm force over its length in the plate:
 // shear at the channel floor, bearing on the plate's and the floor's grooves,
 // and shear through the rib between neighbouring floor grooves.
 key_shear_mpa = design_force_n / (key_t_x * key_engage_y);
@@ -514,7 +516,7 @@ assert(rest_channel_x_min >= base_split_x + 3 &&
 assert(base_half_w_y - rest_channel_half_w_y >= 6,
     "The rest channel needs a 6 mm side wall in the base.");
 assert(key_t_x > 0 && key_floor_depth > 0 && key_plate_engage_z > 0 && key_engage_y > 0,
-    "Index keys need a positive size and must engage both the channel floor and the plate.");
+    "The index key needs a positive size and must engage both the channel floor and the plate.");
 assert(key_offset_x - (key_t_x + key_fit) / 2 >= 3 &&
     key_offset_x + (key_t_x + key_fit) / 2 <= rest_bolster_depth_x - 3,
     "The plate's key groove must lie under the bolster.");
@@ -532,7 +534,7 @@ assert(key_ligament_x >= 3 &&
     key_plate_bearing_mpa <= allowable_printed_bearing_mpa &&
     key_slot_bearing_mpa <= allowable_printed_bearing_mpa &&
     key_ligament_shear_mpa <= allowable_printed_tension_mpa,
-    "Index keys, their grooves or the ribs between them exceed configured stress.");
+    "The index key, its grooves or the ribs between them exceed configured stress.");
 assert(rest_bolster_bending_mpa <= allowable_printed_tension_mpa,
     "Palm bolster exceeds configured cross-layer stress.");
 assert(rest_min_engaged_x >= rest_depth_x &&

@@ -2,22 +2,22 @@
 // All-printed Crimpdeq finger dynamometer: preview and STL export entry point.
 //
 // Examples:
-//   openscad dynamometer_assembly.scad
-//   openscad -D 'part="base_front"' -o /tmp/dyno-base-front.stl dynamometer_assembly.scad
-//   openscad -D 'part="grip"' -D on_plate=true -o /tmp/dyno-grip.stl dynamometer_assembly.scad
+//   openscad platform/assembly.scad
+//   openscad -D 'part="base_front"' -o /tmp/dyno-base-front.stl platform/assembly.scad
+//   openscad -D 'part="grip"' -D on_plate=true -o /tmp/dyno-grip.stl platform/assembly.scad
 //
-// Parts: base_front, base_rear, anchor, grip, clips, keys, rest, stoppers.
+// Parts: base_front, base_rear, anchor, grip, clips, key, rest, stoppers.
 // The view options below are literals so that OpenSCAD's Customizer
 // (Window > Customizer) lists them; -D still overrides them.
 //
 
-use <dynamometer_parts.scad>
+use <parts.scad>
 use <crimpdeq_reference.scad>
-include <dynamometer_dimensions.scad>
+include <dimensions.scad>
 
 /* [View] */
 // Part to preview or export
-part = "assembly"; // [assembly, base_front, base_rear, anchor, grip, clips, keys, rest, stoppers]
+part = "assembly"; // [assembly, base_front, base_rear, anchor, grip, clips, key, rest, stoppers]
 // Preview pose; rated exaggerates the grip displacement
 pose = "unloaded"; // [unloaded, rated, exploded]
 // Export the part at its place on the print plate instead of the origin
@@ -84,7 +84,7 @@ module dynamometer_complete() {
         translate([30 * explode, 0, 30 * explode]) {
             color([0.95, 0.55, 0.15]) palm_rest(rest_x_offset);
             color([0.45, 0.80, 0.45])
-                index_keys(rest_x_offset, 30 * explode);
+                index_key(rest_x_offset, 30 * explode);
         }
 
     if (show_phone)

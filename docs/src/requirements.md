@@ -57,13 +57,13 @@ replaces testing printed parts.
 
 ## Structural screening
 
-`dynamometer_dimensions.scad` fails with an assertion when a parameter change
-takes a load-path part past its stress limit at the 961 N design target: the
-481 N rating times the 2.0 design factor.
+`platform/dimensions.scad` fails with an assertion when a parameter change
+takes a load-path part past its stress limit at the design force: the
+platform rating times the structural design factor.
 
 The printed-material limits (`allowable_printed_*` and
 `allowable_lug_bearing_mpa`) are assumptions that need coupon tests. The
 calculations leave out the 3D stress field, notches, one-finger loading,
 print defects, creep, fatigue and temperature, and they are not FEA or proof
 tests. The design factor is not a demonstrated safety factor and never
-permits loading the platform above 49 kg.
+permits loading the platform above its rating.
