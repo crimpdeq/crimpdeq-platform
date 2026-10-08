@@ -157,7 +157,7 @@ if (mode == "anchor_case") {
         service_probe();
         union() {
             fixed_parts(); finger_grip(); eye_clips();
-            palm_rest(-rest_adjust_range); index_keys(-rest_adjust_range);
+            palm_rest(-rest_adjust_range); index_key(-rest_adjust_range);
             stored_pocket_stoppers();
         }
     }
@@ -170,24 +170,24 @@ if (mode == "anchor_case") {
     // Pushed together, the halves bear on their butt faces.
     intersection() { base_front(); translate([-0.02, 0, 0.01]) base_rear(); }
 } else if (mode == "rest_position") {
-    // The rest and both keys at each of the seven positions.
+    // The rest and the key at each of the seven positions.
     o = rest_offset(test_position);
     intersection() {
         lifted() palm_rest(o);
         union() { fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference(); }
     }
     intersection() {
-        lifted() index_keys(o);
+        lifted() index_key(o);
         union() { fixed_parts(); palm_rest(o); finger_grip(); }
     }
 } else if (mode == "rest_locked") {
-    // At both travel ends, each key catches its floor groove and the plate's
+    // At both travel ends, the key catches its floor groove and the plate's
     // groove in X.
     assert(test_position < 4, "Lock index must be 0-3.");
     o = test_position < 2 ? -rest_adjust_range : rest_adjust_range;
     shift = (test_position % 2 == 0 ? -1 : 1) * (key_fit / 2 + 0.05);
-    intersection() { translate([shift, 0, 0.02]) index_keys(o); base_rear(); }
-    intersection() { translate([shift, 0, 0.02]) index_keys(o); palm_rest(o); }
+    intersection() { translate([shift, 0, 0.02]) index_key(o); base_rear(); }
+    intersection() { translate([shift, 0, 0.02]) index_key(o); palm_rest(o); }
 } else if (mode == "rest_retained") {
     // Lifted off the channel floor at its least-engaged position, the
     // plate's flanks catch the channel's lips.
@@ -196,7 +196,7 @@ if (mode == "anchor_case") {
         base_rear();
     }
 } else if (mode == "rest_slide_on") {
-    // Without keys, the rest slides on from the rear end to its first position.
+    // Without the key, the rest slides on from the rear end to its first position.
     start = base_x_max + 1 - rest_face_x(0);
     steps = ceil((start + rest_adjust_range) / rest_index_pitch);
     intersection() {
@@ -217,7 +217,7 @@ if (mode == "anchor_case") {
         );
         union() {
             fixed_parts(); finger_grip(); eye_clips();
-            palm_rest(-rest_adjust_range); index_keys(-rest_adjust_range);
+            palm_rest(-rest_adjust_range); index_key(-rest_adjust_range);
             crimpdeq_case_reference();
         }
     }
@@ -313,7 +313,7 @@ if (mode == "anchor_case") {
         }
         union() {
             fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference();
-            palm_rest(-rest_adjust_range); index_keys(-rest_adjust_range);
+            palm_rest(-rest_adjust_range); index_key(-rest_adjust_range);
             stored_pocket_stoppers();
         }
     }

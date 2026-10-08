@@ -174,8 +174,8 @@ fi
 echo "Collision checks passed."
 
 # Each single part must be one body; the paired parts export as two bodies.
-single_parts=(base_front base_rear anchor grip rest)
-paired_parts=(clips keys stoppers)
+single_parts=(base_front base_rear anchor grip key rest)
+paired_parts=(clips stoppers)
 for part in "${single_parts[@]}" "${paired_parts[@]}"; do
     log_file="$tmp_dir/export_${part}.log"
     if ! openscad -D "render_fn=${render_fn}" -D "part=\"${part}\"" \

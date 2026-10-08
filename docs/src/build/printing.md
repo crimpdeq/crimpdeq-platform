@@ -13,9 +13,9 @@ Take all the parts from the same release, or they may not fit together.
 
 ## Plates
 
-![Plate 1: front base half, grip, anchor block, clips and keys](../images/plate1.png)
+![Plate 1: front base half, grip, anchor block and clips](../images/plate1.png)
 
-![Plate 2: rear base half, palm rest and stoppers](../images/plate2.png)
+![Plate 2: rear base half, palm rest, stoppers and key](../images/plate2.png)
 
 The parts are exported already oriented for printing, so don't rotate them.
 If you lay out the plates yourself, keep the parts at least 15 mm apart.
@@ -35,7 +35,7 @@ Per-object overrides:
 
 | Object | Override |
 |---|---|
-| `grip`, `anchor`, `clips`, `keys` | 100% infill |
+| `grip`, `anchor`, `clips`, `key` | 100% infill |
 | `rest` | 50% infill |
 | `base_front`, `base_rear` | 4 top and 4 bottom layers |
 
