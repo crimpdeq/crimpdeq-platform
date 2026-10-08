@@ -17,8 +17,8 @@ entirely in plastic with no hardware to buy.
   landscape, leaned back 15°.
 - **Size:** 349 × 122 mm base (130 mm wide with the key fitted), 60 mm tall
   at the phone stand.
-- **Printing:** no supports and no hardware; the base splits into two halves
-  for a 256 mm bed; about 640 g of PETG.
+- **Printing:** no hardware, and supports only under the palm rest's wings;
+  the base splits into two halves for a 256 mm bed; about 640 g of PETG.
 - **Compatibility:** [crimpdeq-case](https://github.com/crimpdeq/crimpdeq-case)
   v2.0.0 and earlier.
 

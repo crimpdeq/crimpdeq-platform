@@ -28,7 +28,7 @@ If you lay out the plates yourself, keep the parts at least 15 mm apart.
 | Walls | 6 |
 | Top/bottom layers | 6 |
 | Infill | 20% |
-| Supports | **Off** |
+| Supports | **Off**, except on `rest` |
 | Brim | Outer brim only, 5 mm |
 
 Per-object overrides:
@@ -36,7 +36,7 @@ Per-object overrides:
 | Object | Override |
 |---|---|
 | `grip`, `anchor`, `clips`, `key` | 100% infill |
-| `rest` | 50% infill |
+| `rest` | 50% infill; normal supports, on the build plate only, not under bridges |
 | `base_front`, `base_rear` | 4 top and 4 bottom layers |
 
 To save filament, the project also prints these lightly loaded zones
@@ -48,8 +48,10 @@ sparser, using height range modifiers:
 | `rest` | 6–18 mm | 15% |
 | `anchor` | 0–11.5 mm | 40% |
 
-No part needs supports. Keep them off: they would scar the faces that the
-load-cell eyes and the palm rest bear on.
+Only the palm rest needs supports, under the bolster's wings. Keep them off
+everywhere else, including the rest's key groove: they would scar the faces
+that the load-cell eyes, the palm rest and the key bear on.
 
-After printing, remove the brims and trim any flared first layer on the base
-halves' joint faces and on the palm rest's sole.
+After printing, remove the brims and the supports, and trim any flared first
+layer on the base halves' joint faces and on the palm rest's sole. Sand the
+wings' undersides smooth so they slide on the deck.
