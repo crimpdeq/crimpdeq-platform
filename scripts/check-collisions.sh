@@ -197,9 +197,11 @@ python3 "$project_root/scripts/check-stl-components.py" --expect 2 "${paired_stl
 echo "STL connectivity checks passed."
 
 # CSG export can exit successfully on assertion failure; inspect diagnostics.
+# Space-separated overrides in one entry are applied together.
 invalid_parameters=(
     'platform_rated_kg=44'
     'platform_rated_kg=60'
+    'platform_rated_kg=160 allowable_printed_bending_mpa=1000 allowable_printed_tension_mpa=1000 allowable_printed_bearing_mpa=1000 allowable_lug_bearing_mpa=1000'
     'structural_safety_factor=1.5'
     'u_slot_clear=0.5'
     'lug_fit=0.5'
@@ -247,7 +249,10 @@ invalid_parameters=(
 )
 for parameter in "${invalid_parameters[@]}"; do
     log_file="$tmp_dir/invalid.log"
-    openscad -D "render_fn=${render_fn}" -D 'part="base_front"' -D "$parameter" \
+    read -ra overrides <<<"$parameter"
+    defines=()
+    for override in "${overrides[@]}"; do defines+=(-D "$override"); done
+    openscad -D "render_fn=${render_fn}" -D 'part="base_front"' "${defines[@]}" \
         -o "$tmp_dir/invalid.csg" "$project_root/platform/assembly.scad" \
         >"$log_file" 2>&1 || true
     if ! grep -q 'ERROR: Assertion' "$log_file"; then

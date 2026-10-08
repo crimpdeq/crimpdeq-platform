@@ -53,6 +53,7 @@ usb_cable_boot_w = 12;
 
 // Platform rating and the printed structure's design target. The Crimpdeq is
 // rated to 1500 N; the printed lugs in its eyes limit the platform to 49 kg.
+loadcell_rated_force_n = 1500;
 platform_rated_kg = is_undef(platform_rated_kg) ? 49 : platform_rated_kg;
 gravity = 9.80665;
 platform_rated_force_n = platform_rated_kg * gravity;
@@ -427,7 +428,8 @@ rest_min_engaged_x = base_x_max - rest_face_x(rest_adjust_range);
 rest_uplift_n = design_force_n * (rest_bolster_z_max - rest_z_min) / rest_depth_x;
 rest_flank_shear_mpa = rest_uplift_n / (2 * rest_min_engaged_x * rest_plate_t / 2);
 
-assert(platform_rated_kg >= 45, "The platform must be rated for at least 45 kg.");
+assert(platform_rated_kg >= 45 && platform_rated_force_n <= loadcell_rated_force_n,
+    "The platform must be rated for at least 45 kg and no more than the 1500 N load cell.");
 assert(structural_safety_factor >= 2, "Use a structural design factor of at least 2.0.");
 assert(u_slot_clear >= 1 && tongue_r > lug_r + 1,
     "Tongues must keep 1 mm from the case's U-slots and a seat ring round each lug.");
