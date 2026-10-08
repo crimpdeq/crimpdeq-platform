@@ -239,6 +239,7 @@ invalid_parameters=(
     'key_plate_engage_z=1'
     'key_plate_engage_z=-1'
     'base_z_min=-24'
+    'base_split_x=84'
     'base_split_x=95'
     'base_split_x=150'
     'phone_slot_w=11'
