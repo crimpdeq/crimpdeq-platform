@@ -6,7 +6,7 @@ ON_PLATE=true), checks the plate layout, lets the Bambu Studio CLI assemble
 the two plates with the print settings from docs/src/build/printing.md, and
 slices the project to confirm that every plate is printable.
 
-Usage: python3 export-bambu-project.py [--output FILE.3mf] [--skip-slice]
+Usage: python3 scripts/export-bambu-project.py [--output FILE.3mf] [--skip-slice]
 BAMBU_STUDIO names the Bambu Studio executable (default: bambu-studio on PATH,
 then the macOS application); BAMBU_STUDIO_PROFILES its profiles directory.
 OPENSCAD_RENDER_FN and EXPORT_JOBS are passed to export-parts.sh.
@@ -25,7 +25,7 @@ import tempfile
 import zipfile
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MACOS_APP = Path("/Applications/BambuStudio.app/Contents/MacOS/BambuStudio")
 
 PRINTER = "Bambu Lab A1 0.4 nozzle"
@@ -51,7 +51,7 @@ SOLID = {"sparse_infill_density": "100%"}
 REST = {"sparse_infill_density": "50%"}
 BASE = {"top_shell_layers": "4", "bottom_shell_layers": "4"}
 # Height ranges that print parts of an object sparser, as (min Z, max Z,
-# settings) with the heights as dynamometer_dimensions.scad expressions in the
+# settings) with the heights as platform/dimensions.scad expressions in the
 # part's print Z. Bambu Studio reads the layer height of every height range.
 RANGE_BASE = {"layer_height": PROCESS_OVERRIDES["layer_height"]}
 HEIGHT_RANGES = {
@@ -84,7 +84,7 @@ MIN_PART_GAP = 15.0
 
 def load_stl_reader():
     spec = importlib.util.spec_from_file_location(
-        "check_stl_components", PROJECT_ROOT / "check-stl-components.py"
+        "check_stl_components", PROJECT_ROOT / "scripts" / "check-stl-components.py"
     )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -200,7 +200,7 @@ def height_ranges(work: Path) -> dict[str, list[dict]]:
                    for min_z, max_z, _ in ranges for z in (min_z, max_z)]
     probe = work / "height_ranges.scad"
     probe.write_text(
-        f"include <{PROJECT_ROOT / 'dynamometer_dimensions.scad'}>\n"
+        f"include <{PROJECT_ROOT / 'platform' / 'dimensions.scad'}>\n"
         f"echo(height_ranges = [{', '.join(expressions)}]);\n",
         encoding="utf-8",
     )
@@ -219,7 +219,8 @@ def height_ranges(work: Path) -> dict[str, list[dict]]:
 def export_parts(stl_dir: Path) -> None:
     env = dict(os.environ, EXPORT_DIR=str(stl_dir), ON_PLATE="true")
     parts = [part for _, objects in PLATES for part, _ in objects]
-    subprocess.run(["bash", str(PROJECT_ROOT / "export-parts.sh"), *parts], env=env, check=True)
+    subprocess.run(["bash", str(PROJECT_ROOT / "scripts" / "export-parts.sh"), *parts],
+                   env=env, check=True)
 
 
 def stl_path(stl_dir: Path, part: str) -> Path:

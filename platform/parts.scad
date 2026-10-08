@@ -1,9 +1,9 @@
 //
 // Printable parts of the all-printed Crimpdeq finger dynamometer.
-// No top-level geometry: use dynamometer_assembly.scad for preview/export.
+// No top-level geometry: use assembly.scad for preview/export.
 //
 
-include <dynamometer_dimensions.scad>
+include <dimensions.scad>
 // Bundled so every machine engraves the brand in Inter, not a fallback font.
 use <fonts/Inter-Bold.ttf>
 

@@ -2,9 +2,9 @@
 // Seating faces are backed off 0.01 mm where contact is intended, so face
 // contact is not reported as an overlap.
 
-use <dynamometer_parts.scad>
+use <parts.scad>
 use <crimpdeq_reference.scad>
-include <dynamometer_dimensions.scad>
+include <dimensions.scad>
 
 render_fn = is_undef(render_fn) ? 24 : render_fn;
 $fn = render_fn;

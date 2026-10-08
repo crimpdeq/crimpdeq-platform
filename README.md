@@ -40,14 +40,14 @@ are attached to each
 the model or export the parts yourself:
 
 ```bash
-openscad dynamometer_assembly.scad
-bash export-parts.sh
+openscad platform/assembly.scad
+bash scripts/export-parts.sh
 ```
 
 Validate the geometry after any change to the model:
 
 ```bash
-CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash check-collisions.sh
+CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash scripts/check-collisions.sh
 ```
 
 ## Safety
@@ -63,5 +63,5 @@ This repository is source-available under the
 and build the design for personal, educational, and research use, and share
 modified versions non-commercially. Commercial manufacture or sale of printed
 parts, kits, or assembled devices requires prior written permission.
-The bundled Inter font in `fonts/` is under its own
-[SIL Open Font License](fonts/Inter-LICENSE.txt).
+The bundled Inter font in `platform/fonts/` is under its own
+[SIL Open Font License](platform/fonts/Inter-LICENSE.txt).

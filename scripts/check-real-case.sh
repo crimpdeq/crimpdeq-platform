@@ -4,7 +4,7 @@
 # on the sibling repository at runtime.
 set -euo pipefail
 
-root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 case_dir="${CRIMPDEQ_CASE_DIR:-$root/../crimpdeq-case/case}"
 for file in case_main.scad case_lid.scad; do
     if [[ ! -f "$case_dir/$file" ]]; then
@@ -18,10 +18,10 @@ trap 'rm -rf "$tmp_dir"' EXIT
 # Include the platform's own parameters. `use` imports only modules from the
 # case repository so same-name variables/modules cannot shadow platform data.
 scad="$tmp_dir/actual-case-check.scad"
-printf 'use <%s/dynamometer_parts.scad>\n' "$root" >"$scad"
+printf 'use <%s/platform/parts.scad>\n' "$root" >"$scad"
 printf 'use <%s/case_main.scad>\n' "$case_dir" >>"$scad"
 printf 'use <%s/case_lid.scad>\n' "$case_dir" >>"$scad"
-printf 'include <%s/dynamometer_dimensions.scad>\n' "$root" >>"$scad"
+printf 'include <%s/platform/dimensions.scad>\n' "$root" >>"$scad"
 cat >>"$scad" <<'SCAD'
 render_fn = is_undef(render_fn) ? 24 : render_fn;
 $fn = render_fn;

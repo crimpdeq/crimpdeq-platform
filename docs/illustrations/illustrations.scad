@@ -4,9 +4,9 @@
 // Every part comes from the project modules, so the pictures follow the design.
 //
 
-include <../../dynamometer_dimensions.scad>
-use <../../dynamometer_parts.scad>
-use <../../crimpdeq_reference.scad>
+include <../../platform/dimensions.scad>
+use <../../platform/parts.scad>
+use <../../platform/crimpdeq_reference.scad>
 
 render_fn = is_undef(render_fn) ? 48 : render_fn;
 $fn = render_fn;
