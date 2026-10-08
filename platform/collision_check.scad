@@ -29,8 +29,15 @@ module service_probe() {
         cube([service_w, service_y_max - case_y_max, z_max - z_min]);
 }
 
-module stopper_in_pocket(i, dx = 0, dy = 0, dz = 0) {
-    translate([dx, dy, dz]) pocket_stopper(i);
+liner_fits = ["right", "left", "level"];
+
+module stopper_in_pocket(i, dx = 0, dy = 0, dz = 0, fit = "right") {
+    translate([dx + (fit == "level" ? stopper_level_dx : 0), dy, dz]) pocket_stopper(i);
+}
+
+module grip_and_liner(fit) {
+    finger_grip();
+    edge_liner(fit);
 }
 
 if (mode == "anchor_case") {
@@ -205,18 +212,22 @@ if (mode == "anchor_case") {
             lifted() palm_rest(max(-rest_adjust_range, start - i * rest_index_pitch));
     }
 } else if (mode == "finger_entry") {
-    // Minimum drafted pocket envelope and its unobstructed +Z approach.
+    // The finger room beside each liner fit, drafted at the end walls, and
+    // its unobstructed +Z approach.
+    assert(test_position < len(liner_fits), "Liner fit index must be 0-2.");
+    fit = liner_fits[test_position];
+    x_min = fit == "level" ? hangboard_opening_x_max - hangboard_finger_room_x
+        : hangboard_opening_x_min;
     intersection() {
         dyno_rounded_prism_xy(
-            hangboard_opening_x_min + hangboard_draft + 0.01,
-            hangboard_opening_x_max - hangboard_draft - 0.01,
+            x_min + 0.01, x_min + hangboard_finger_room_x - 0.01,
             hangboard_opening_y_min + hangboard_draft + 0.01,
             hangboard_opening_y_max - hangboard_draft - 0.01,
             hangboard_pocket_back_z + 0.01, hangboard_front_z + 40,
             hangboard_opening_r - hangboard_draft
         );
         union() {
-            fixed_parts(); finger_grip(); eye_clips();
+            fixed_parts(); grip_and_liner(fit); eye_clips();
             palm_rest(-rest_adjust_range); index_key(-rest_adjust_range);
             crimpdeq_case_reference();
         }
@@ -230,29 +241,39 @@ if (mode == "anchor_case") {
             cube([2, 2, 0.01]);
     }
 } else if (mode == "stopper_pocket") {
+    // Clear of the grip and of the liner, beside either liner fit.
     assert(test_position < stopper_count, "Stopper index out of range.");
-    intersection() { finger_grip(); stopper_in_pocket(test_position, dz = 0.01); }
+    for (fit = liner_fits)
+        intersection() {
+            grip_and_liner(fit);
+            stopper_in_pocket(test_position, dz = 0.01, fit = fit);
+        }
 } else if (mode == "stopper_seated") {
     assert(test_position < stopper_count, "Stopper index out of range.");
     intersection() { finger_grip(); stopper_in_pocket(test_position, dz = -0.02); }
 } else if (mode == "stopper_located") {
-    // The pocket walls stop each stopper within its clearance in X and Y.
-    assert(test_position < 2 * stopper_count, "Stopper index out of range.");
+    // The liner stops each stopper within its clearance toward it, beside
+    // the unlevel (0-1) and the level (2-3) fit; the end walls in Y (4-5).
+    assert(test_position < 3 * stopper_count, "Stopper index out of range.");
     shift = stopper_clearance + 0.1;
+    side = floor(test_position / stopper_count);
+    fit = side == 1 ? "level" : "right";
     intersection() {
-        finger_grip();
+        grip_and_liner(fit);
         stopper_in_pocket(test_position % stopper_count,
-            dx = test_position < stopper_count ? shift : 0,
-            dy = test_position < stopper_count ? 0 : shift, dz = 0.01);
+            dx = side == 0 ? shift : side == 1 ? -shift : 0,
+            dy = side == 2 ? shift : 0, dz = 0.01, fit = fit);
     }
 } else if (mode == "stopper_stack_pocket") {
     // Both stoppers stacked, either one at the bottom, clear of the grip and
     // of each other.
     assert(test_position < 2, "Stack order must be 0-1.");
-    intersection() {
-        finger_grip();
-        translate([0, 0, 0.01]) stacked_pocket_stoppers(test_position, dz_top = 0.01);
-    }
+    for (fit = liner_fits)
+        intersection() {
+            grip_and_liner(fit);
+            translate([fit == "level" ? stopper_level_dx : 0, 0, 0.01])
+                stacked_pocket_stoppers(test_position, dz_top = 0.01);
+        }
     intersection() {
         pocket_stopper(test_position);
         translate([0, 0, stopper_t_list[test_position] + 0.01])
@@ -266,14 +287,14 @@ if (mode == "anchor_case") {
             pocket_stopper(1 - test_position);
     }
 } else if (mode == "stopper_stack_located") {
-    // The drafted pocket walls still stop the top stopper in X and Y.
+    // The liner stops the top stopper in X, the drafted end walls in Y.
     assert(test_position < 4, "Stack index must be 0-3.");
     bottom = test_position % 2;
-    shift = stopper_clearance + 0.1
-        + hangboard_draft * stopper_t_list[bottom] / hangboard_pocket_depth_z;
+    shift_x = stopper_clearance + 0.1;
+    shift_y = shift_x + hangboard_draft * stopper_t_list[bottom] / hangboard_pocket_depth_z;
     intersection() {
-        finger_grip();
-        translate([test_position < 2 ? shift : 0, test_position < 2 ? 0 : shift,
+        grip_and_liner("right");
+        translate([test_position < 2 ? shift_x : 0, test_position < 2 ? 0 : shift_y,
                    stopper_t_list[bottom] + 0.01])
             pocket_stopper(1 - bottom);
     }
@@ -296,6 +317,30 @@ if (mode == "anchor_case") {
         pocket_stopper(test_position);
         translate([-500, -500, hangboard_front_z + stopper_tab_rise - 1])
             cube([1000, 1000, 0.5]);
+    }
+} else if (mode == "liner_pocket") {
+    // Each liner fit stands in the pocket clear of the grip, its top flush
+    // with the grip top.
+    assert(test_position < len(liner_fits), "Liner fit index must be 0-2.");
+    intersection() { finger_grip(); lifted() edge_liner(liner_fits[test_position]); }
+    intersection() {
+        edge_liner(liner_fits[test_position]);
+        translate([-500, -500, hangboard_front_z + 0.01]) cube(1000);
+    }
+} else if (mode == "liner_seated") {
+    assert(test_position < len(liner_fits), "Liner fit index must be 0-2.");
+    intersection() { finger_grip(); lifted(-0.02) edge_liner(liner_fits[test_position]); }
+} else if (mode == "liner_located") {
+    // Unlevel, the liner bears on the lip (0); level, on the -X wall (1);
+    // the end wall at its thick end stops it in Y (2). Its thin end sits in
+    // the pocket's rounded corner, which stops it within 0.6 mm.
+    assert(test_position < 3, "Liner index must be 0-2.");
+    shift = liner_clearance + 0.05;
+    intersection() {
+        finger_grip();
+        translate([test_position == 0 ? shift : test_position == 1 ? -shift : 0,
+                   test_position == 2 ? -shift - 0.05 : 0, 0.01])
+            edge_liner(test_position == 1 ? "level" : "right");
     }
 } else if (mode == "stopper_stored") {
     intersection() {

@@ -6,7 +6,7 @@
 //   openscad -D 'part="base_front"' -o /tmp/dyno-base-front.stl platform/assembly.scad
 //   openscad -D 'part="grip"' -D on_plate=true -o /tmp/dyno-grip.stl platform/assembly.scad
 //
-// Parts: base_front, base_rear, anchor, grip, clips, key, rest, stoppers.
+// Parts: base_front, base_rear, anchor, grip, clips, key, rest, stoppers, liner.
 // The view options below are literals so that OpenSCAD's Customizer
 // (Window > Customizer) lists them; -D still overrides them.
 //
@@ -17,7 +17,7 @@ include <dimensions.scad>
 
 /* [View] */
 // Part to preview or export
-part = "assembly"; // [assembly, base_front, base_rear, anchor, grip, clips, key, rest, stoppers]
+part = "assembly"; // [assembly, base_front, base_rear, anchor, grip, clips, key, rest, stoppers, liner]
 // Preview pose; rated exaggerates the grip displacement
 pose = "unloaded"; // [unloaded, rated, exploded]
 // Export the part at its place on the print plate instead of the origin
@@ -33,6 +33,8 @@ show_rest = true;
 show_stoppers = true;
 // Stoppers fitted in the finger pocket, by thickness in mm
 pocket_stoppers = "none"; // [none, 5, 10, both]
+// Edge liner: unlevel for either hand, or against the back wall for a level edge
+liner_fit = "level"; // [level, right, left]
 // Largest supported phone in its slot
 show_phone = false;
 
@@ -72,6 +74,8 @@ module dynamometer_complete() {
     color([0.85, 0.35, 0.20]) translate([0, 0, 30 * explode]) anchor_block();
     color([0.20, 0.45, 0.78]) translate([grip_preview_offset, 0, 30 * explode]) finger_grip();
     color([0.95, 0.80, 0.25]) translate([0, 0, 90 * explode]) eye_clips();
+    color([0.85, 0.30, 0.55])
+        translate([grip_preview_offset, 0, 60 * explode]) edge_liner(liner_fit);
 
     if (show_case)
         translate([grip_preview_offset / 2, 0, 60 * explode]) {
@@ -92,7 +96,8 @@ module dynamometer_complete() {
 
     if (show_stoppers)
         color([0.2, 0.6, 0.55]) {
-            translate([grip_preview_offset, 0, 60 * explode])
+            translate([grip_preview_offset + (liner_fit == "level" ? stopper_level_dx : 0),
+                       0, 60 * explode])
                 stopper_stack(stoppers_in_pocket);
             stopper_well_transform() stopper_stack(stoppers_stored);
         }

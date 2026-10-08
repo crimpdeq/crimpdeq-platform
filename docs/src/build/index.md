@@ -3,7 +3,7 @@
 ![Assembled platform](../images/overview.png)
 
 The platform prints on a Bambu Lab A1, or any printer with a 256 mm bed, in
-about 640 g of PETG. There is nothing else to buy. It holds the Crimpdeq case
+about 670 g of PETG. There is nothing else to buy. It holds the Crimpdeq case
 from [crimpdeq-case v2.0.0](https://github.com/crimpdeq/crimpdeq-case/tree/v2.0.0)
 or any earlier release.
 
@@ -21,4 +21,5 @@ The illustrations use the same colours throughout:
   two eyes of the load cell.
 - **Eye clips** (yellow): hold the load cell down on the lugs.
 - **Palm rest** (orange) and **index key** (green): set the hand opening.
+- **Edge liner** (pink): makes the edge level or unlevel.
 - **Pocket stoppers** (teal): make the 25 mm edge shallower.

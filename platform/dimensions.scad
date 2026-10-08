@@ -108,13 +108,32 @@ clip_install_travel = 12.75;
 clip_access_x = is_undef(clip_access_x) ? 6 : clip_access_x;
 
 // Four-finger hangboard pocket, loaded on its +X lip. Its mid-depth sits
-// near the load-cell plane so the finger pull adds little tilt.
+// near the load-cell plane so the finger pull adds little tilt. The pocket
+// is widened by an edge liner's band, so the fingers keep
+// hangboard_finger_room_x beside it.
 grip_x_min = dyno_eye_x_right - tongue_r;
 // The grip's upper body starts beyond the case, leaving room to fit a clip.
 grip_body_x_min = dyno_eye_x_right + clip_tail_x + clip_install_travel + clip_access_x;
 grip_spine_t = is_undef(grip_spine_t) ? 8 : grip_spine_t;
-hangboard_opening_w_x = is_undef(hangboard_opening_w_x) ? 20 : hangboard_opening_w_x;
+hangboard_finger_room_x = is_undef(hangboard_finger_room_x) ? 18.5 : hangboard_finger_room_x;
 hangboard_opening_w_y = is_undef(hangboard_opening_w_y) ? 80 : hangboard_opening_w_y;
+
+// Edge liner: a plate standing on the pocket floor against a long wall,
+// with one face stepped under each finger. Against the +X lip it gives an
+// unlevel edge for the right hand, index at -Y; turned end over end, for the
+// left. Against the -X wall it leaves the lip level and holds the stoppers
+// against the lip. Steps toward the palm (+X) from the middle finger's edge,
+// for the index, middle, ring and little fingers.
+liner_finger_steps = is_undef(liner_finger_steps) ? [3, 0, 2, 7] : liner_finger_steps;
+liner_t_min = is_undef(liner_t_min) ? 3 : liner_t_min;
+liner_clearance = 0.25;
+liner_t_max = liner_t_min + max(liner_finger_steps);
+function liner_t(i) = liner_t_max - liner_finger_steps[i];
+liner_band_x = liner_t_max + liner_clearance;
+liner_finger_w_y = hangboard_opening_w_y / len(liner_finger_steps);
+function liner_finger_y(i) = (i - (len(liner_finger_steps) - 1) / 2) * liner_finger_w_y;
+liner_step_r = 2.5;
+hangboard_opening_w_x = hangboard_finger_room_x + liner_band_x;
 hangboard_side_wall_t = 4;
 hangboard_right_lip_t = is_undef(hangboard_right_lip_t) ? 12 : hangboard_right_lip_t;
 hangboard_opening_x_min = grip_body_x_min + grip_spine_t;
@@ -129,7 +148,10 @@ hangboard_pocket_back_z = hangboard_front_z - hangboard_pocket_depth_z;
 hangboard_back_wall_t = is_undef(hangboard_back_wall_t) ? 6 : hangboard_back_wall_t;
 grip_z_min = hangboard_pocket_back_z - hangboard_back_wall_t;
 hangboard_opening_r = 4;
+// End walls only; the long walls stay upright so the liner fits either.
 hangboard_draft = 1;
+liner_y_min = hangboard_opening_y_min + hangboard_draft + liner_clearance;
+liner_y_max = hangboard_opening_y_max - hangboard_draft - liner_clearance;
 hangboard_lip_radius = is_undef(hangboard_lip_radius) ? 2 : hangboard_lip_radius;
 hangboard_lip_min_t = hangboard_right_lip_t - hangboard_lip_radius;
 
@@ -165,14 +187,16 @@ anchor_pocket_x_max = anchor_x_max + anchor_play_x;
 anchor_pocket_half_w_y = anchor_half_w_y + anchor_fit;
 
 // Two drop-in pocket stoppers raise the floor for shallower edges: each on
-// its own, or both stacked. The pocket walls locate them; a pull tab on one
-// end face of each runs in a slot in the pocket end wall and stands proud of
-// the grip top.
+// its own, or both stacked. The pocket walls and the liner locate them; a
+// pull tab on one end face of each runs in a slot in the pocket end wall and
+// stands proud of the grip top. They are modelled beside the unlevel liner;
+// beside the level liner they sit stopper_level_dx further +X.
 stopper_t_list = is_undef(stopper_t_list) ? [5, 10] : stopper_t_list;
 stopper_clearance = is_undef(stopper_clearance) ? 0.25 : stopper_clearance;
 stopper_count = len(stopper_t_list);
-stopper_x_min = hangboard_opening_x_min + hangboard_draft + stopper_clearance;
-stopper_x_max = hangboard_opening_x_max - hangboard_draft - stopper_clearance;
+stopper_x_min = hangboard_opening_x_min + stopper_clearance;
+stopper_x_max = stopper_x_min + hangboard_finger_room_x - 2 * stopper_clearance;
+stopper_level_dx = liner_band_x;
 stopper_center_x = (stopper_x_min + stopper_x_max) / 2;
 stopper_y_min = hangboard_opening_y_min + hangboard_draft + stopper_clearance;
 stopper_y_max = hangboard_opening_y_max - hangboard_draft - stopper_clearance;
@@ -494,8 +518,11 @@ assert(hangboard_lip_radius > 0 && hangboard_lip_radius <= 2,
     "Loading-edge radius must be in (0, 2] mm.");
 assert(hangboard_lip_min_t >= 8,
     "Rounded hangboard loading lip must retain at least 8 mm thickness.");
-assert(hangboard_opening_w_x - 2 * hangboard_draft >= 18,
-    "Finger pocket must retain at least 18 mm clearance at its floor.");
+assert(hangboard_finger_room_x >= 18,
+    "Finger pocket must retain at least 18 mm clearance beside the liner.");
+assert(liner_t_min >= 2 && min(liner_finger_steps) == 0 && liner_t_max <= 12 &&
+    len(liner_finger_steps) == 4,
+    "The liner needs four finger steps from the middle finger, a 2 mm floor and at most 12 mm thickness.");
 assert(max([for (o = edge_pull_offsets) abs(o)]) <= edge_pull_offset_max,
     "Every edge's mid-depth must stay near the load-cell plane.");
 assert(stopper_count == 2 &&
@@ -508,6 +535,10 @@ assert(stopper_tab_rise >= 4 && stopper_tab_rise <= 10 &&
     stopper_tab_slot_w_x <= stopper_x_max - stopper_x_min - 2 * stopper_r &&
     stopper_tab_slot_skin_y >= 1.8,
     "Stopper pull tabs must stand proud, fit the straight ends, and leave 1.8 mm of pocket end wall behind their slots.");
+assert(stopper_center_x - stopper_tab_slot_w_x / 2 >= hangboard_opening_x_min + hangboard_opening_r &&
+    stopper_center_x + stopper_level_dx + stopper_tab_slot_w_x / 2
+        <= hangboard_opening_x_max - hangboard_opening_r,
+    "The stopper tab slots must lie on the straight part of the pocket end walls.");
 assert(grip_pull_gap_x >= 5 * (lug_fit + anchor_play_x + rated_preview_deflection),
     "The grip needs free travel in the pull direction of at least five times its play and rated deflection.");
 assert(grip_guide_gap_z >= 0.8 && grip_guide_gap_z <= 1.2 && grip_guide_bearing_y >= 3 &&

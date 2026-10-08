@@ -56,12 +56,23 @@ between the finger lip and the palm face: 25 to 85 mm in 10 mm steps. To
 change it, pull the key out by its head, slide the rest until its groove
 lines up with the new hole, and push the key in again.
 
-## 6. Stoppers and phone
+## 6. Liner, stoppers and phone
+
+![Fitting the liner](../images/liner.png)
+
+The liner always stands in the finger pocket, on its floor, against one of
+the pocket's long walls, flat face to the wall:
+
+- **Level edge:** against the wall nearer the case.
+- **Unlevel edge:** against the finger lip, thickest step under your middle
+  finger. Its steps set the index, ring and little fingers' edges 3, 2 and
+  7 mm nearer the palm than the middle finger's, so each finger bends about
+  as much as the others. Turn it end over end to switch hands.
 
 ![Fitting the stoppers](../images/stoppers.png)
 
-The pocket gives a 25 mm edge on its own. Drop a stopper onto its floor, pull
-tab in the end slot, for a shallower edge:
+The pocket gives a 25 mm edge on its own. Drop a stopper onto its floor
+beside the liner, pull tab in the end slot, for a shallower edge:
 
 | Edge | Stoppers |
 |---|---|

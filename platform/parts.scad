@@ -153,10 +153,10 @@ module hangboard_rim_section(angle) {
 
 module hangboard_pocket_cut() {
     hull() {
-        // Exact floor datum; the draft narrows the floor on every side.
+        // Exact floor datum; the draft narrows the floor at the end walls.
         dyno_rounded_prism_xy(
-            hangboard_opening_x_min + hangboard_draft,
-            hangboard_opening_x_max - hangboard_draft,
+            hangboard_opening_x_min,
+            hangboard_opening_x_max,
             hangboard_opening_y_min + hangboard_draft,
             hangboard_opening_y_max - hangboard_draft,
             hangboard_pocket_back_z,
@@ -179,12 +179,14 @@ module hangboard_pocket_cut() {
 }
 
 module stopper_tab_slots(x_center = stopper_center_x, z_min = hangboard_pocket_back_z,
-        z_max = hangboard_front_z) {
-    // Vertical slots in both pocket end walls, from the floor to the top.
+        z_max = hangboard_front_z, travel_x = 0) {
+    // Vertical slots in both pocket end walls, from the floor to the top,
+    // lengthened by travel_x along +X.
     for (y_span = [[stopper_tab_slot_y_min, stopper_y_min + 1],
                    [stopper_y_max - 1, stopper_tab_slot_y_max]])
         translate([x_center - stopper_tab_slot_w_x / 2, y_span[0], z_min])
-            cube([stopper_tab_slot_w_x, y_span[1] - y_span[0], z_max + 0.1 - z_min]);
+            cube([stopper_tab_slot_w_x + travel_x, y_span[1] - y_span[0],
+                  z_max + 0.1 - z_min]);
 }
 
 module finger_grip() {
@@ -198,9 +200,66 @@ module finger_grip() {
             tongue(grip_body_x_min + 1);
         }
         hangboard_pocket_cut();
-        stopper_tab_slots();
+        stopper_tab_slots(travel_x = stopper_level_dx);
     }
     eye_lug();
+}
+
+// --- Edge liner ----------------------------------------------------------
+
+module liner_2d() {
+    // Right-hand footprint with its back face on x = 0 and the finger steps
+    // toward -X, rounded where they meet. The back corners follow the
+    // pocket's corners.
+    r = liner_step_r;
+    intersection() {
+        offset(r = r) offset(delta = -2 * r) offset(r = r)
+            for (i = [0 : len(liner_finger_steps) - 1]) {
+                y0 = i == 0 ? liner_y_min - 2 * r : liner_finger_y(i) - liner_finger_w_y / 2;
+                y1 = i == len(liner_finger_steps) - 1
+                    ? liner_y_max + 2 * r : liner_finger_y(i) + liner_finger_w_y / 2;
+                translate([-liner_t(i), y0]) square([liner_t(i) + 2 * r, y1 - y0]);
+            }
+        dyno_rounded_rect_2d(-liner_t_max - 1, 0, liner_y_min, liner_y_max,
+            hangboard_opening_r);
+    }
+}
+
+module liner_relieved_2d(relief) {
+    // The footprint with its stepped face set back by relief.
+    intersection() {
+        liner_2d();
+        translate([relief, 0]) liner_2d();
+    }
+}
+
+module liner_body() {
+    // The footprint from the pocket floor to the grip top, its stepped face
+    // rounded like the lip along both long edges so it can be turned over.
+    h = hangboard_pocket_depth_z;
+    r = hangboard_lip_radius;
+    steps = max(6, ceil(render_fn / 4));
+    translate([0, 0, r - 0.01])
+        linear_extrude(height = h - 2 * r + 0.02) liner_2d();
+    for (z_sign = [-1, 1])
+        translate([0, 0, h / 2])
+            mirror([0, 0, z_sign < 0 ? 1 : 0])
+                for (k = [1 : steps])
+                    translate([0, 0, h / 2 - r + (k - 1) * r / steps])
+                        linear_extrude(height = r / steps + (k < steps ? 0.01 : 0))
+                            liner_relieved_2d(r - sqrt(r * r - pow(k * r / steps, 2)));
+}
+
+module edge_liner(fit = "right") {
+    // In the pocket: "right" or "left" against the lip for an unlevel edge,
+    // "level" against the -X wall.
+    assert(fit == "right" || fit == "left" || fit == "level", str("Unknown liner fit: ", fit));
+    if (fit == "level")
+        translate([hangboard_opening_x_min + liner_clearance, 0, hangboard_pocket_back_z])
+            rotate([0, 0, 180]) liner_body();
+    else
+        translate([hangboard_opening_x_max - liner_clearance, 0, hangboard_pocket_back_z])
+            mirror([0, fit == "left" ? 1 : 0, 0]) liner_body();
 }
 
 // --- Pocket stoppers -----------------------------------------------------
@@ -558,6 +617,10 @@ module print_layout(part) {
                         index_key();
     else if (part == "rest")
         translate([-rest_face_x() - rest_depth_x / 2, 0, -rest_z_min]) palm_rest();
+    else if (part == "liner")
+        // On its back face, steps up.
+        rotate([0, 90, 0])
+            translate([0, 0, -hangboard_pocket_depth_z / 2]) liner_body();
     else if (part == "stoppers")
         // Flat, side by side, long sides along X.
         rotate([0, 0, 90])
@@ -579,21 +642,24 @@ function print_layout_min(part) =
     : part == "key" ? [-(key_bar_y_max + key_head_y - key_y_min) / 2, -key_head_h / 2]
     : part == "stoppers" ? [stopper_tab_y_min(0), -(stopper_x_max - stopper_x_min) - 4]
     : part == "rest" ? [-rest_depth_x / 2, -(rest_half_w_y + rest_flare_y)]
+    : part == "liner" ? [-hangboard_pocket_depth_z / 2, liner_y_min]
     : undef;
 
 // Front-left corner of each part on its plate, origin at the front-left bed
 // corner. Plate 1 holds the front base half, the grip, the anchor block and
-// the clips; plate 2 the stoppers, the rear base half, the palm rest and the
-// key. Shared by the book's plate images and the Bambu Studio project.
+// the clips; plate 2 the rear base half, the liner, the palm rest, the
+// stoppers and the key. Shared by the book's plate images and the Bambu
+// Studio project.
 function print_plate_corner(part) =
     part == "base_front" ? [10, 10]
     : part == "grip" ? [10, 150]
-    : part == "anchor" ? [106, 150]
-    : part == "clips" ? [163, 150]
-    : part == "stoppers" ? [10, 10]
-    : part == "base_rear" ? [10, 68]
-    : part == "rest" ? [190, 68]
-    : part == "key" ? [10, 205]
+    : part == "anchor" ? [115, 150]
+    : part == "clips" ? [172, 150]
+    : part == "base_rear" ? [10, 10]
+    : part == "liner" ? [195, 10]
+    : part == "rest" ? [10, 147]
+    : part == "stoppers" ? [85, 147]
+    : part == "key" ? [85, 206]
     : undef;
 
 module print_plate_placement(part) {

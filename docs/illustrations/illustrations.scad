@@ -22,6 +22,7 @@ c_loadcell = [0.75, 0.75, 0.78];
 c_clip = [0.92, 0.76, 0.20];
 c_key = [0.45, 0.80, 0.45];
 c_stopper = [0.20, 0.62, 0.58];
+c_liner = [0.80, 0.35, 0.60];
 c_phone = [0.10, 0.10, 0.12, 0.75];
 c_arrow = [0.90, 0.10, 0.10];
 c_plate = [0.66, 0.67, 0.70];
@@ -61,6 +62,7 @@ module clips() { color(c_clip) render() eye_clips(); }
 module rest(offset = 0, dx = 0) { color(c_rest) translate([dx, 0, 0]) render() palm_rest(offset); }
 module key(offset = 0, pull = 0) { color(c_key) index_key(offset, pull); }
 module stored_stoppers() { color(c_stopper) stored_pocket_stoppers(); }
+module liner(fit = "level") { color(c_liner) edge_liner(fit); }
 
 module full_assembly(offset = 0) {
     base_halves();
@@ -71,6 +73,7 @@ module full_assembly(offset = 0) {
     rest(offset);
     key(offset);
     stored_stoppers();
+    liner();
 }
 
 module build_plate(label) {
@@ -93,10 +96,11 @@ if (view == "overview") {
     plate_part("anchor", c_anchor);
     plate_part("clips", c_clip);
 } else if (view == "plate2") {
-    build_plate("Plate 2: rear base half, palm rest, stoppers and key");
-    plate_part("stoppers", c_stopper);
+    build_plate("Plate 2: rear base half, liner, palm rest, stoppers and key");
     plate_part("base_rear", c_base_b);
+    plate_part("liner", c_liner);
     plate_part("rest", c_rest);
+    plate_part("stoppers", c_stopper);
     plate_part("key", c_key);
 } else if (view == "join_base") {
     // The rear half is lowered onto the front half's dovetail tongues.
@@ -147,13 +151,25 @@ if (view == "overview") {
     key_z = (key_z_min + key_z_max) / 2;
     arrow([key_x(0), base_half_w_y + 85, key_z],
           [key_x(0), base_half_w_y + 60, key_z], 3);
-} else if (view == "stoppers") {
-    // The 5 mm stopper in the pocket, the 10 mm one lowered onto it.
+} else if (view == "liner") {
+    // From the palm rest: the liner against the finger lip for an unlevel
+    // edge, right hand; its level place against the far wall as a ghost.
     base_halves();
     anchor();
     grip();
     clips();
     case_model();
+    liner("right");
+    color(c_ghost) edge_liner("level");
+} else if (view == "stoppers") {
+    // Beside the unlevel liner, the 5 mm stopper in the pocket and the 10 mm
+    // one lowered onto it.
+    base_halves();
+    anchor();
+    grip();
+    clips();
+    case_model();
+    liner("right");
     color(c_stopper) {
         pocket_stopper(0);
         translate([0, 0, 45]) pocket_stopper(1);
