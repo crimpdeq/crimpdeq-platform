@@ -270,7 +270,7 @@ hand_opening_max = hand_opening + rest_adjust_range;
 function rest_face_x(offset = 0) = grip_x_max + hand_opening + offset;
 function rest_offset(i) = -rest_adjust_range + i * rest_index_pitch;
 rest_depth_x = is_undef(rest_depth_x) ? 60 : rest_depth_x;
-rest_half_w_y = is_undef(rest_half_w_y) ? 34 : rest_half_w_y;
+rest_half_w_y = is_undef(rest_half_w_y) ? 44 : rest_half_w_y;
 // Heel deck: the plate top, and the rear base half's deck beside it.
 rest_heel_z = is_undef(rest_heel_z) ? -10 : rest_heel_z;
 rest_plate_t = is_undef(rest_plate_t) ? 6 : rest_plate_t;
@@ -287,12 +287,17 @@ rest_channel_half_w_y = rest_half_w_y + rest_side_gap_y + rest_flare_y;
 rest_channel_x_min = rest_face_x(-rest_adjust_range) - 1;
 // Lift before the plate's flanks catch the channel's lips.
 rest_catch_travel = rest_fit / sin(rest_flare_angle);
-rest_bolster_depth_x = is_undef(rest_bolster_depth_x) ? 22 : rest_bolster_depth_x;
+// Large rounds on the bolster's long edges and ends, where the palm pushes
+// and drapes onto the heel deck.
+rest_bolster_depth_x = is_undef(rest_bolster_depth_x) ? 26 : rest_bolster_depth_x;
 rest_bolster_rise = is_undef(rest_bolster_rise) ? 12 : rest_bolster_rise;
-rest_corner_r = 5;
-rest_bolster_front_r = 6;
-rest_bolster_rear_r = 5;
+rest_corner_r = 10;
+rest_bolster_front_r = 9;
+rest_bolster_rear_r = 8;
 rest_bolster_z_max = rest_heel_z + rest_bolster_rise;
+// As wide as an adult palm: wings past the heel plate lie on the deck beside
+// the channel. Their undersides print on support.
+rest_bolster_half_w_y = is_undef(rest_bolster_half_w_y) ? 54 : rest_bolster_half_w_y;
 
 // Printed index key: a square bar pushed in from the +Y side across the full
 // width of the base, half in a groove across the channel floor and half in a
@@ -319,6 +324,11 @@ key_head_h = 12;
 key_head_z_min = (key_z_min + key_z_max - key_head_h) / 2;
 // Length of the bar in the plate, across the plate's sole.
 key_engage_y = 2 * (rest_half_w_y + rest_flare_y);
+// Each position's hand opening, engraved on both side faces under its key
+// hole and below the key head, so the fitted key shows its setting.
+function rest_opening(i) = hand_opening + rest_offset(i);
+opening_label_size = 4;
+opening_label_z = (base_z_min + key_head_z_min) / 2;
 
 // Two-piece base for a 256 mm bed (Bambu Lab A1), split beside the grip.
 // Two vertical dovetail tongues on the front half drop into sockets under
@@ -557,6 +567,14 @@ assert(base_x_max >= key_x(rest_adjust_range) + key_t_x / 2 + 7,
 assert(rest_bolster_rise >= 10 && rest_bolster_rise <= 14 &&
     rest_bolster_depth_x >= 20 && rest_bolster_depth_x < rest_depth_x - 30,
     "The palm bolster must rise 10-14 mm and leave a 30 mm heel deck behind it.");
+assert(2 * rest_half_w_y >= hangboard_opening_w_y &&
+    rest_bolster_front_r + rest_bolster_rear_r <= rest_bolster_depth_x &&
+    rest_bolster_z_max - max(rest_bolster_front_r, rest_bolster_rear_r) >= rest_heel_z &&
+    rest_corner_r <= rest_bolster_depth_x / 2,
+    "The palm bolster must span the finger pocket and keep its rounds above the deck.");
+assert(rest_bolster_half_w_y >= rest_half_w_y + rest_side_gap_y + 3 &&
+    rest_bolster_half_w_y <= base_half_w_y,
+    "The bolster wings must lie at least 3 mm onto the deck and stay within the base.");
 assert(key_ligament_x >= 3 &&
     key_shear_mpa <= allowable_printed_tension_mpa &&
     key_plate_bearing_mpa <= allowable_printed_bearing_mpa &&
@@ -589,6 +607,10 @@ assert(abs(side_brand_x - stopper_well_x_max) >= brand_len(side_brand_text, side
     side_brand_size * brand_line_h + 6 <= deck_z - base_z_min &&
     base_half_w_y - trench_half_w_y - brand_depth >= 6,
     "The side brand must fit the base side face beside the trench and keep its wall solid.");
+assert(opening_label_size * brand_line_h <= min(key_head_z_min, key_z_min) - base_z_min &&
+    brand_len(str(rest_opening(rest_index_count - 1)), opening_label_size)
+        <= rest_index_pitch - 2,
+    "The opening labels must fit below the key heads and between their neighbours.");
 assert(stopper_well_y_max < case_y_min - 3 && stopper_well_x_min > base_x_min + 2 &&
     stopper_well_z_min > base_z_min + 5,
     "The stopper well must stay clear of the case and keep solid walls and floor.");
