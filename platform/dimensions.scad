@@ -270,7 +270,8 @@ hand_opening_max = hand_opening + rest_adjust_range;
 function rest_face_x(offset = 0) = grip_x_max + hand_opening + offset;
 function rest_offset(i) = -rest_adjust_range + i * rest_index_pitch;
 rest_depth_x = is_undef(rest_depth_x) ? 60 : rest_depth_x;
-rest_half_w_y = is_undef(rest_half_w_y) ? 34 : rest_half_w_y;
+// As wide as an adult palm, and wider than the finger pocket.
+rest_half_w_y = is_undef(rest_half_w_y) ? 44 : rest_half_w_y;
 // Heel deck: the plate top, and the rear base half's deck beside it.
 rest_heel_z = is_undef(rest_heel_z) ? -10 : rest_heel_z;
 rest_plate_t = is_undef(rest_plate_t) ? 6 : rest_plate_t;
@@ -287,11 +288,13 @@ rest_channel_half_w_y = rest_half_w_y + rest_side_gap_y + rest_flare_y;
 rest_channel_x_min = rest_face_x(-rest_adjust_range) - 1;
 // Lift before the plate's flanks catch the channel's lips.
 rest_catch_travel = rest_fit / sin(rest_flare_angle);
-rest_bolster_depth_x = is_undef(rest_bolster_depth_x) ? 22 : rest_bolster_depth_x;
+// Large rounds on the bolster's long edges and ends, where the palm pushes
+// and drapes onto the heel deck.
+rest_bolster_depth_x = is_undef(rest_bolster_depth_x) ? 26 : rest_bolster_depth_x;
 rest_bolster_rise = is_undef(rest_bolster_rise) ? 12 : rest_bolster_rise;
-rest_corner_r = 5;
-rest_bolster_front_r = 6;
-rest_bolster_rear_r = 5;
+rest_corner_r = 10;
+rest_bolster_front_r = 9;
+rest_bolster_rear_r = 8;
 rest_bolster_z_max = rest_heel_z + rest_bolster_rise;
 
 // Printed index key: a square bar pushed in from the +Y side across the full
@@ -533,6 +536,11 @@ assert(base_x_max >= key_x(rest_adjust_range) + key_t_x / 2 + 7,
 assert(rest_bolster_rise >= 10 && rest_bolster_rise <= 14 &&
     rest_bolster_depth_x >= 20 && rest_bolster_depth_x < rest_depth_x - 30,
     "The palm bolster must rise 10-14 mm and leave a 30 mm heel deck behind it.");
+assert(2 * rest_half_w_y >= hangboard_opening_w_y &&
+    rest_bolster_front_r + rest_bolster_rear_r <= rest_bolster_depth_x &&
+    rest_bolster_z_max - 2 * max(rest_bolster_front_r, rest_bolster_rear_r) >= rest_z_min &&
+    rest_corner_r <= rest_bolster_depth_x / 2,
+    "The palm bolster must span the finger pocket and keep its rounds above the sole.");
 assert(key_ligament_x >= 3 &&
     key_shear_mpa <= allowable_printed_tension_mpa &&
     key_plate_bearing_mpa <= allowable_printed_bearing_mpa &&
