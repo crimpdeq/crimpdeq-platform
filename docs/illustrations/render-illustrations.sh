@@ -12,12 +12,12 @@ tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
 all_views="overview plate1 plate2 join_base anchor_in case_in clips_in rest_on
-liner stoppers phone"
+liner stoppers storage phone"
 
 # view -> "rx,ry,rz" (auto-framed) or "tx,ty,tz,rx,ry,rz,distance"
 camera() {
     case "$1" in
-        overview) echo "58,0,28" ;;
+        overview | storage) echo "58,0,28" ;;
         join_base | anchor_in | rest_on) echo "58,0,32" ;;
         case_in | clips_in) echo "55,0,25" ;;
         phone) echo "68,0,62" ;;

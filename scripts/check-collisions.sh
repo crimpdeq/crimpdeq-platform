@@ -55,6 +55,8 @@ checks=(
     "phone_seated nonempty"
     "stopper_stored empty"
     "stopper_stored_seated nonempty"
+    "liner_stored empty"
+    "liner_stored_seated nonempty"
 )
 for index in {0..6}; do
     checks+=("rest_position_${index} empty")
@@ -71,17 +73,15 @@ for index in {0..1}; do
     checks+=("stopper_tab_proud_${index} nonempty")
 done
 for index in {0..3}; do
+    checks+=("stopper_located_${index} nonempty")
     checks+=("stopper_stack_located_${index} nonempty")
     checks+=("stopper_finger_width_${index} empty")
-done
-for index in {0..5}; do
-    checks+=("stopper_located_${index} nonempty")
-done
-for index in {0..2}; do
-    checks+=("finger_entry_${index} empty")
     checks+=("liner_pocket_${index} empty")
     checks+=("liner_seated_${index} nonempty")
     checks+=("liner_located_${index} nonempty")
+done
+for index in {0..1}; do
+    checks+=("finger_entry_${index} empty")
 done
 
 current_job_count() {
@@ -180,10 +180,11 @@ fi
 
 echo "Collision checks passed."
 
-# Each single part must be one body; the paired parts export as two bodies.
-single_parts=(base_front base_rear anchor grip key rest liner)
+# Each single part must be one body; the paired parts export as two bodies
+# and the liner as its three pieces.
+single_parts=(base_front base_rear anchor grip key rest)
 paired_parts=(clips stoppers)
-for part in "${single_parts[@]}" "${paired_parts[@]}"; do
+for part in "${single_parts[@]}" "${paired_parts[@]}" liner; do
     log_file="$tmp_dir/export_${part}.log"
     if ! openscad -D "render_fn=${render_fn}" -D "part=\"${part}\"" \
         -o "$tmp_dir/dynamometer_${part}.stl" "$project_root/platform/assembly.scad" \
@@ -200,6 +201,7 @@ paired_stls=()
 for part in "${paired_parts[@]}"; do paired_stls+=("$tmp_dir/dynamometer_${part}.stl"); done
 python3 "$project_root/scripts/check-stl-components.py" "${single_stls[@]}"
 python3 "$project_root/scripts/check-stl-components.py" --expect 2 "${paired_stls[@]}"
+python3 "$project_root/scripts/check-stl-components.py" --expect 3 "$tmp_dir/dynamometer_liner.stl"
 
 echo "STL connectivity checks passed."
 

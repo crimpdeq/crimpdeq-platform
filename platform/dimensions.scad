@@ -118,12 +118,12 @@ grip_spine_t = is_undef(grip_spine_t) ? 8 : grip_spine_t;
 hangboard_finger_room_x = is_undef(hangboard_finger_room_x) ? 18.5 : hangboard_finger_room_x;
 hangboard_opening_w_y = is_undef(hangboard_opening_w_y) ? 80 : hangboard_opening_w_y;
 
-// Edge liner: a plate standing on the pocket floor against a long wall,
-// with one face stepped under each finger. Against the +X lip it gives an
-// unlevel edge for the right hand, index at -Y; turned end over end, for the
-// left. Against the -X wall it leaves the lip level and holds the stoppers
-// against the lip. Steps toward the palm (+X) from the middle finger's edge,
-// for the index, middle, ring and little fingers.
+// Edge liner: a band against the +X lip with its face stepped under each
+// finger, an unlevel edge for the right hand, index at -Y; turned end over
+// end, for the left. Stored, it leaves the lip level. It is cut into pieces
+// that stack on the fitted stoppers up to the grip top (see liner_piece_h).
+// Steps toward the palm (+X) from the middle finger's edge, for the index,
+// middle, ring and little fingers.
 liner_finger_steps = is_undef(liner_finger_steps) ? [3, 0, 2, 7] : liner_finger_steps;
 liner_t_min = is_undef(liner_t_min) ? 3 : liner_t_min;
 liner_clearance = 0.25;
@@ -148,7 +148,7 @@ hangboard_pocket_back_z = hangboard_front_z - hangboard_pocket_depth_z;
 hangboard_back_wall_t = is_undef(hangboard_back_wall_t) ? 6 : hangboard_back_wall_t;
 grip_z_min = hangboard_pocket_back_z - hangboard_back_wall_t;
 hangboard_opening_r = 4;
-// End walls only; the long walls stay upright so the liner fits either.
+// End walls only; the long walls stay upright for the liner.
 hangboard_draft = 1;
 liner_y_min = hangboard_opening_y_min + hangboard_draft + liner_clearance;
 liner_y_max = hangboard_opening_y_max - hangboard_draft - liner_clearance;
@@ -187,16 +187,15 @@ anchor_pocket_x_max = anchor_x_max + anchor_play_x;
 anchor_pocket_half_w_y = anchor_half_w_y + anchor_fit;
 
 // Two drop-in pocket stoppers raise the floor for shallower edges: each on
-// its own, or both stacked. The pocket walls and the liner locate them; a
-// pull tab on one end face of each runs in a slot in the pocket end wall and
-// stands proud of the grip top. They are modelled beside the unlevel liner;
-// beside the level liner they sit stopper_level_dx further +X.
+// its own, or both stacked. They span the pocket, so the unlevel liner
+// stacks on them. The pocket walls locate them; a pull tab on one end face
+// of each runs in a slot in the pocket end wall and stands proud of the grip
+// top.
 stopper_t_list = is_undef(stopper_t_list) ? [5, 10] : stopper_t_list;
 stopper_clearance = is_undef(stopper_clearance) ? 0.25 : stopper_clearance;
 stopper_count = len(stopper_t_list);
 stopper_x_min = hangboard_opening_x_min + stopper_clearance;
-stopper_x_max = stopper_x_min + hangboard_finger_room_x - 2 * stopper_clearance;
-stopper_level_dx = liner_band_x;
+stopper_x_max = hangboard_opening_x_max - stopper_clearance;
 stopper_center_x = (stopper_x_min + stopper_x_max) / 2;
 stopper_y_min = hangboard_opening_y_min + hangboard_draft + stopper_clearance;
 stopper_y_max = hangboard_opening_y_max - hangboard_draft - stopper_clearance;
@@ -228,20 +227,44 @@ all_edge_depths = concat([hangboard_pocket_depth_z], stopper_edge_depths);
 edge_pull_offsets = [for (e = all_edge_depths) hangboard_front_z - e / 2 - loadcell_center_z];
 edge_pull_offset_max = is_undef(edge_pull_offset_max) ? 5 : edge_pull_offset_max;
 
-// Storage well for the stacked stoppers in the -Y side of the deck, turned
-// so their long side runs along X.
+// Liner pieces: a spacer as thick as each stopper, and a cap with rounded
+// long edges that always goes on top. Each fitted stopper replaces its
+// spacer, so the stack always reaches the grip top.
+liner_cap_h = hangboard_pocket_depth_z - stopper_stack_h;
+liner_piece_count = stopper_count + 1;
+function liner_piece_h(i) = i < stopper_count ? stopper_t_list[i] : liner_cap_h;
+// Pieces in the pocket over the listed stoppers, bottom first, and their
+// bottom heights above the pocket floor.
+function liner_pieces_over(stoppers) = concat(
+    [for (i = [0 : stopper_count - 1]) if (len(search(i, stoppers)) == 0) i],
+    [stopper_count]);
+function liner_piece_z(pieces, k) = k == 0 ? 0
+    : liner_piece_h(pieces[k - 1]) + liner_piece_z(pieces, k - 1);
+function stoppers_h(stoppers) = sum_list([for (i = stoppers) stopper_t_list[i]]);
+
+// Storage well for the stacked stoppers in the deck beyond the anchor pocket,
+// past a strip for the top brand, long side along Y as in the pocket. Their
+// pull tabs stand proud of the deck.
+top_brand_strip_x = 22;
 stopper_well_clearance = 0.5;
-stopper_well_len_x = stopper_tab_slot_y_max - stopper_tab_slot_y_min
-    + 2 * stopper_well_clearance;
-stopper_well_w_y = stopper_x_max - stopper_x_min + 2 * stopper_well_clearance;
-stopper_well_x_max = trench_x_min - 3;
-stopper_well_x_min = stopper_well_x_max - stopper_well_len_x;
+stopper_well_x_max = anchor_pocket_x_min - top_brand_strip_x;
+stopper_well_x_min = stopper_well_x_max
+    - (stopper_x_max - stopper_x_min + 2 * stopper_well_clearance);
 stopper_well_center_x = (stopper_well_x_min + stopper_well_x_max) / 2;
-stopper_well_y_min = -base_half_w_y + 3;
-stopper_well_y_max = stopper_well_y_min + stopper_well_w_y;
-stopper_well_center_y = (stopper_well_y_min + stopper_well_y_max) / 2;
 stopper_well_depth_z = stopper_stack_h + 1;
 stopper_well_z_min = deck_z - stopper_well_depth_z;
+
+// Storage well for the stacked liner pieces in the -Y side of the deck,
+// turned so their length runs along X. The full stack stands
+// liner_well_proud_z above the deck to be lifted out.
+liner_well_clearance = 0.5;
+liner_well_x_max = trench_x_min - 3;
+liner_well_x_min = liner_well_x_max - (liner_y_max - liner_y_min + 2 * liner_well_clearance);
+liner_well_center_x = (liner_well_x_min + liner_well_x_max) / 2;
+liner_well_y_min = -base_half_w_y + 3;
+liner_well_y_max = liner_well_y_min + liner_t_max + 2 * liner_well_clearance;
+liner_well_proud_z = 8;
+liner_well_z_min = deck_z - (hangboard_pocket_depth_z - liner_well_proud_z);
 
 // Tilted phone slot in a stand across the -X end of the base, outside the
 // load path. The raised slot floor keeps the case from hiding the screen
@@ -264,7 +287,7 @@ phone_min_w = 64;
 phone_min_rest_y = 8;
 // Finger room between the stand and the stopper well's pull tabs.
 phone_stand_clear_x = is_undef(phone_stand_clear_x) ? 6 : phone_stand_clear_x;
-phone_stand_x_max = min(stopper_well_x_min, anchor_pocket_x_min) - phone_stand_clear_x;
+phone_stand_x_max = stopper_well_x_min - phone_stand_clear_x;
 // The slot's +X face meets the stand top here and leans toward -X.
 phone_slot_x_top = phone_stand_x_max
     - phone_slot_inner_wall_x - phone_slot_depth_z * tan(phone_slot_tilt);
@@ -384,17 +407,17 @@ service_w = 30;
 service_y_max = base_half_w_y + 20;
 
 // Brand engraved into the front base half, in the crimpdeq-case font: across
-// the deck between the phone stand and the anchor pocket, reading from the
+// the deck between the stopper well and the anchor pocket, reading from the
 // palm-rest end, and on both side faces beside the grip trench.
 brand_font = "Inter:style=Bold";
 brand_depth = 0.8;
 top_brand_text = "crimpdeq";
 top_brand_size = 9.5;
-top_brand_x = (phone_stand_x_max + anchor_pocket_x_min) / 2;
+top_brand_x = (stopper_well_x_max + anchor_pocket_x_min) / 2;
 top_brand_y = 0;
 side_brand_text = "crimpdeq.com";
 side_brand_size = 5.5;
-side_brand_x = (stopper_well_x_max + base_split_x) / 2;
+side_brand_x = (liner_well_x_max + base_split_x) / 2;
 side_brand_z = (base_z_min + deck_z) / 2;
 // Conservative Inter Bold extents per unit of text size: advance per
 // character, and ascender to descender.
@@ -535,10 +558,8 @@ assert(stopper_tab_rise >= 4 && stopper_tab_rise <= 10 &&
     stopper_tab_slot_w_x <= stopper_x_max - stopper_x_min - 2 * stopper_r &&
     stopper_tab_slot_skin_y >= 1.8,
     "Stopper pull tabs must stand proud, fit the straight ends, and leave 1.8 mm of pocket end wall behind their slots.");
-assert(stopper_center_x - stopper_tab_slot_w_x / 2 >= hangboard_opening_x_min + hangboard_opening_r &&
-    stopper_center_x + stopper_level_dx + stopper_tab_slot_w_x / 2
-        <= hangboard_opening_x_max - hangboard_opening_r,
-    "The stopper tab slots must lie on the straight part of the pocket end walls.");
+assert(liner_cap_h >= 10 && liner_cap_h > 2 * hangboard_lip_radius,
+    "The liner cap must carry the shallowest edge and its rounded edges.");
 assert(grip_pull_gap_x >= 5 * (lug_fit + anchor_play_x + rated_preview_deflection),
     "The grip needs free travel in the pull direction of at least five times its play and rated deflection.");
 assert(grip_guide_gap_z >= 0.8 && grip_guide_gap_z <= 1.2 && grip_guide_bearing_y >= 3 &&
@@ -611,15 +632,17 @@ assert(phone_slot_z_min > deck_z + phone_slot_depth_z &&
 assert(phone_stand_cheek_w_y >= 15 && phone_stand_gap_half_y >= 10 &&
     phone_min_w / 2 - phone_stand_gap_half_y >= phone_min_rest_y,
     "Phone stand cheeks must be at least 15 mm wide, leave a cable gap, and carry a narrow phone on both.");
-assert(top_brand_y - brand_len(top_brand_text, top_brand_size) / 2 >= stopper_well_y_max + 3 &&
+assert(top_brand_y - brand_len(top_brand_text, top_brand_size) / 2 >= liner_well_y_max + 3 &&
     top_brand_y + brand_len(top_brand_text, top_brand_size) / 2 <= base_half_w_y - 3 &&
-    top_brand_size * brand_line_h + 6 <= anchor_pocket_x_min - phone_stand_x_max,
-    "The top brand must fit the deck strip between the phone stand, the anchor pocket and the stopper well.");
-assert(abs(side_brand_x - stopper_well_x_max) >= brand_len(side_brand_text, side_brand_size) / 2 + 3 &&
+    top_brand_size * brand_line_h + 6 <= top_brand_strip_x,
+    "The top brand must fit the deck strip between the stopper well, the anchor pocket and the liner well.");
+assert(abs(side_brand_x - liner_well_x_max) >= brand_len(side_brand_text, side_brand_size) / 2 + 3 &&
     base_split_x - side_brand_x >= brand_len(side_brand_text, side_brand_size) / 2 + 3 &&
     side_brand_size * brand_line_h + 6 <= deck_z - base_z_min &&
     base_half_w_y - trench_half_w_y - brand_depth >= 6,
     "The side brand must fit the base side face beside the trench and keep its wall solid.");
-assert(stopper_well_y_max < case_y_min - 3 && stopper_well_x_min > base_x_min + 2 &&
-    stopper_well_z_min > base_z_min + 5,
-    "The stopper well must stay clear of the case and keep solid walls and floor.");
+assert(stopper_well_x_max < -case_x_half - 3 && stopper_well_z_min > base_z_min + 5,
+    "The stopper well must stay clear of the case and keep a solid floor.");
+assert(liner_well_y_max < case_y_min - 3 && liner_well_x_min > stopper_well_x_max + 3 &&
+    liner_well_z_min > base_z_min + 5 && liner_well_proud_z >= 5,
+    "The liner well must stay clear of the case and the stopper well, keep a solid floor, and leave the stack proud.");

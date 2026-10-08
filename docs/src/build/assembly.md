@@ -56,32 +56,34 @@ between the finger lip and the palm face: 25 to 85 mm in 10 mm steps. To
 change it, pull the key out by its head, slide the rest until its groove
 lines up with the new hole, and push the key in again.
 
-## 6. Liner, stoppers and phone
-
-![Fitting the liner](../images/liner.png)
-
-The liner always stands in the finger pocket, on its floor, against one of
-the pocket's long walls, flat face to the wall:
-
-- **Level edge:** against the wall nearer the case.
-- **Unlevel edge:** against the finger lip, thickest step under your middle
-  finger. Its steps set the index, ring and little fingers' edges 3, 2 and
-  7 mm nearer the palm than the middle finger's, so each finger bends about
-  as much as the others. Turn it end over end to switch hands.
+## 6. Stoppers, liner and phone
 
 ![Fitting the stoppers](../images/stoppers.png)
 
-The pocket gives a 25 mm edge on its own. Drop a stopper onto its floor
-beside the liner, pull tab in the end slot, for a shallower edge:
+The pocket gives a 25 mm edge on its own. Drop a stopper onto its floor,
+pull tab in the end slot, for a shallower edge.
 
-| Edge | Stoppers |
-|---|---|
-| 25 mm | none |
-| 20 mm | 5 mm |
-| 15 mm | 10 mm |
-| 10 mm | both, tabs at opposite ends |
+![Fitting the liner](../images/liner.png)
 
-Store unused stoppers in the well beside the case.
+For an unlevel edge, stack the liner on the stoppers against the finger lip,
+flat face to the lip and thickest step under your middle finger: a spacer
+for each stopper left out, then the cap, with its rounded edges, on top. Its
+steps set the index, ring and little fingers' edges 3, 2 and 7 mm nearer
+the palm than the middle finger's, so each finger bends about as much as
+the others. Turn every piece end over end to switch hands.
+
+| Edge | Stoppers | Liner, unlevel only |
+|---|---|---|
+| 25 mm | none | 5 mm and 10 mm spacers, cap |
+| 20 mm | 5 mm | 10 mm spacer, cap |
+| 15 mm | 10 mm | 5 mm spacer, cap |
+| 10 mm | both, tabs at opposite ends | cap |
+
+![Stoppers and liner in their wells](../images/storage.png)
+
+Store the stoppers in the well beyond the anchor block, tabs at the ends,
+and the liner pieces stacked as in the pocket, cap on top, in the well beside
+the case.
 
 ![Phone in its slot](../images/phone.png)
 

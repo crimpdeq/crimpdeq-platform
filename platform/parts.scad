@@ -179,14 +179,12 @@ module hangboard_pocket_cut() {
 }
 
 module stopper_tab_slots(x_center = stopper_center_x, z_min = hangboard_pocket_back_z,
-        z_max = hangboard_front_z, travel_x = 0) {
-    // Vertical slots in both pocket end walls, from the floor to the top,
-    // lengthened by travel_x along +X.
+        z_max = hangboard_front_z) {
+    // Vertical slots in both pocket end walls, from the floor to the top.
     for (y_span = [[stopper_tab_slot_y_min, stopper_y_min + 1],
                    [stopper_y_max - 1, stopper_tab_slot_y_max]])
         translate([x_center - stopper_tab_slot_w_x / 2, y_span[0], z_min])
-            cube([stopper_tab_slot_w_x + travel_x, y_span[1] - y_span[0],
-                  z_max + 0.1 - z_min]);
+            cube([stopper_tab_slot_w_x, y_span[1] - y_span[0], z_max + 0.1 - z_min]);
 }
 
 module finger_grip() {
@@ -200,7 +198,7 @@ module finger_grip() {
             tongue(grip_body_x_min + 1);
         }
         hangboard_pocket_cut();
-        stopper_tab_slots(travel_x = stopper_level_dx);
+        stopper_tab_slots();
     }
     eye_lug();
 }
@@ -233,10 +231,10 @@ module liner_relieved_2d(relief) {
     }
 }
 
-module liner_body() {
-    // The footprint from the pocket floor to the grip top, its stepped face
-    // rounded like the lip along both long edges so it can be turned over.
-    h = hangboard_pocket_depth_z;
+module liner_cap() {
+    // The top piece, its stepped face rounded like the lip along both long
+    // edges so it can be turned over.
+    h = liner_cap_h;
     r = hangboard_lip_radius;
     steps = max(6, ceil(render_fn / 4));
     translate([0, 0, r - 0.01])
@@ -250,16 +248,28 @@ module liner_body() {
                             liner_relieved_2d(r - sqrt(r * r - pow(k * r / steps, 2)));
 }
 
-module edge_liner(fit = "right") {
-    // In the pocket: "right" or "left" against the lip for an unlevel edge,
-    // "level" against the -X wall.
-    assert(fit == "right" || fit == "left" || fit == "level", str("Unknown liner fit: ", fit));
-    if (fit == "level")
-        translate([hangboard_opening_x_min + liner_clearance, 0, hangboard_pocket_back_z])
-            rotate([0, 0, 180]) liner_body();
+module liner_piece(i) {
+    // Liner piece i on z = 0, back face on x = 0: a spacer, or the cap.
+    if (i < stopper_count)
+        linear_extrude(height = liner_piece_h(i)) liner_2d();
     else
-        translate([hangboard_opening_x_max - liner_clearance, 0, hangboard_pocket_back_z])
-            mirror([0, fit == "left" ? 1 : 0, 0]) liner_body();
+        liner_cap();
+}
+
+module liner_stack(pieces) {
+    // The listed pieces stacked from z = 0, bottom first.
+    for (k = [0 : len(pieces) - 1])
+        translate([0, 0, liner_piece_z(pieces, k)]) liner_piece(pieces[k]);
+}
+
+module edge_liner(hand = "right", stoppers = []) {
+    // The liner against the lip, stacked on the listed stoppers, for the
+    // right or the left hand.
+    assert(hand == "right" || hand == "left", str("Unknown hand: ", hand));
+    translate([hangboard_opening_x_max - liner_clearance, 0,
+               hangboard_pocket_back_z + stoppers_h(stoppers)])
+        mirror([0, hand == "left" ? 1 : 0, 0])
+            liner_stack(liner_pieces_over(stoppers));
 }
 
 // --- Pocket stoppers -----------------------------------------------------
@@ -303,12 +313,10 @@ module stacked_pocket_stoppers(bottom = 0, dz_top = 0) {
 }
 
 module stopper_well_transform() {
-    // From the pocket frame into the storage well, long side along X.
-    translate([stopper_well_center_x, stopper_well_center_y,
+    // From the pocket frame into the storage well.
+    translate([stopper_well_center_x - stopper_center_x, 0,
                stopper_well_z_min - hangboard_pocket_back_z])
-        rotate([0, 0, 90])
-            translate([-stopper_center_x, 0, 0])
-                children();
+        children();
 }
 
 module stored_pocket_stoppers() {
@@ -326,6 +334,23 @@ module stopper_well_cut() {
         stopper_tab_slots(stopper_center_x, hangboard_pocket_back_z,
             hangboard_pocket_back_z + stopper_well_depth_z);
     }
+}
+
+module liner_well_transform() {
+    // From the liner's own frame into its storage well, its length along X.
+    translate([liner_well_center_x, liner_well_y_max - liner_well_clearance, liner_well_z_min])
+        rotate([0, 0, 90])
+            children();
+}
+
+module stored_liner(pieces = [for (i = [0 : liner_piece_count - 1]) i]) {
+    if (len(pieces) > 0) liner_well_transform() liner_stack(pieces);
+}
+
+module liner_well_cut() {
+    translate([liner_well_x_min, liner_well_y_min, liner_well_z_min])
+        cube([liner_well_x_max - liner_well_x_min, liner_well_y_max - liner_well_y_min,
+              deck_z - liner_well_z_min + 0.1]);
 }
 
 // --- Phone slot ----------------------------------------------------------
@@ -499,6 +524,7 @@ module base_front() {
         anchor_pocket_cut();
         grip_trench_cut();
         stopper_well_cut();
+        liner_well_cut();
         phone_slot_cut();
         brand_engravings();
     }
@@ -618,9 +644,10 @@ module print_layout(part) {
     else if (part == "rest")
         translate([-rest_face_x() - rest_depth_x / 2, 0, -rest_z_min]) palm_rest();
     else if (part == "liner")
-        // On its back face, steps up.
-        rotate([0, 90, 0])
-            translate([0, 0, -hangboard_pocket_depth_z / 2]) liner_body();
+        // On their back faces, steps up, side by side along X.
+        for (i = [0 : liner_piece_count - 1])
+            translate([liner_layout_x(i) - liner_layout_w / 2, 0, 0])
+                rotate([0, 90, 0]) liner_piece(i);
     else if (part == "stoppers")
         // Flat, side by side, long sides along X.
         rotate([0, 0, 90])
@@ -632,6 +659,10 @@ module print_layout(part) {
         assert(false, str("Unknown part: ", part));
 }
 
+liner_layout_gap = 8;
+function liner_layout_x(i) = i == 0 ? 0 : liner_layout_x(i - 1) + liner_piece_h(i - 1) + liner_layout_gap;
+liner_layout_w = liner_layout_x(liner_piece_count - 1) + liner_piece_h(liner_piece_count - 1);
+
 // Minimum X/Y corner of each print layout.
 function print_layout_min(part) =
     part == "base_front" ? [(base_x_min - base_split_x) / 2, -base_half_w_y]
@@ -642,7 +673,7 @@ function print_layout_min(part) =
     : part == "key" ? [-(key_bar_y_max + key_head_y - key_y_min) / 2, -key_head_h / 2]
     : part == "stoppers" ? [stopper_tab_y_min(0), -(stopper_x_max - stopper_x_min) - 4]
     : part == "rest" ? [-rest_depth_x / 2, -(rest_half_w_y + rest_flare_y)]
-    : part == "liner" ? [-hangboard_pocket_depth_z / 2, liner_y_min]
+    : part == "liner" ? [-liner_layout_w / 2, liner_y_min]
     : undef;
 
 // Front-left corner of each part on its plate, origin at the front-left bed
@@ -659,7 +690,7 @@ function print_plate_corner(part) =
     : part == "liner" ? [195, 10]
     : part == "rest" ? [10, 147]
     : part == "stoppers" ? [85, 147]
-    : part == "key" ? [85, 206]
+    : part == "key" ? [85, 227]
     : undef;
 
 module print_plate_placement(part) {
