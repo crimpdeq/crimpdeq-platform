@@ -11,8 +11,7 @@ replaces testing printed parts.
 - The Crimpdeq load cell has a 1500 N (about 150 kg) full-scale design load,
   so the printed platform sets the usable limit.
 - The platform must be rated for at least 45 kg (about 441 N); a higher
-  rating is better. The current model is rated for 49 kg (about 481 N), set
-  by the printed lugs.
+  rating is better.
 - The printed structure is sized with a 2.0 structural design factor, but the
   platform is never loaded above its rating.
 

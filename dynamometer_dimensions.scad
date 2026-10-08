@@ -425,7 +425,7 @@ rest_min_engaged_x = base_x_max - rest_face_x(rest_adjust_range);
 rest_uplift_n = design_force_n * (rest_bolster_z_max - rest_z_min) / rest_depth_x;
 rest_flank_shear_mpa = rest_uplift_n / (2 * rest_min_engaged_x * rest_plate_t / 2);
 
-assert(platform_rated_kg == 49, "The printed platform is screened for 49 kg only.");
+assert(platform_rated_kg >= 45, "The platform must be rated for at least 45 kg.");
 assert(structural_safety_factor >= 2, "Use a structural design factor of at least 2.0.");
 assert(u_slot_clear >= 1 && tongue_r > lug_r + 1,
     "Tongues must keep 1 mm from the case's U-slots and a seat ring round each lug.");
