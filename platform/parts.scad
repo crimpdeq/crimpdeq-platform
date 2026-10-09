@@ -613,23 +613,14 @@ module base_front() {
 
 module base_rear() {
     difference() {
-        union() {
-            difference() {
-                base_slab();
-                base_split_region();
-            }
-        }
+        base_slab();
+        base_split_region();
         joint_tongues(joint_fit);
         grip_trench_cut();
         rest_channel_cut();
         base_key_grooves();
         opening_labels();
     }
-}
-
-module base() {
-    base_front();
-    base_rear();
 }
 
 // --- Palm rest and key ---------------------------------------------------
@@ -705,14 +696,6 @@ module index_key(offset = 0, pull = 0) {
 }
 
 // --- Print layouts -------------------------------------------------------
-
-module on_side_layout(y_max) {
-    // Lay the part on its +Y face so X and Z, the lug's bending plane, lie
-    // in the layers.
-    translate([0, 0, y_max])
-        rotate([-90, 0, 0])
-            children();
-}
 
 module print_layout(part) {
     if (part == "base_front")

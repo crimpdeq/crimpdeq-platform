@@ -49,7 +49,6 @@ case_switch_x = 0;
 case_switch_z = 3;
 case_switch_w = 15;
 case_switch_h = 10;
-usb_cable_boot_w = 12;
 
 // Platform rating and the printed structure's design target. The Crimpdeq is
 // rated to 1500 N; the printed lugs in its eyes limit the platform to 49 kg.
