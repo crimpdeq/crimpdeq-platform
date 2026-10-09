@@ -6,7 +6,7 @@
 //   openscad -D 'part="base_front"' -o /tmp/dyno-base-front.stl platform/assembly.scad
 //   openscad -D 'part="grip"' -D on_plate=true -o /tmp/dyno-grip.stl platform/assembly.scad
 //
-// Parts: base_front, base_rear, anchor, grip, clips, key, rest, stoppers.
+// Parts: base_front, base_rear, anchor, grip, clips, key, rest, stoppers, liner.
 // The view options below are literals so that OpenSCAD's Customizer
 // (Window > Customizer) lists them; -D still overrides them.
 //
@@ -17,7 +17,7 @@ include <dimensions.scad>
 
 /* [View] */
 // Part to preview or export
-part = "assembly"; // [assembly, base_front, base_rear, anchor, grip, clips, key, rest, stoppers]
+part = "assembly"; // [assembly, base_front, base_rear, anchor, grip, clips, key, rest, stoppers, liner]
 // Preview pose; rated exaggerates the grip displacement
 pose = "unloaded"; // [unloaded, rated, exploded]
 // Export the part at its place on the print plate instead of the origin
@@ -33,6 +33,8 @@ show_rest = true;
 show_stoppers = true;
 // Stoppers fitted in the finger pocket, by thickness in mm
 pocket_stoppers = "none"; // [none, 5, 10, both]
+// Finger edge: unlevel, with the liner on the stoppers, for either hand; level, with the liner in its well
+edge = "right"; // [right, left, level]
 // Largest supported phone in its slot
 show_phone = false;
 
@@ -57,6 +59,12 @@ stoppers_stored = [for (i = [0 : stopper_count - 1])
     if (len(search(i, stoppers_in_pocket)) == 0) i];
 assert(pocket_stoppers == "none" || len(stoppers_in_pocket) > 0,
     str("Unknown pocket_stoppers: ", pocket_stoppers));
+assert(edge == "right" || edge == "left" || edge == "level", str("Unknown edge: ", edge));
+
+// Liner pieces in the pocket over the fitted stoppers, and in their well.
+liner_in_pocket = edge == "level" ? [] : liner_pieces_over(stoppers_in_pocket);
+liner_stored = [for (i = [0 : liner_piece_count - 1])
+    if (len(search(i, liner_in_pocket)) == 0) i];
 
 module stopper_stack(indices) {
     // The listed stoppers stacked from the pocket floor datum, in order.
@@ -72,6 +80,12 @@ module dynamometer_complete() {
     color([0.85, 0.35, 0.20]) translate([0, 0, 30 * explode]) anchor_block();
     color([0.20, 0.45, 0.78]) translate([grip_preview_offset, 0, 30 * explode]) finger_grip();
     color([0.95, 0.80, 0.25]) translate([0, 0, 90 * explode]) eye_clips();
+    color([0.85, 0.30, 0.55]) {
+        if (edge != "level")
+            translate([grip_preview_offset, 0, 60 * explode])
+                edge_liner(edge, stoppers_in_pocket);
+        stored_liner(liner_stored);
+    }
 
     if (show_case)
         translate([grip_preview_offset / 2, 0, 60 * explode]) {

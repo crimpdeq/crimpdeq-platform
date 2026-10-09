@@ -23,8 +23,8 @@
 
 - `dimensions.scad`: shared parameters, derived dimensions, and structural
   assertions.
-- `parts.scad`: printable base, anchor, grip, clip, rest, key and stopper
-  modules, and the phone stand, without top-level geometry.
+- `parts.scad`: printable base, anchor, grip, clip, rest, key, liner and
+  stopper modules, and the phone stand, without top-level geometry.
 - `assembly.scad`: preview and STL export entry point.
 - `crimpdeq_reference.scad`: self-contained crimpdeq-case `v2.0.0`
   interface snapshot.

@@ -76,8 +76,9 @@ PLATES = [
     ("Front base and small parts", [
         ("base_front", BASE), ("grip", SOLID), ("anchor", SOLID), ("clips", SOLID),
     ]),
-    ("Rear base, palm rest, stoppers and key", [
-        ("stoppers", {}), ("base_rear", BASE), ("rest", REST), ("key", SOLID),
+    ("Rear base, liner, palm rest, stoppers and key", [
+        ("base_rear", BASE), ("liner", SOLID), ("rest", REST), ("stoppers", {}),
+        ("key", SOLID),
     ]),
 ]
 ILLEGAL_NAME_CHARS = '<>:/\\|?*"'
