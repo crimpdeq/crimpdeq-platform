@@ -192,9 +192,9 @@ module finger_grip() {
         union() {
             dyno_rounded_prism_xy(grip_body_x_min, grip_x_max,
                 -grip_half_w_y, grip_half_w_y, grip_z_min, hangboard_front_z, 4);
-            // Lower body under the floating case, out to the tongue.
+            // Keel under the floating case, out to the tongue.
             dyno_rounded_prism_xy(grip_x_min, grip_body_x_min + 5,
-                -grip_half_w_y, grip_half_w_y, grip_z_min, deck_z, 4);
+                -grip_keel_half_w_y, grip_keel_half_w_y, grip_z_min, deck_z, 4);
             tongue(grip_body_x_min + 1);
         }
         hangboard_pocket_cut();
@@ -783,10 +783,10 @@ function print_layout_min(part) =
 function print_plate_corner(part) =
     part == "base_front" ? [10, 10]
     : part == "grip" ? [10, 150]
-    : part == "anchor" ? [115, 150]
+    : part == "anchor" ? [118, 150]
     : part == "clips" ? [172, 150]
     : part == "base_rear" ? [10, 10]
-    : part == "liner" ? [195, 10]
+    : part == "liner" ? [197, 10]
     : part == "rest" ? [10, 147]
     : part == "stoppers" ? [133, 147]
     : part == "key" ? [10, 227]

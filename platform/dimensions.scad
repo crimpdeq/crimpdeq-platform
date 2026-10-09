@@ -101,9 +101,8 @@ clip_fin_t = 3;
 clip_fin_w_y = 16;
 clip_fin_top_z = is_undef(clip_fin_top_z) ? 20 : clip_fin_top_z;
 // Slide from the fitting position, fork tip clear of the lug head, to the
-// seat. Kept at the Ø16.5 mm lug's travel, which also sets where the grip
-// body starts, so the grip and base halves keep their printed length.
-clip_install_travel = 12.75;
+// seat.
+clip_install_travel = lug_r + 0.5 + clip_tip_x;
 // Finger room beside a grip-side clip's fin while it is fitted.
 clip_access_x = is_undef(clip_access_x) ? 6 : clip_access_x;
 
@@ -114,6 +113,8 @@ clip_access_x = is_undef(clip_access_x) ? 6 : clip_access_x;
 grip_x_min = dyno_eye_x_right - tongue_r;
 // The grip's upper body starts beyond the case, leaving room to fit a clip.
 grip_body_x_min = dyno_eye_x_right + clip_tail_x + clip_install_travel + clip_access_x;
+// Under the case, a keel narrower than the body carries the tongue to it.
+grip_keel_half_w_y = is_undef(grip_keel_half_w_y) ? 15 : grip_keel_half_w_y;
 grip_spine_t = is_undef(grip_spine_t) ? 8 : grip_spine_t;
 hangboard_finger_room_x = is_undef(hangboard_finger_room_x) ? 18.5 : hangboard_finger_room_x;
 hangboard_opening_w_y = is_undef(hangboard_opening_w_y) ? 80 : hangboard_opening_w_y;
@@ -177,10 +178,11 @@ rated_preview_deflection = 0.4;
 // the pocket's +X wall, below the floating case.
 anchor_play_x = is_undef(anchor_play_x) ? 0.2 : anchor_play_x;
 anchor_fit = 0.3;
-anchor_outboard_x = is_undef(anchor_outboard_x) ? 12 : anchor_outboard_x;
+// The block and its tongue end just past the case.
+anchor_outboard_x = is_undef(anchor_outboard_x) ? 3 : anchor_outboard_x;
 anchor_x_min = -(case_x_half + 1 + anchor_outboard_x);
 anchor_x_max = -grip_x_min;
-anchor_half_w_y = is_undef(anchor_half_w_y) ? 26 : anchor_half_w_y;
+anchor_half_w_y = is_undef(anchor_half_w_y) ? 15 : anchor_half_w_y;
 anchor_z_min = is_undef(anchor_z_min) ? deck_z - 16.5 : anchor_z_min;
 anchor_pocket_x_min = anchor_x_min - anchor_fit;
 anchor_pocket_x_max = anchor_x_max + anchor_play_x;
@@ -534,6 +536,24 @@ lip_design_bending_mpa = design_force_n * hangboard_pocket_depth_z / lip_section
 grip_net_area_mm2 = 2 * hangboard_side_wall_t * (hangboard_front_z - grip_z_min)
     + 2 * grip_half_w_y * hangboard_back_wall_t;
 grip_net_tension_mpa = design_force_n / grip_net_area_mm2;
+// The keel and the tongue on it carry the pull below the finger line, in
+// tension and bending along X, within the layers.
+grip_keel_h = deck_z - grip_z_min;
+grip_keel_area_mm2 = 2 * grip_keel_half_w_y * grip_keel_h;
+grip_keel_tongue_h = loadcell_bottom_z - deck_z;
+grip_keel_tongue_area_mm2 = 2 * tongue_r * grip_keel_tongue_h;
+grip_keel_section_area_mm2 = grip_keel_area_mm2 + grip_keel_tongue_area_mm2;
+grip_keel_section_z = (grip_keel_area_mm2 * (grip_z_min + grip_keel_h / 2)
+    + grip_keel_tongue_area_mm2 * (deck_z + grip_keel_tongue_h / 2)) / grip_keel_section_area_mm2;
+grip_keel_section_i_mm4 =
+    grip_keel_area_mm2 * (pow(grip_keel_h, 2) / 12
+        + pow(grip_z_min + grip_keel_h / 2 - grip_keel_section_z, 2))
+    + grip_keel_tongue_area_mm2 * (pow(grip_keel_tongue_h, 2) / 12
+        + pow(deck_z + grip_keel_tongue_h / 2 - grip_keel_section_z, 2));
+grip_keel_mpa = design_force_n / grip_keel_section_area_mm2
+    + design_force_n * (joint_pull_z - grip_keel_section_z)
+        * max(loadcell_bottom_z - grip_keel_section_z, grip_keel_section_z - grip_z_min)
+        / grip_keel_section_i_mm4;
 
 // The key takes the whole palm force over its length in the plate:
 // shear at the channel floor, bearing on the plate's and the floor's grooves,
@@ -586,8 +606,6 @@ assert(clip_snap >= 0.2 && clip_snap <= 0.5 && clip_t >= 2.5 &&
 assert(clip_ring_bearing_mpa <= allowable_printed_bearing_mpa &&
     lug_neck_tension_mpa <= allowable_printed_tension_mpa,
     "The clip ring or lug neck exceeds configured stress under the grip's tilt.");
-assert(clip_install_travel >= lug_r + 0.5 + clip_tip_x,
-    "Clips must drop in with their fork tips clear of the lug head.");
 assert(clip_access_x >= 5 && clip_tail_x >= clip_tip_x + 6 &&
     dyno_eye_x_right + clip_tail_x <= lc_L / 2,
     "Clips need finger room beside the fin, a tail over the load cell, and must end on it.");
@@ -631,11 +649,15 @@ assert(grip_pull_gap_x >= 5 * (lug_fit + anchor_play_x + rated_preview_deflectio
 assert(grip_guide_gap_z >= 0.8 && grip_guide_gap_z <= 1.2 && grip_guide_bearing_y >= 3 &&
     trench_floor_z > base_z_min + 5,
     "Grip guides need a small Z gap, a real bearing width and a solid trench floor.");
-assert(anchor_z_min > base_z_min + 5 && anchor_bearing_mpa <= allowable_printed_bearing_mpa,
-    "Anchor pocket needs a solid floor and bearing area.");
+assert(anchor_z_min > base_z_min + 5 && anchor_half_w_y >= tongue_r + 3 &&
+    anchor_outboard_x >= 0 && anchor_bearing_mpa <= allowable_printed_bearing_mpa,
+    "The anchor block must carry its tongue out of the case, and its pocket needs a solid floor and bearing area.");
 assert(lip_design_bending_mpa <= allowable_printed_tension_mpa &&
     grip_net_tension_mpa <= allowable_printed_tension_mpa,
     "Finger lip or grip body exceeds configured nominal stress.");
+assert(grip_keel_half_w_y >= tongue_r && grip_keel_half_w_y <= grip_half_w_y &&
+    grip_keel_mpa <= allowable_printed_bending_mpa,
+    "The grip keel must carry the tongue and stay within its bending stress.");
 assert(hand_opening_min == 25 && hand_opening_max == 85 && rest_index_count == 7,
     "Preserve seven 25-85 mm hand openings.");
 assert(abs(2 * rest_adjust_range
