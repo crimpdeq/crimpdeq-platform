@@ -192,15 +192,25 @@ module finger_grip() {
         union() {
             dyno_rounded_prism_xy(grip_body_x_min, grip_x_max,
                 -grip_half_w_y, grip_half_w_y, grip_z_min, hangboard_front_z, 4);
-            // Lower body under the floating case, out to the tongue.
+            // Keel under the floating case, out to the tongue.
             dyno_rounded_prism_xy(grip_x_min, grip_body_x_min + 5,
-                -grip_half_w_y, grip_half_w_y, grip_z_min, deck_z, 4);
+                -grip_keel_half_w_y, grip_keel_half_w_y, grip_z_min, deck_z, 4);
             tongue(grip_body_x_min + 1);
         }
         hangboard_pocket_cut();
         stopper_tab_slots();
+        grip_brand_engraving();
     }
     eye_lug();
+}
+
+module grip_brand_engraving() {
+    // On the lip's outer face, reading from the palm rest, cut from inside the
+    // lip outward so the depth stays controlled.
+    translate([grip_x_max - brand_depth, 0, grip_brand_z])
+        rotate([90, 0, 90])
+            linear_extrude(height = brand_depth + 0.1)
+                engraved_text_2d(grip_brand_text, grip_brand_size);
 }
 
 // --- Edge liner ----------------------------------------------------------
@@ -613,23 +623,14 @@ module base_front() {
 
 module base_rear() {
     difference() {
-        union() {
-            difference() {
-                base_slab();
-                base_split_region();
-            }
-        }
+        base_slab();
+        base_split_region();
         joint_tongues(joint_fit);
         grip_trench_cut();
         rest_channel_cut();
         base_key_grooves();
         opening_labels();
     }
-}
-
-module base() {
-    base_front();
-    base_rear();
 }
 
 // --- Palm rest and key ---------------------------------------------------
@@ -706,14 +707,6 @@ module index_key(offset = 0, pull = 0) {
 
 // --- Print layouts -------------------------------------------------------
 
-module on_side_layout(y_max) {
-    // Lay the part on its +Y face so X and Z, the lug's bending plane, lie
-    // in the layers.
-    translate([0, 0, y_max])
-        rotate([-90, 0, 0])
-            children();
-}
-
 module print_layout(part) {
     if (part == "base_front")
         translate([-(base_x_min + base_split_x) / 2, 0, -base_z_min]) base_front();
@@ -783,10 +776,10 @@ function print_layout_min(part) =
 function print_plate_corner(part) =
     part == "base_front" ? [10, 10]
     : part == "grip" ? [10, 150]
-    : part == "anchor" ? [115, 150]
+    : part == "anchor" ? [118, 150]
     : part == "clips" ? [172, 150]
     : part == "base_rear" ? [10, 10]
-    : part == "liner" ? [195, 10]
+    : part == "liner" ? [197, 10]
     : part == "rest" ? [10, 147]
     : part == "stoppers" ? [133, 147]
     : part == "key" ? [10, 227]

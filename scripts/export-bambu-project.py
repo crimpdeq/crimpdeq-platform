@@ -53,7 +53,9 @@ SOLID = {"sparse_infill_density": "100%"}
 # the sole stays a bridge. Tree support ignores bridge_no_support and fills it.
 REST = {"sparse_infill_density": "50%", "enable_support": "1", "support_type": "normal(auto)",
         "support_on_build_plate_only": "1", "bridge_no_support": "1"}
-BASE = {"top_shell_layers": "4", "bottom_shell_layers": "4"}
+# The base halves carry low stress, so they print lighter than the load path.
+BASE = {"wall_loops": "4", "top_shell_layers": "4", "bottom_shell_layers": "4",
+        "sparse_infill_density": "15%"}
 # Height ranges that print parts of an object sparser, as (min Z, max Z,
 # settings) with the heights as platform/dimensions.scad expressions in the
 # part's print Z. Bambu Studio reads the layer height of every height range.

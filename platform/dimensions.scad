@@ -49,7 +49,6 @@ case_switch_x = 0;
 case_switch_z = 3;
 case_switch_w = 15;
 case_switch_h = 10;
-usb_cable_boot_w = 12;
 
 // Platform rating and the printed structure's design target. The Crimpdeq is
 // rated to 1500 N; the printed lugs in its eyes limit the platform to 49 kg.
@@ -101,9 +100,8 @@ clip_fin_t = 3;
 clip_fin_w_y = 16;
 clip_fin_top_z = is_undef(clip_fin_top_z) ? 20 : clip_fin_top_z;
 // Slide from the fitting position, fork tip clear of the lug head, to the
-// seat. Kept at the Ø16.5 mm lug's travel, which also sets where the grip
-// body starts, so the grip and base halves keep their printed length.
-clip_install_travel = 12.75;
+// seat.
+clip_install_travel = lug_r + 0.5 + clip_tip_x;
 // Finger room beside a grip-side clip's fin while it is fitted.
 clip_access_x = is_undef(clip_access_x) ? 6 : clip_access_x;
 
@@ -114,6 +112,8 @@ clip_access_x = is_undef(clip_access_x) ? 6 : clip_access_x;
 grip_x_min = dyno_eye_x_right - tongue_r;
 // The grip's upper body starts beyond the case, leaving room to fit a clip.
 grip_body_x_min = dyno_eye_x_right + clip_tail_x + clip_install_travel + clip_access_x;
+// Under the case, a keel narrower than the body carries the tongue to it.
+grip_keel_half_w_y = is_undef(grip_keel_half_w_y) ? 15 : grip_keel_half_w_y;
 grip_spine_t = is_undef(grip_spine_t) ? 8 : grip_spine_t;
 hangboard_finger_room_x = is_undef(hangboard_finger_room_x) ? 18.5 : hangboard_finger_room_x;
 hangboard_opening_w_y = is_undef(hangboard_opening_w_y) ? 80 : hangboard_opening_w_y;
@@ -135,7 +135,7 @@ function liner_finger_y(i) = (i - (len(liner_finger_steps) - 1) / 2) * liner_fin
 liner_step_r = 2.5;
 hangboard_opening_w_x = hangboard_finger_room_x + liner_band_x;
 hangboard_side_wall_t = 4;
-hangboard_right_lip_t = is_undef(hangboard_right_lip_t) ? 12 : hangboard_right_lip_t;
+hangboard_right_lip_t = is_undef(hangboard_right_lip_t) ? 14.5 : hangboard_right_lip_t;
 hangboard_opening_x_min = grip_body_x_min + grip_spine_t;
 hangboard_opening_x_max = hangboard_opening_x_min + hangboard_opening_w_x;
 grip_x_max = hangboard_opening_x_max + hangboard_right_lip_t;
@@ -177,10 +177,11 @@ rated_preview_deflection = 0.4;
 // the pocket's +X wall, below the floating case.
 anchor_play_x = is_undef(anchor_play_x) ? 0.2 : anchor_play_x;
 anchor_fit = 0.3;
-anchor_outboard_x = is_undef(anchor_outboard_x) ? 12 : anchor_outboard_x;
+// The block and its tongue end just past the case.
+anchor_outboard_x = is_undef(anchor_outboard_x) ? 3 : anchor_outboard_x;
 anchor_x_min = -(case_x_half + 1 + anchor_outboard_x);
 anchor_x_max = -grip_x_min;
-anchor_half_w_y = is_undef(anchor_half_w_y) ? 26 : anchor_half_w_y;
+anchor_half_w_y = is_undef(anchor_half_w_y) ? 15 : anchor_half_w_y;
 anchor_z_min = is_undef(anchor_z_min) ? deck_z - 16.5 : anchor_z_min;
 anchor_pocket_x_min = anchor_x_min - anchor_fit;
 anchor_pocket_x_max = anchor_x_max + anchor_play_x;
@@ -482,6 +483,11 @@ side_brand_text = "crimpdeq.com";
 side_brand_size = 5.5;
 side_brand_x = (liner_well_x_max + liner_well_notch_x + base_split_x) / 2;
 side_brand_z = (base_z_min + deck_z) / 2;
+// The name on the finger lip's outer face, above the deck, facing the palm
+// rest.
+grip_brand_text = "Crimpdeq";
+grip_brand_size = 8;
+grip_brand_z = (deck_z + hangboard_front_z) / 2;
 // Conservative Inter Bold extents per unit of text size: advance per
 // character, and ascender to descender.
 brand_char_w = 0.85;
@@ -490,7 +496,8 @@ function brand_len(text, size) = len(text) * size * brand_char_w;
 
 // --- Structural screens at the design target -------------------------------
 // Nominal screens, not a strength qualification. Printed-material limits are
-// assumptions that need coupon tests in the actual print orientation.
+// assumptions that need coupon tests in the actual print orientation:
+// bending within the layers, and tension across them.
 allowable_printed_bending_mpa = is_undef(allowable_printed_bending_mpa) ? 30 : allowable_printed_bending_mpa;
 allowable_printed_tension_mpa = is_undef(allowable_printed_tension_mpa) ? 12 : allowable_printed_tension_mpa;
 allowable_printed_bearing_mpa = is_undef(allowable_printed_bearing_mpa) ? 12 : allowable_printed_bearing_mpa;
@@ -525,13 +532,36 @@ lug_neck_tension_mpa = clip_tilt_force_n / (PI * lug_neck_r * lug_neck_r);
 // Anchor block bearing on the pocket's +X wall below the case.
 anchor_bearing_mpa = design_force_n / (2 * anchor_half_w_y * (deck_z - anchor_z_min));
 
-// Full force at the pocket rim, over its usable width.
+// Full force at the pocket rim, over its usable width. The grip prints
+// upright, so the lip's root bends across the layers.
 lip_section_modulus_mm3 = hangboard_opening_w_y * pow(hangboard_lip_min_t, 2) / 6;
 lip_design_bending_mpa = design_force_n * hangboard_pocket_depth_z / lip_section_modulus_mm3;
+// The lip through the grip brand, under the moment at the text's foot.
+lip_brand_bending_mpa = design_force_n
+    * (hangboard_front_z - (grip_brand_z - grip_brand_size * brand_line_h / 2))
+    / (hangboard_opening_w_y * pow(hangboard_right_lip_t - brand_depth, 2) / 6);
 // Pocket side walls and back wall carry the lip force back to the lug.
 grip_net_area_mm2 = 2 * hangboard_side_wall_t * (hangboard_front_z - grip_z_min)
     + 2 * grip_half_w_y * hangboard_back_wall_t;
 grip_net_tension_mpa = design_force_n / grip_net_area_mm2;
+// The keel and the tongue on it carry the pull below the finger line, in
+// tension and bending along X, within the layers.
+grip_keel_h = deck_z - grip_z_min;
+grip_keel_area_mm2 = 2 * grip_keel_half_w_y * grip_keel_h;
+grip_keel_tongue_h = loadcell_bottom_z - deck_z;
+grip_keel_tongue_area_mm2 = 2 * tongue_r * grip_keel_tongue_h;
+grip_keel_section_area_mm2 = grip_keel_area_mm2 + grip_keel_tongue_area_mm2;
+grip_keel_section_z = (grip_keel_area_mm2 * (grip_z_min + grip_keel_h / 2)
+    + grip_keel_tongue_area_mm2 * (deck_z + grip_keel_tongue_h / 2)) / grip_keel_section_area_mm2;
+grip_keel_section_i_mm4 =
+    grip_keel_area_mm2 * (pow(grip_keel_h, 2) / 12
+        + pow(grip_z_min + grip_keel_h / 2 - grip_keel_section_z, 2))
+    + grip_keel_tongue_area_mm2 * (pow(grip_keel_tongue_h, 2) / 12
+        + pow(deck_z + grip_keel_tongue_h / 2 - grip_keel_section_z, 2));
+grip_keel_mpa = design_force_n / grip_keel_section_area_mm2
+    + design_force_n * (joint_pull_z - grip_keel_section_z)
+        * max(loadcell_bottom_z - grip_keel_section_z, grip_keel_section_z - grip_z_min)
+        / grip_keel_section_i_mm4;
 
 // The key takes the whole palm force over its length in the plate:
 // shear at the channel floor, bearing on the plate's and the floor's grooves,
@@ -584,8 +614,6 @@ assert(clip_snap >= 0.2 && clip_snap <= 0.5 && clip_t >= 2.5 &&
 assert(clip_ring_bearing_mpa <= allowable_printed_bearing_mpa &&
     lug_neck_tension_mpa <= allowable_printed_tension_mpa,
     "The clip ring or lug neck exceeds configured stress under the grip's tilt.");
-assert(clip_install_travel >= lug_r + 0.5 + clip_tip_x,
-    "Clips must drop in with their fork tips clear of the lug head.");
 assert(clip_access_x >= 5 && clip_tail_x >= clip_tip_x + 6 &&
     dyno_eye_x_right + clip_tail_x <= lc_L / 2,
     "Clips need finger room beside the fin, a tail over the load cell, and must end on it.");
@@ -629,11 +657,15 @@ assert(grip_pull_gap_x >= 5 * (lug_fit + anchor_play_x + rated_preview_deflectio
 assert(grip_guide_gap_z >= 0.8 && grip_guide_gap_z <= 1.2 && grip_guide_bearing_y >= 3 &&
     trench_floor_z > base_z_min + 5,
     "Grip guides need a small Z gap, a real bearing width and a solid trench floor.");
-assert(anchor_z_min > base_z_min + 5 && anchor_bearing_mpa <= allowable_printed_bearing_mpa,
-    "Anchor pocket needs a solid floor and bearing area.");
-assert(lip_design_bending_mpa <= allowable_printed_bending_mpa &&
+assert(anchor_z_min > base_z_min + 5 && anchor_half_w_y >= tongue_r + 3 &&
+    anchor_outboard_x >= 0 && anchor_bearing_mpa <= allowable_printed_bearing_mpa,
+    "The anchor block must carry its tongue out of the case, and its pocket needs a solid floor and bearing area.");
+assert(lip_design_bending_mpa <= allowable_printed_tension_mpa &&
     grip_net_tension_mpa <= allowable_printed_tension_mpa,
     "Finger lip or grip body exceeds configured nominal stress.");
+assert(grip_keel_half_w_y >= tongue_r && grip_keel_half_w_y <= grip_half_w_y &&
+    grip_keel_mpa <= allowable_printed_bending_mpa,
+    "The grip keel must carry the tongue and stay within its bending stress.");
 assert(hand_opening_min == 25 && hand_opening_max == 85 && rest_index_count == 7,
     "Preserve seven 25-85 mm hand openings.");
 assert(abs(2 * rest_adjust_range
@@ -710,6 +742,11 @@ assert(side_brand_x - (liner_well_x_max + liner_well_notch_x)
     side_brand_size * brand_line_h + 6 <= deck_z - base_z_min &&
     base_half_w_y - trench_half_w_y - brand_depth >= 6,
     "The side brand must fit the base side face beside the trench and keep its wall solid.");
+assert(brand_len(grip_brand_text, grip_brand_size) + 6 <= hangboard_opening_w_y &&
+    grip_brand_z - grip_brand_size * brand_line_h / 2 >= deck_z + 1 &&
+    grip_brand_z + grip_brand_size * brand_line_h / 2 <= hangboard_front_z - hangboard_lip_radius &&
+    lip_brand_bending_mpa <= allowable_printed_tension_mpa,
+    "The grip brand must fit the lip's outer face between the deck and the rim's round, and keep the lip within its stress.");
 assert(opening_label_size * brand_line_h <= min(key_head_z_min, key_z_min) - base_z_min &&
     brand_len(str(rest_opening(rest_index_count - 1)), opening_label_size)
         <= rest_index_pitch - 2,
