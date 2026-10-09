@@ -85,7 +85,8 @@ the others. Turn every piece end over end to switch hands.
 
 Store the stoppers in the well beyond the anchor block, tabs at the ends,
 and the liner pieces stacked as in the pocket, cap on top, in the well beside
-the case.
+the case. To lift pieces out of that well, pinch them by their ends through
+the finger notches at both ends of the well.
 
 ![Phone in its slot](../images/phone.png)
 

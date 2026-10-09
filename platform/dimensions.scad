@@ -255,9 +255,13 @@ stopper_well_z_min = deck_z - stopper_well_depth_z;
 
 // Storage well for the stacked liner pieces in the -Y side of the deck,
 // turned so their length runs along X. The full stack stands
-// liner_well_proud_z above the deck to be lifted out.
+// liner_well_proud_z above the deck. A finger notch at each end, down to the
+// well floor and open through the base's side face, lets the fingers pinch
+// any piece or partial stack by its end faces.
 liner_well_clearance = 0.5;
-liner_well_x_max = trench_x_min - 3;
+liner_well_notch_x = 14;
+liner_well_notch_y_max = -45.5;
+liner_well_x_max = trench_x_min - 3 - liner_well_notch_x;
 liner_well_x_min = liner_well_x_max - (liner_y_max - liner_y_min + 2 * liner_well_clearance);
 liner_well_center_x = (liner_well_x_min + liner_well_x_max) / 2;
 liner_well_y_min = -base_half_w_y + 3;
@@ -421,7 +425,7 @@ brand_font = "Inter:style=Bold";
 brand_depth = 0.8;
 side_brand_text = "crimpdeq.com";
 side_brand_size = 5.5;
-side_brand_x = (liner_well_x_max + base_split_x) / 2;
+side_brand_x = (liner_well_x_max + liner_well_notch_x + base_split_x) / 2;
 side_brand_z = (base_z_min + deck_z) / 2;
 // Conservative Inter Bold extents per unit of text size: advance per
 // character, and ascender to descender.
@@ -644,7 +648,8 @@ assert(phone_slot_z_min > deck_z + phone_slot_depth_z &&
 assert(phone_stand_cheek_w_y >= 15 && phone_stand_gap_half_y >= 10 &&
     phone_min_w / 2 - phone_stand_gap_half_y >= phone_min_rest_y,
     "Phone stand cheeks must be at least 15 mm wide, leave a cable gap, and carry a narrow phone on both.");
-assert(abs(side_brand_x - liner_well_x_max) >= brand_len(side_brand_text, side_brand_size) / 2 + 3 &&
+assert(side_brand_x - (liner_well_x_max + liner_well_notch_x)
+        >= brand_len(side_brand_text, side_brand_size) / 2 + 3 &&
     base_split_x - side_brand_x >= brand_len(side_brand_text, side_brand_size) / 2 + 3 &&
     side_brand_size * brand_line_h + 6 <= deck_z - base_z_min &&
     base_half_w_y - trench_half_w_y - brand_depth >= 6,
@@ -658,3 +663,8 @@ assert(stopper_well_x_max < -case_x_half - 3 && stopper_well_z_min > base_z_min 
 assert(liner_well_y_max < case_y_min - 3 && liner_well_y_max < stopper_tab_slot_y_min - 3 &&
     liner_well_z_min > base_z_min + 5 && liner_well_proud_z >= 5,
     "The liner well must stay clear of the case and the stopper well, keep a solid floor, and leave the stack proud.");
+assert(liner_well_notch_x >= 12 && liner_well_notch_y_max - (-base_half_w_y) >= 15 &&
+    liner_well_notch_y_max > liner_well_y_max &&
+    liner_well_notch_y_max <= stopper_tab_slot_y_min - 3 &&
+    liner_well_notch_y_max <= -phone_stand_half_w_y - 3,
+    "The liner well's finger notches must take a fingertip and stay clear of the stopper well and the phone stand.");

@@ -351,6 +351,15 @@ module liner_well_cut() {
     translate([liner_well_x_min, liner_well_y_min, liner_well_z_min])
         cube([liner_well_x_max - liner_well_x_min, liner_well_y_max - liner_well_y_min,
               deck_z - liner_well_z_min + 0.1]);
+    liner_well_notches();
+}
+
+module liner_well_notches() {
+    // Finger notches at both ends, open through the side face.
+    for (x0 = [liner_well_x_min - liner_well_notch_x, liner_well_x_max])
+        translate([x0, -base_half_w_y - 1, liner_well_z_min])
+            cube([liner_well_notch_x, liner_well_notch_y_max + base_half_w_y + 1,
+                  deck_z - liner_well_z_min + 0.1]);
 }
 
 // --- Phone slot ----------------------------------------------------------

@@ -376,6 +376,18 @@ if (mode == "anchor_case") {
             palm_rest(-rest_adjust_range); index_key(-rest_adjust_range);
         }
     }
+} else if (mode == "liner_reach") {
+    // A fingertip in each end notch reaches down to the well floor, beside
+    // the end faces of any stored piece.
+    intersection() {
+        for (x0 = [liner_well_x_min - liner_well_notch_x, liner_well_x_max])
+            translate([x0 + 0.01, -base_half_w_y - 5, liner_well_z_min + 0.01])
+                cube([liner_well_notch_x - 0.02, liner_well_notch_y_max + base_half_w_y + 4.99, 40]);
+        union() {
+            fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference();
+            stored_pocket_stoppers(); stored_liner();
+        }
+    }
 } else if (mode == "liner_stored_seated") {
     intersection() { base_front(); lifted(-0.02) stored_liner(); }
 } else if (mode == "phone_slot") {

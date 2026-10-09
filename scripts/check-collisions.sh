@@ -58,6 +58,7 @@ checks=(
     "stopper_stored_seated nonempty"
     "liner_stored empty"
     "liner_stored_seated nonempty"
+    "liner_reach empty"
 )
 for index in {0..6}; do
     checks+=("rest_position_${index} empty")
