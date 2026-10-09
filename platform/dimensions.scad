@@ -135,7 +135,7 @@ function liner_finger_y(i) = (i - (len(liner_finger_steps) - 1) / 2) * liner_fin
 liner_step_r = 2.5;
 hangboard_opening_w_x = hangboard_finger_room_x + liner_band_x;
 hangboard_side_wall_t = 4;
-hangboard_right_lip_t = is_undef(hangboard_right_lip_t) ? 12 : hangboard_right_lip_t;
+hangboard_right_lip_t = is_undef(hangboard_right_lip_t) ? 14.5 : hangboard_right_lip_t;
 hangboard_opening_x_min = grip_body_x_min + grip_spine_t;
 hangboard_opening_x_max = hangboard_opening_x_min + hangboard_opening_w_x;
 grip_x_max = hangboard_opening_x_max + hangboard_right_lip_t;
@@ -490,7 +490,8 @@ function brand_len(text, size) = len(text) * size * brand_char_w;
 
 // --- Structural screens at the design target -------------------------------
 // Nominal screens, not a strength qualification. Printed-material limits are
-// assumptions that need coupon tests in the actual print orientation.
+// assumptions that need coupon tests in the actual print orientation:
+// bending within the layers, and tension across them.
 allowable_printed_bending_mpa = is_undef(allowable_printed_bending_mpa) ? 30 : allowable_printed_bending_mpa;
 allowable_printed_tension_mpa = is_undef(allowable_printed_tension_mpa) ? 12 : allowable_printed_tension_mpa;
 allowable_printed_bearing_mpa = is_undef(allowable_printed_bearing_mpa) ? 12 : allowable_printed_bearing_mpa;
@@ -525,7 +526,8 @@ lug_neck_tension_mpa = clip_tilt_force_n / (PI * lug_neck_r * lug_neck_r);
 // Anchor block bearing on the pocket's +X wall below the case.
 anchor_bearing_mpa = design_force_n / (2 * anchor_half_w_y * (deck_z - anchor_z_min));
 
-// Full force at the pocket rim, over its usable width.
+// Full force at the pocket rim, over its usable width. The grip prints
+// upright, so the lip's root bends across the layers.
 lip_section_modulus_mm3 = hangboard_opening_w_y * pow(hangboard_lip_min_t, 2) / 6;
 lip_design_bending_mpa = design_force_n * hangboard_pocket_depth_z / lip_section_modulus_mm3;
 // Pocket side walls and back wall carry the lip force back to the lug.
@@ -631,7 +633,7 @@ assert(grip_guide_gap_z >= 0.8 && grip_guide_gap_z <= 1.2 && grip_guide_bearing_
     "Grip guides need a small Z gap, a real bearing width and a solid trench floor.");
 assert(anchor_z_min > base_z_min + 5 && anchor_bearing_mpa <= allowable_printed_bearing_mpa,
     "Anchor pocket needs a solid floor and bearing area.");
-assert(lip_design_bending_mpa <= allowable_printed_bending_mpa &&
+assert(lip_design_bending_mpa <= allowable_printed_tension_mpa &&
     grip_net_tension_mpa <= allowable_printed_tension_mpa,
     "Finger lip or grip body exceeds configured nominal stress.");
 assert(hand_opening_min == 25 && hand_opening_max == 85 && rest_index_count == 7,
