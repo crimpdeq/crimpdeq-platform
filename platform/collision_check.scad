@@ -36,6 +36,14 @@ module stopper_in_pocket(i, dx = 0, dy = 0, dz = 0) {
     translate([dx, dy, dz]) pocket_stopper(i);
 }
 
+module key_turned_over(offset = 0, pull = 0) {
+    // Fitted from the -Y side: turned over about its length, head still
+    // away from the grip.
+    z_mid = (key_z_min + key_z_max) / 2;
+    translate([0, 0, z_mid]) rotate([180, 0, 0]) translate([0, 0, -z_mid])
+        index_key(offset, pull);
+}
+
 module stoppers_fitted(stoppers) {
     for (i = stoppers) translate([0, 0, stoppers_h([for (j = stoppers) if (j < i) j])])
         pocket_stopper(i);
@@ -201,6 +209,25 @@ if (mode == "anchor_case") {
     shift = (test_position % 2 == 0 ? -1 : 1) * (key_fit / 2 + 0.05);
     intersection() { translate([shift, 0, 0.02]) index_key(o); base_rear(); }
     intersection() { translate([shift, 0, 0.02]) index_key(o); palm_rest(o); }
+} else if (mode == "key_turned_over") {
+    o = rest_offset(test_position);
+    intersection() {
+        lifted() key_turned_over(o);
+        union() { fixed_parts(); palm_rest(o); finger_grip(); }
+    }
+} else if (mode == "key_retained") {
+    // Pulled until its barb's apex reaches the recess edge, the key catches
+    // the far wall even with the bar shifted across its fit: fitted from +Y
+    // and lifted (0), or turned over from -Y and resting on the floor (1).
+    assert(test_position < 2, "Key index must be 0-1.");
+    pull = key_snap_barb + key_snap_clearance;
+    intersection() {
+        if (test_position == 0)
+            lifted(key_fit - 0.01) index_key(0, pull);
+        else
+            lifted() key_turned_over(0, pull);
+        base_rear();
+    }
 } else if (mode == "rest_retained") {
     // Lifted off the channel floor at its least-engaged position, the
     // plate's flanks catch the channel's lips.
@@ -369,12 +396,32 @@ if (mode == "anchor_case") {
         }
     }
 } else if (mode == "liner_stored") {
+    // Clear of everything but the clamp pad, which presses on it.
     intersection() {
         lifted() stored_liner();
         union() {
-            fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference();
+            difference() {
+                base_front();
+                translate([liner_well_center_x - liner_clamp_pad_len_x / 2 - 0.01,
+                           liner_well_y_max - liner_clamp_pad_y - 0.1, liner_well_z_min - 0.1])
+                    cube([liner_clamp_pad_len_x + 0.02, liner_clamp_pad_y + 0.095,
+                          deck_z - liner_well_z_min + 0.2]);
+            }
+            base_rear(); anchor_block(); finger_grip(); eye_clips(); crimpdeq_case_reference();
             palm_rest(-rest_adjust_range); index_key(-rest_adjust_range);
         }
+    }
+} else if (mode == "liner_clamped") {
+    // The pad presses on every stored piece: each one alone on the well
+    // floor (0-2), and the top piece of the full stack (3).
+    assert(test_position < liner_piece_count + 1, "Liner clamp index must be 0-3.");
+    intersection() {
+        liner_clamp_pad();
+        if (test_position < liner_piece_count)
+            stored_liner([test_position]);
+        else
+            liner_well_transform()
+                translate([0, 0, liner_piece_z([0, 1, 2], 2)]) liner_piece(2);
     }
 } else if (mode == "liner_reach") {
     // A fingertip in each end notch reaches down to the well floor, beside
@@ -407,6 +454,14 @@ if (mode == "anchor_case") {
     intersection() { base_front(); phone_reference(drop = 0.02); }
 } else if (mode == "stopper_stored_seated") {
     intersection() { base_front(); lifted(-0.02) stored_pocket_stoppers(); }
+} else if (mode == "stopper_stored_retained") {
+    // Pushed against the well's far (-X) wall and lifted until its top edge
+    // meets the ridge's apex, the stack still overlaps the ridge.
+    intersection() {
+        translate([-(stopper_well_clearance - 0.01), 0, stopper_snap_gap_z + stopper_snap_ridge])
+            stored_pocket_stoppers();
+        base_front();
+    }
 } else {
     assert(false, str("Unknown collision mode: ", mode));
 }

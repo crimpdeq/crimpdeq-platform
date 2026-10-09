@@ -49,12 +49,13 @@ up.
 Slide the palm rest into the channel from the rear end, bolster toward the
 grip, with the bolster's wings resting on the deck on both sides. Push the
 key, tip first, into the side of the base, through the groove under the
-bolster, until its head meets the base. It fits from either side, with its
-head pointing away from the grip.
+bolster, until it clicks and its head meets the base. It fits from either
+side, with its head pointing away from the grip; from the far side, turn it
+over.
 
 The seven key holes along each side set the opening between the finger lip
 and the palm face: 25 to 85 mm in 10 mm steps, engraved under each hole and
-read below the key's head. To change it, pull the key out by its head, slide
+read below the key's head. To change it, pull the key out firmly by its head, slide
 the rest until its groove lines up with the new hole, and push the key in
 again.
 
@@ -83,10 +84,14 @@ the others. Turn every piece end over end to switch hands.
 
 ![Stoppers and liner in their wells](../images/storage.png)
 
-Store the stoppers in the well beyond the anchor block, tabs at the ends,
-and the liner pieces stacked as in the pocket, cap on top, in the well beside
-the case. To lift pieces out of that well, pinch them by their ends through
-the finger notches at both ends of the well.
+Store the stoppers in the well beyond the anchor block, tabs at the ends.
+Pressed in together, the stack clicks under a ridge in the well's wall
+nearer the anchor block and stays put when the platform is carried; lift it
+out by the tabs. A single stopper in the well is not held. Store the liner
+pieces stacked as in the pocket, cap on top, in the well beside the case,
+flat face toward the case. A sprung wall clamps them, alone or stacked, so
+they stay put when the platform is carried. To lift them out, pinch them by
+their ends through the finger notches at both ends of the well.
 
 ![Phone in its slot](../images/phone.png)
 

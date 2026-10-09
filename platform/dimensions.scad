@@ -242,22 +242,48 @@ function liner_piece_z(pieces, k) = k == 0 ? 0
     : liner_piece_h(pieces[k - 1]) + liner_piece_z(pieces, k - 1);
 function stoppers_h(stoppers) = sum_list([for (i = stoppers) stopper_t_list[i]]);
 
+// Printed springs flex within their layers; this caps their peak strain,
+// well below PETG's yield strain.
+allowable_flex_strain = is_undef(allowable_flex_strain) ? 0.015 : allowable_flex_strain;
+
 // Storage well for the stacked stoppers in the deck beyond the anchor pocket,
 // long side along Y as in the pocket. Their pull tabs stand proud of the
-// deck at its middle.
-stopper_well_clearance = 0.5;
-stopper_well_x_max = anchor_pocket_x_min - 3;
+// deck at its middle. A leaf in the well's +X wall spans along Y and bridges
+// a gap below, so it flexes in X; a ridge on it clicks over the top stopper
+// of the stack. The ridge reaches across both side clearances to overlap the
+// stack by stopper_snap_engage wherever it sits. A stopper stored on its own
+// sits below the ridge and is not held.
+stopper_well_clearance = 0.25;
+stopper_snap_engage = is_undef(stopper_snap_engage) ? 0.5 : stopper_snap_engage;
+stopper_snap_ridge = 2 * stopper_well_clearance + stopper_snap_engage;
+stopper_snap_gap_z = 0.2;
+stopper_snap_len_y = 10;
+stopper_leaf_len_y = is_undef(stopper_leaf_len_y) ? 50 : stopper_leaf_len_y;
+stopper_leaf_t_x = 1.6;
+stopper_leaf_h_z = 4;
+stopper_leaf_gap_z = 1;
+// The wall behind the relief stops the leaf just past the ridge's travel.
+stopper_leaf_relief_x = stopper_snap_ridge + 0.2;
+stopper_leaf_strain = 12 * stopper_leaf_relief_x * stopper_leaf_t_x
+    / pow(stopper_leaf_len_y, 2);
+// The leaf and its relief, then a 3 mm wall to the anchor pocket.
+stopper_well_x_max = anchor_pocket_x_min - 3 - stopper_leaf_relief_x - stopper_leaf_t_x;
 stopper_well_x_min = stopper_well_x_max
     - (stopper_x_max - stopper_x_min + 2 * stopper_well_clearance);
 stopper_well_center_x = (stopper_well_x_min + stopper_well_x_max) / 2;
-stopper_well_depth_z = stopper_stack_h + 1;
+// The 45-degree ridge sits just above the stack and below the deck.
+stopper_well_depth_z = stopper_stack_h + stopper_snap_gap_z + 2 * stopper_snap_ridge + 0.3;
 stopper_well_z_min = deck_z - stopper_well_depth_z;
+stopper_snap_z = stopper_well_z_min + stopper_stack_h + stopper_snap_gap_z;
 
 // Storage well for the stacked liner pieces in the -Y side of the deck,
 // turned so their length runs along X. The full stack stands
 // liner_well_proud_z above the deck. A finger notch at each end, down to the
 // well floor and open through the base's side face, lets the fingers pinch
-// any piece or partial stack by its end faces.
+// any piece or partial stack by its end faces. A snap ridge cannot hold
+// every partial stack, so the well's +Y wall is a leaf spanning along X over
+// a bridged gap; a pad on it, over the full well depth, clamps every stored
+// piece's flat back against the outer wall, which takes its thickest step.
 liner_well_clearance = 0.5;
 liner_well_notch_x = 14;
 liner_well_notch_y_max = -45.5;
@@ -266,8 +292,19 @@ liner_well_x_min = liner_well_x_max - (liner_y_max - liner_y_min + 2 * liner_wel
 liner_well_center_x = (liner_well_x_min + liner_well_x_max) / 2;
 liner_well_y_min = -base_half_w_y + 3;
 liner_well_y_max = liner_well_y_min + liner_t_max + 2 * liner_well_clearance;
-liner_well_proud_z = 8;
+liner_well_proud_z = 6;
 liner_well_z_min = deck_z - (hangboard_pocket_depth_z - liner_well_proud_z);
+liner_clamp_interference = is_undef(liner_clamp_interference) ? 0.3 : liner_clamp_interference;
+liner_clamp_pad_y = 2 * liner_well_clearance + liner_clamp_interference;
+liner_clamp_pad_len_x = 40;
+liner_clamp_len_x = is_undef(liner_clamp_len_x) ? 50 : liner_clamp_len_x;
+liner_clamp_t_y = 1.6;
+liner_clamp_gap_z = 1;
+// The wall behind the relief stops the leaf just past the clamp's travel.
+liner_clamp_relief_y = liner_clamp_interference + 0.3;
+liner_clamp_strain = 12 * liner_clamp_relief_y * liner_clamp_t_y / pow(liner_clamp_len_x, 2);
+// The thickest step, which bears on the outer wall.
+liner_thick_finger = search(0, liner_finger_steps)[0];
 
 // Tilted phone slot in a stand across the -X end of the base, outside the
 // load path. The raised slot floor keeps the case from hiding the screen
@@ -374,6 +411,24 @@ key_head_h = 12;
 key_head_z_min = (key_z_min + key_z_max - key_head_h) / 2;
 // Length of the bar in the plate, across the plate's sole.
 key_engage_y = 2 * (rest_half_w_y + rest_flare_y);
+// A slot behind the tip leaves a spring prong along the bar's underside,
+// below the channel floor, so the bar's shear section there stays whole. The
+// barb under it clicks into a recess in the far side wall's tunnel floor;
+// pulling the head rides it out on its 45-degree ramp. The prong flexes in
+// Z, within the key's layers. Turned over to fit from the -Y side, the barb
+// points up, so the +Y wall's recesses are in the tunnel roof and the barb
+// never clicks in the near wall.
+key_snap_len_y = 18;
+key_snap_prong_t = 2.2;
+key_snap_gap_z = 1.2;
+key_snap_barb = is_undef(key_snap_barb) ? 0.8 : key_snap_barb;
+key_snap_barb_y = key_y_min + 4;
+key_snap_clearance = 0.2;
+key_snap_strain = 1.5 * key_snap_prong_t * key_snap_barb
+    / pow(key_y_min + key_snap_len_y - key_snap_barb_y, 2);
+// Length of the prong under the plate's sole, where the slot leaves the
+// bar's lower half to the prong alone.
+key_snap_under_plate_y = max(0, key_y_min + key_snap_len_y + rest_half_w_y + rest_flare_y);
 // Each position's hand opening, engraved on both side faces under its key
 // hole and below the key head, so the fitted key shows its setting.
 function rest_opening(i) = hand_opening + rest_offset(i);
@@ -483,7 +538,8 @@ grip_net_tension_mpa = design_force_n / grip_net_area_mm2;
 // and shear through the rib between neighbouring floor grooves.
 key_shear_mpa = design_force_n / (key_t_x * key_engage_y);
 key_plate_bearing_mpa = design_force_n / (key_plate_engage_z * key_engage_y);
-key_slot_bearing_mpa = design_force_n / (key_floor_depth * key_engage_y);
+key_slot_bearing_mpa = design_force_n
+    / (key_floor_depth * (key_engage_y - key_snap_under_plate_y));
 key_ligament_x = rest_index_pitch - key_t_x - key_fit;
 key_ligament_shear_mpa = design_force_n / (key_ligament_x * key_engage_y);
 // Palm bolster root, with the force at mid-rise; stress across the layers.
@@ -660,9 +716,28 @@ assert(opening_label_size * brand_line_h <= min(key_head_z_min, key_z_min) - bas
     "The opening labels must fit below the key heads and between their neighbours.");
 assert(stopper_well_x_max < -case_x_half - 3 && stopper_well_z_min > base_z_min + 5,
     "The stopper well must stay clear of the case and keep a solid floor.");
+assert(stopper_snap_engage >= 0.3 && stopper_leaf_strain <= allowable_flex_strain &&
+    stopper_leaf_len_y <= stopper_y_max - stopper_y_min - 2 * stopper_r &&
+    stopper_snap_z + 2 * stopper_snap_ridge <= deck_z &&
+    stopper_snap_z >= deck_z - stopper_leaf_h_z,
+    "The stopper well's leaf must catch the stack and flex within its strain limit along the stoppers' straight side.");
+assert(key_snap_barb >= key_fit + 0.4 && key_snap_gap_z >= key_snap_barb + 0.3 &&
+    key_snap_strain <= allowable_flex_strain &&
+    key_snap_prong_t + key_snap_gap_z < key_floor_depth &&
+    rest_heel_z - (key_z_max + key_snap_barb + key_snap_clearance) >= 2,
+    "The key's snap prong must flex within its strain limit, keep its slot below the channel floor, and leave a roof over its recess.");
 assert(liner_well_y_max < case_y_min - 3 && liner_well_y_max < stopper_tab_slot_y_min - 3 &&
-    liner_well_z_min > base_z_min + 5 && liner_well_proud_z >= 5,
-    "The liner well must stay clear of the case and the stopper well, keep a solid floor, and leave the stack proud.");
+    liner_well_z_min - liner_clamp_gap_z >= base_z_min + 2.5 && liner_well_proud_z >= 5,
+    "The liner well must stay clear of the case and the stopper well, keep a floor, and leave the stack proud.");
+assert(liner_clamp_interference >= 0.2 && liner_clamp_interference <= 0.5 &&
+    liner_clamp_strain <= allowable_flex_strain &&
+    liner_clamp_pad_len_x <= liner_clamp_len_x - 6 &&
+    liner_clamp_len_x <= liner_well_x_max - liner_well_x_min - 10 &&
+    abs(liner_finger_y(liner_thick_finger)) + liner_finger_w_y / 2 <= liner_clamp_pad_len_x / 2 &&
+    liner_well_y_max + liner_clamp_t_y + liner_clamp_relief_y
+        <= min(stopper_tab_slot_y_min, case_y_min) - 2 &&
+    liner_well_proud_z + liner_clamp_pad_y + 2 <= liner_cap_h,
+    "The liner well's clamp must press lightly within its strain limit, span the thickest step either way round, keep a wall to the stopper well, and grip the top piece of a full stack.");
 assert(liner_well_notch_x >= 12 && liner_well_notch_y_max - (-base_half_w_y) >= 15 &&
     liner_well_notch_y_max > liner_well_y_max &&
     liner_well_notch_y_max <= stopper_tab_slot_y_min - 3 &&
