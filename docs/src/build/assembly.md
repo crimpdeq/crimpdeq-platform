@@ -88,9 +88,10 @@ Store the stoppers in the well beyond the anchor block, tabs at the ends.
 Pressed in together, the stack clicks under a ridge in the well's wall
 nearer the anchor block and stays put when the platform is carried; lift it
 out by the tabs. A single stopper in the well is not held. Store the liner
-pieces stacked as in the pocket, cap on top, in the well beside the case. To
-lift pieces out of that well, pinch them by their ends through the finger
-notches at both ends of the well.
+pieces stacked as in the pocket, cap on top, in the well beside the case,
+flat face toward the case. A sprung wall clamps them, alone or stacked, so
+they stay put when the platform is carried. To lift them out, pinch them by
+their ends through the finger notches at both ends of the well.
 
 ![Phone in its slot](../images/phone.png)
 

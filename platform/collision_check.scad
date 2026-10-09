@@ -396,12 +396,32 @@ if (mode == "anchor_case") {
         }
     }
 } else if (mode == "liner_stored") {
+    // Clear of everything but the clamp pad, which presses on it.
     intersection() {
         lifted() stored_liner();
         union() {
-            fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference();
+            difference() {
+                base_front();
+                translate([liner_well_center_x - liner_clamp_pad_len_x / 2 - 0.01,
+                           liner_well_y_max - liner_clamp_pad_y - 0.1, liner_well_z_min - 0.1])
+                    cube([liner_clamp_pad_len_x + 0.02, liner_clamp_pad_y + 0.095,
+                          deck_z - liner_well_z_min + 0.2]);
+            }
+            base_rear(); anchor_block(); finger_grip(); eye_clips(); crimpdeq_case_reference();
             palm_rest(-rest_adjust_range); index_key(-rest_adjust_range);
         }
+    }
+} else if (mode == "liner_clamped") {
+    // The pad presses on every stored piece: each one alone on the well
+    // floor (0-2), and the top piece of the full stack (3).
+    assert(test_position < liner_piece_count + 1, "Liner clamp index must be 0-3.");
+    intersection() {
+        liner_clamp_pad();
+        if (test_position < liner_piece_count)
+            stored_liner([test_position]);
+        else
+            liner_well_transform()
+                translate([0, 0, liner_piece_z([0, 1, 2], 2)]) liner_piece(2);
     }
 } else if (mode == "liner_reach") {
     // A fingertip in each end notch reaches down to the well floor, beside

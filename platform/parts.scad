@@ -361,8 +361,9 @@ module stopper_snap_ridge() {
 }
 
 module liner_well_transform() {
-    // From the liner's own frame into its storage well, its length along X.
-    translate([liner_well_center_x, liner_well_y_max - liner_well_clearance, liner_well_z_min])
+    // From the liner's own frame into its storage well, its length along X,
+    // clamped with its thickest step against the outer (-Y) wall.
+    translate([liner_well_center_x, liner_well_y_min + 0.01 + liner_t_max, liner_well_z_min])
         rotate([0, 0, 90])
             children();
 }
@@ -376,6 +377,31 @@ module liner_well_cut() {
         cube([liner_well_x_max - liner_well_x_min, liner_well_y_max - liner_well_y_min,
               deck_z - liner_well_z_min + 0.1]);
     liner_well_notches();
+}
+
+module liner_clamp_cut() {
+    // Relief behind the clamp leaf and the bridged gap under it, open to the
+    // well.
+    y0 = liner_well_y_max;
+    translate([liner_well_center_x - liner_clamp_len_x / 2, 0, 0])
+        difference() {
+            translate([0, y0 - 0.01, liner_well_z_min - liner_clamp_gap_z])
+                cube([liner_clamp_len_x, liner_clamp_t_y + liner_clamp_relief_y + 0.01,
+                      deck_z - liner_well_z_min + liner_clamp_gap_z + 0.1]);
+            translate([-1, y0 - 1, liner_well_z_min])
+                cube([liner_clamp_len_x + 2, liner_clamp_t_y + 1, deck_z - liner_well_z_min + 1]);
+        }
+}
+
+module liner_clamp_pad() {
+    // On the leaf's well face, from the well floor to a 45-degree lead-in at
+    // the deck.
+    y0 = liner_well_y_max + 0.01;
+    p = liner_clamp_pad_y;
+    along_x(liner_well_center_x - liner_clamp_pad_len_x / 2,
+            liner_well_center_x + liner_clamp_pad_len_x / 2)
+        polygon([[y0, liner_well_z_min], [y0 - p, liner_well_z_min],
+                 [y0 - p, deck_z - p], [y0, deck_z]]);
 }
 
 module liner_well_notches() {
@@ -577,10 +603,12 @@ module base_front() {
         stopper_well_cut();
         stopper_leaf_cut();
         liner_well_cut();
+        liner_clamp_cut();
         phone_slot_cut();
         brand_engravings();
     }
     stopper_snap_ridge();
+    liner_clamp_pad();
 }
 
 module base_rear() {

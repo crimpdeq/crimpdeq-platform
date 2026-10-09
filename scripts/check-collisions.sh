@@ -88,6 +88,9 @@ done
 for index in {0..1}; do
     checks+=("finger_entry_${index} empty")
 done
+for index in {0..3}; do
+    checks+=("liner_clamped_${index} nonempty")
+done
 
 current_job_count() {
     jobs -pr | wc -l | tr -d ' '
@@ -110,7 +113,7 @@ check_mode() {
     local status_file="$tmp_dir/${mode}.status"
     local error_file="$tmp_dir/${mode}.error"
     local result log_text exit_code=0 scad_mode="$mode" test_position=0
-    if [[ "$mode" =~ ^(grip_guide_support|tab_seated|lug_bearing|clip_clamp|clip_retained|clip_path|rest_position|rest_locked|key_turned_over|key_retained|stopper_pocket|stopper_seated|stopper_located|stopper_stack_pocket|stopper_stack_contact|stopper_stack_located|stopper_tab_proud|stopper_finger_width|finger_entry|liner_pocket|liner_seated|liner_located)_([0-8])$ ]]; then
+    if [[ "$mode" =~ ^(grip_guide_support|tab_seated|lug_bearing|clip_clamp|clip_retained|clip_path|rest_position|rest_locked|key_turned_over|key_retained|stopper_pocket|stopper_seated|stopper_located|stopper_stack_pocket|stopper_stack_contact|stopper_stack_located|stopper_tab_proud|stopper_finger_width|finger_entry|liner_clamped|liner_pocket|liner_seated|liner_located)_([0-8])$ ]]; then
         scad_mode="${BASH_REMATCH[1]}"
         test_position="${BASH_REMATCH[2]}"
     fi
@@ -241,6 +244,8 @@ invalid_parameters=(
     'stopper_tab_rise=2'
     'stopper_snap_engage=0.1'
     'stopper_leaf_len_y=30'
+    'liner_clamp_interference=0.1'
+    'liner_clamp_len_x=30'
     'hangboard_finger_room_x=17'
     'liner_t_min=1'
     'liner_finger_steps=[3,1,2,7]'
