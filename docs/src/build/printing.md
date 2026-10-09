@@ -37,7 +37,7 @@ Per-object overrides:
 |---|---|
 | `grip`, `anchor`, `clips`, `key`, `liner` | 100% infill |
 | `rest` | 50% infill; normal supports, on the build plate only, not under bridges |
-| `base_front`, `base_rear` | 4 top and 4 bottom layers |
+| `base_front`, `base_rear` | 4 walls, 4 top and 4 bottom layers, 15% infill |
 
 To save filament, the project also prints these lightly loaded zones
 sparser, using height range modifiers:
