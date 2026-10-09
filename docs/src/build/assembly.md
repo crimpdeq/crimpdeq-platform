@@ -47,29 +47,51 @@ up.
 ![Sliding the palm rest onto the rail](../images/rest_on.png)
 
 Slide the palm rest into the channel from the rear end, bolster toward the
-grip. Push one key into the side of the base from each side, through the
-groove under the bolster, until its head meets the base.
+grip, with the bolster's wings resting on the deck on both sides. Push the
+key, tip first, into the side of the base, through the groove under the
+bolster, until it clicks and its head meets the base. It fits from either
+side, with its head pointing away from the grip; from the far side, turn it
+over.
 
-The seven key holes along each side, counted from the grip, set the opening
-between the finger lip and the palm face: 25 to 85 mm in 10 mm steps. To
-change it, pull both keys out by their heads, slide the rest until its groove
-lines up with the new holes, and push them in again.
+The seven key holes along each side set the opening between the finger lip
+and the palm face: 25 to 85 mm in 10 mm steps, engraved under each hole and
+read below the key's head. To change it, pull the key out firmly by its head, slide
+the rest until its groove lines up with the new hole, and push the key in
+again.
 
-## 6. Stoppers and phone
+## 6. Stoppers, liner and phone
 
 ![Fitting the stoppers](../images/stoppers.png)
 
-The pocket gives a 25 mm edge on its own. Drop a stopper onto its floor, pull
-tab in the end slot, for a shallower edge:
+The pocket gives a 25 mm edge on its own. Drop a stopper onto its floor,
+pull tab in the end slot, for a shallower edge.
 
-| Edge | Stoppers |
-|---|---|
-| 25 mm | none |
-| 20 mm | 5 mm |
-| 15 mm | 10 mm |
-| 10 mm | both, tabs at opposite ends |
+![Fitting the liner](../images/liner.png)
 
-Store unused stoppers in the well beside the case.
+For an unlevel edge, stack the liner on the stoppers against the finger lip,
+flat face to the lip and thickest step under your middle finger: a spacer
+for each stopper left out, then the cap, with its rounded edges, on top. Its
+steps set the index, ring and little fingers' edges 3, 2 and 7 mm nearer
+the palm than the middle finger's, so each finger bends about as much as
+the others. Turn every piece end over end to switch hands.
+
+| Edge | Stoppers | Liner, unlevel only |
+|---|---|---|
+| 25 mm | none | 5 mm and 10 mm spacers, cap |
+| 20 mm | 5 mm | 10 mm spacer, cap |
+| 15 mm | 10 mm | 5 mm spacer, cap |
+| 10 mm | both, tabs at opposite ends | cap |
+
+![Stoppers and liner in their wells](../images/storage.png)
+
+Store the stoppers in the well beyond the anchor block, tabs at the ends.
+Pressed in together, the stack clicks under a ridge in the well's wall
+nearer the anchor block and stays put when the platform is carried; lift it
+out by the tabs. A single stopper in the well is not held. Store the liner
+pieces stacked as in the pocket, cap on top, in the well beside the case,
+flat face toward the case. A sprung wall clamps them, alone or stacked, so
+they stay put when the platform is carried. To lift them out, pinch them by
+their ends through the finger notches at both ends of the well.
 
 ![Phone in its slot](../images/phone.png)
 

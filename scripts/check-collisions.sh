@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
 
@@ -50,15 +50,20 @@ checks=(
     "base_joint_bears nonempty"
     "rest_retained nonempty"
     "rest_slide_on empty"
-    "finger_entry empty"
+    "rest_wings_seated nonempty"
     "pocket_floor nonempty"
     "phone_slot empty"
     "phone_seated nonempty"
     "stopper_stored empty"
     "stopper_stored_seated nonempty"
+    "stopper_stored_retained nonempty"
+    "liner_stored empty"
+    "liner_stored_seated nonempty"
+    "liner_reach empty"
 )
 for index in {0..6}; do
     checks+=("rest_position_${index} empty")
+    checks+=("key_turned_over_${index} empty")
 done
 for index in {0..3}; do
     checks+=("clip_retained_${index} nonempty")
@@ -70,11 +75,21 @@ for index in {0..1}; do
     checks+=("stopper_stack_pocket_${index} empty")
     checks+=("stopper_stack_contact_${index} nonempty")
     checks+=("stopper_tab_proud_${index} nonempty")
+    checks+=("key_retained_${index} nonempty")
 done
 for index in {0..3}; do
     checks+=("stopper_located_${index} nonempty")
     checks+=("stopper_stack_located_${index} nonempty")
     checks+=("stopper_finger_width_${index} empty")
+    checks+=("liner_pocket_${index} empty")
+    checks+=("liner_seated_${index} nonempty")
+    checks+=("liner_located_${index} nonempty")
+done
+for index in {0..1}; do
+    checks+=("finger_entry_${index} empty")
+done
+for index in {0..3}; do
+    checks+=("liner_clamped_${index} nonempty")
 done
 
 current_job_count() {
@@ -98,14 +113,14 @@ check_mode() {
     local status_file="$tmp_dir/${mode}.status"
     local error_file="$tmp_dir/${mode}.error"
     local result log_text exit_code=0 scad_mode="$mode" test_position=0
-    if [[ "$mode" =~ ^(grip_guide_support|tab_seated|lug_bearing|clip_clamp|clip_retained|clip_path|rest_position|rest_locked|stopper_pocket|stopper_seated|stopper_located|stopper_stack_pocket|stopper_stack_contact|stopper_stack_located|stopper_tab_proud|stopper_finger_width)_([0-8])$ ]]; then
+    if [[ "$mode" =~ ^(grip_guide_support|tab_seated|lug_bearing|clip_clamp|clip_retained|clip_path|rest_position|rest_locked|key_turned_over|key_retained|stopper_pocket|stopper_seated|stopper_located|stopper_stack_pocket|stopper_stack_contact|stopper_stack_located|stopper_tab_proud|stopper_finger_width|finger_entry|liner_clamped|liner_pocket|liner_seated|liner_located)_([0-8])$ ]]; then
         scad_mode="${BASH_REMATCH[1]}"
         test_position="${BASH_REMATCH[2]}"
     fi
 
     openscad -D "render_fn=${render_fn}" -D "mode=\"${scad_mode}\"" \
         -D "test_position=${test_position}" \
-        -o "$out_file" "$project_root/collision_check.scad" >"$log_file" 2>&1 || exit_code=$?
+        -o "$out_file" "$project_root/platform/collision_check.scad" >"$log_file" 2>&1 || exit_code=$?
     log_text="$(<"$log_file")"
     # An assertion failure may ALSO report an empty top-level object.
     # Never accept that as a passing collision test.
@@ -173,13 +188,14 @@ fi
 
 echo "Collision checks passed."
 
-# Each single part must be one body; the paired parts export as two bodies.
-single_parts=(base_front base_rear anchor grip rest)
-paired_parts=(clips keys stoppers)
-for part in "${single_parts[@]}" "${paired_parts[@]}"; do
+# Each single part must be one body; the paired parts export as two bodies
+# and the liner as its three pieces.
+single_parts=(base_front base_rear anchor grip key rest)
+paired_parts=(clips stoppers)
+for part in "${single_parts[@]}" "${paired_parts[@]}" liner; do
     log_file="$tmp_dir/export_${part}.log"
     if ! openscad -D "render_fn=${render_fn}" -D "part=\"${part}\"" \
-        -o "$tmp_dir/dynamometer_${part}.stl" "$project_root/dynamometer_assembly.scad" \
+        -o "$tmp_dir/dynamometer_${part}.stl" "$project_root/platform/assembly.scad" \
         >"$log_file" 2>&1 || grep -Eq 'ERROR:|WARNING:' "$log_file"; then
         printf 'Export failed: %s\n' "$part" >&2
         while IFS= read -r line; do printf '%s\n' "$line" >&2; done <"$log_file"
@@ -191,14 +207,18 @@ single_stls=()
 for part in "${single_parts[@]}"; do single_stls+=("$tmp_dir/dynamometer_${part}.stl"); done
 paired_stls=()
 for part in "${paired_parts[@]}"; do paired_stls+=("$tmp_dir/dynamometer_${part}.stl"); done
-python3 "$project_root/check-stl-components.py" "${single_stls[@]}"
-python3 "$project_root/check-stl-components.py" --expect 2 "${paired_stls[@]}"
+python3 "$project_root/scripts/check-stl-components.py" "${single_stls[@]}"
+python3 "$project_root/scripts/check-stl-components.py" --expect 2 "${paired_stls[@]}"
+python3 "$project_root/scripts/check-stl-components.py" --expect 3 "$tmp_dir/dynamometer_liner.stl"
 
 echo "STL connectivity checks passed."
 
 # CSG export can exit successfully on assertion failure; inspect diagnostics.
+# Space-separated overrides in one entry are applied together.
 invalid_parameters=(
+    'platform_rated_kg=44'
     'platform_rated_kg=60'
+    'platform_rated_kg=160 allowable_printed_bending_mpa=1000 allowable_printed_tension_mpa=1000 allowable_printed_bearing_mpa=1000 allowable_lug_bearing_mpa=1000'
     'structural_safety_factor=1.5'
     'u_slot_clear=0.5'
     'lug_fit=0.5'
@@ -216,12 +236,23 @@ invalid_parameters=(
     'lug_head_flat_w=1'
     'clip_access_x=1'
     'hangboard_right_lip_t=9'
+    'grip_keel_half_w_y=9'
+    'anchor_half_w_y=12.5'
+    'anchor_outboard_x=-1'
+    'grip_brand_size=12'
     'grip_pull_gap_x=3'
     'stopper_clearance=0.1'
     'stopper_t_list=[3,10]'
     'stopper_t_list=[10,10]'
     'stopper_t_list=[5,10,5]'
     'stopper_tab_rise=2'
+    'stopper_snap_engage=0.1'
+    'stopper_leaf_len_y=30'
+    'liner_clamp_interference=0.1'
+    'liner_clamp_len_x=30'
+    'hangboard_finger_room_x=17'
+    'liner_t_min=1'
+    'liner_finger_steps=[3,1,2,7]'
     'hand_opening=75'
     'rest_adjust_range=40'
     'rest_index_pitch=8'
@@ -229,25 +260,35 @@ invalid_parameters=(
     'rest_bolster_rise=16'
     'rest_heel_z=-5'
     'rest_heel_z=-15'
+    'rest_half_w_y=38'
     'rest_half_w_y=58'
+    'rest_bolster_half_w_y=47'
+    'rest_bolster_half_w_y=62'
     'key_t_x=8'
+    'key_t_x=2'
     'key_t_x=-1'
-    'key_plate_engage_z=1'
+    'key_plate_engage_z=0.5'
     'key_plate_engage_z=-1'
+    'key_snap_barb=0.5'
+    'key_snap_barb=1.2'
     'base_z_min=-24'
+    'base_split_x=93.5'
     'base_split_x=95'
     'base_split_x=150'
     'phone_slot_w=11'
     'phone_slot_tilt=40'
     'phone_slot_depth_z=10'
     'phone_slot_z_min=0'
-    'phone_stand_clear_x=2'
+    'phone_stand_clear_x=1'
     'phone_stand_gap_half_y=26'
 )
 for parameter in "${invalid_parameters[@]}"; do
     log_file="$tmp_dir/invalid.log"
-    openscad -D "render_fn=${render_fn}" -D 'part="base_front"' -D "$parameter" \
-        -o "$tmp_dir/invalid.csg" "$project_root/dynamometer_assembly.scad" \
+    read -ra overrides <<<"$parameter"
+    defines=()
+    for override in "${overrides[@]}"; do defines+=(-D "$override"); done
+    openscad -D "render_fn=${render_fn}" -D 'part="base_front"' "${defines[@]}" \
+        -o "$tmp_dir/invalid.csg" "$project_root/platform/assembly.scad" \
         >"$log_file" 2>&1 || true
     if ! grep -q 'ERROR: Assertion' "$log_file"; then
         printf 'Expected assertion for %s\n' "$parameter" >&2

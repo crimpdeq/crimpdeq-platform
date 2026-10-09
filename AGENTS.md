@@ -4,10 +4,11 @@
 
 - This is a standalone OpenSCAD project; do not add runtime dependencies on
   [crimpdeq-case](https://github.com/crimpdeq/crimpdeq-case);
-  `check-real-case.sh` is the only optional integration check against it.
-- `crimpdeq_reference.scad` is a local fit/collision reference of
+  `scripts/check-real-case.sh` is the only optional integration check
+  against it.
+- `platform/crimpdeq_reference.scad` is a local fit/collision reference of
   crimpdeq-case `v2.0.0`, not a replacement enclosure design; run
-  `check-real-case.sh` against that tag.
+  `scripts/check-real-case.sh` against that tag.
 - Keep all dimensions in millimetres and forces in newtons.
 
 ## Design requirements
@@ -18,14 +19,22 @@
 
 ## File responsibilities
 
-- `dynamometer_dimensions.scad`: shared parameters, derived dimensions, and
-  structural assertions.
-- `dynamometer_parts.scad`: printable base, anchor, grip, clip, rest, key
-  and stopper modules, and the phone stand, without top-level geometry.
-- `dynamometer_assembly.scad`: preview and STL export entry point.
+`platform/` holds the OpenSCAD model:
+
+- `dimensions.scad`: shared parameters, derived dimensions, and structural
+  assertions.
+- `parts.scad`: printable base, anchor, grip, clip, rest, key, liner and
+  stopper modules, and the phone stand, without top-level geometry.
+- `assembly.scad`: preview and STL export entry point.
 - `crimpdeq_reference.scad`: self-contained crimpdeq-case `v2.0.0`
   interface snapshot.
 - `collision_check.scad`: individual intersection probes selected by `mode`.
+- `fonts/`: the bundled Inter Bold used by the brand engraving, with its
+  OFL license.
+
+`scripts/` holds the validation and export tooling, run from the
+repository root:
+
 - `check-collisions.sh`: complete geometry and STL connectivity validation.
 - `check-stl-components.py`: connected-component check used by
   `check-collisions.sh`.
@@ -36,8 +45,9 @@
 - `export-bambu-project.py`: builds and slice-checks the two-plate Bambu
   Studio project from the plate layout in `print_plate_placement()`; used
   by the release workflow.
-- `fonts/`: the bundled Inter Bold used by the brand engraving, with its
-  OFL license.
+
+Elsewhere:
+
 - `.github/workflows/`: CI checks, release STL publication, book deployment
   to platform.crimpdeq.com, and a weekly OpenSCAD 2021.01 compatibility
   check.
@@ -56,21 +66,21 @@
 - Define reusable geometry as modules; only entry-point files should emit
   top-level geometry.
 - Use `is_undef(parameter) ? default : parameter` for CLI-overridable values,
-  except the view options in `dynamometer_assembly.scad`, which stay
+  except the view options in `platform/assembly.scad`, which stay
   annotated literals so OpenSCAD's Customizer lists them.
 - Use `render_fn` for tessellation and keep validation renders at
   `OPENSCAD_RENDER_FN=24`.
 - Add assertions for invalid clearances, collapsed sections, and unsafe
   parameter combinations.
-- Update `dynamometer_dimensions.scad` and `crimpdeq_reference.scad` together
-  when the Crimpdeq mechanical interface changes.
+- Update `platform/dimensions.scad` and `platform/crimpdeq_reference.scad`
+  together when the Crimpdeq mechanical interface changes.
 
 ## Required validation
 
 Run after every geometry or dimension change:
 
 ```bash
-CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash check-collisions.sh
+CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash scripts/check-collisions.sh
 ```
 
 The command must pass all collision probes and report exactly one connected

@@ -1,9 +1,9 @@
 //
 // Printable parts of the all-printed Crimpdeq finger dynamometer.
-// No top-level geometry: use dynamometer_assembly.scad for preview/export.
+// No top-level geometry: use assembly.scad for preview/export.
 //
 
-include <dynamometer_dimensions.scad>
+include <dimensions.scad>
 // Bundled so every machine engraves the brand in Inter, not a fallback font.
 use <fonts/Inter-Bold.ttf>
 
@@ -153,10 +153,10 @@ module hangboard_rim_section(angle) {
 
 module hangboard_pocket_cut() {
     hull() {
-        // Exact floor datum; the draft narrows the floor on every side.
+        // Exact floor datum; the draft narrows the floor at the end walls.
         dyno_rounded_prism_xy(
-            hangboard_opening_x_min + hangboard_draft,
-            hangboard_opening_x_max - hangboard_draft,
+            hangboard_opening_x_min,
+            hangboard_opening_x_max,
             hangboard_opening_y_min + hangboard_draft,
             hangboard_opening_y_max - hangboard_draft,
             hangboard_pocket_back_z,
@@ -192,15 +192,94 @@ module finger_grip() {
         union() {
             dyno_rounded_prism_xy(grip_body_x_min, grip_x_max,
                 -grip_half_w_y, grip_half_w_y, grip_z_min, hangboard_front_z, 4);
-            // Lower body under the floating case, out to the tongue.
+            // Keel under the floating case, out to the tongue.
             dyno_rounded_prism_xy(grip_x_min, grip_body_x_min + 5,
-                -grip_half_w_y, grip_half_w_y, grip_z_min, deck_z, 4);
+                -grip_keel_half_w_y, grip_keel_half_w_y, grip_z_min, deck_z, 4);
             tongue(grip_body_x_min + 1);
         }
         hangboard_pocket_cut();
         stopper_tab_slots();
+        grip_brand_engraving();
     }
     eye_lug();
+}
+
+module grip_brand_engraving() {
+    // On the lip's outer face, reading from the palm rest, cut from inside the
+    // lip outward so the depth stays controlled.
+    translate([grip_x_max - brand_depth, 0, grip_brand_z])
+        rotate([90, 0, 90])
+            linear_extrude(height = brand_depth + 0.1)
+                engraved_text_2d(grip_brand_text, grip_brand_size);
+}
+
+// --- Edge liner ----------------------------------------------------------
+
+module liner_2d() {
+    // Right-hand footprint with its back face on x = 0 and the finger steps
+    // toward -X, rounded where they meet. The back corners follow the
+    // pocket's corners.
+    r = liner_step_r;
+    intersection() {
+        offset(r = r) offset(delta = -2 * r) offset(r = r)
+            for (i = [0 : len(liner_finger_steps) - 1]) {
+                y0 = i == 0 ? liner_y_min - 2 * r : liner_finger_y(i) - liner_finger_w_y / 2;
+                y1 = i == len(liner_finger_steps) - 1
+                    ? liner_y_max + 2 * r : liner_finger_y(i) + liner_finger_w_y / 2;
+                translate([-liner_t(i), y0]) square([liner_t(i) + 2 * r, y1 - y0]);
+            }
+        dyno_rounded_rect_2d(-liner_t_max - 1, 0, liner_y_min, liner_y_max,
+            hangboard_opening_r);
+    }
+}
+
+module liner_relieved_2d(relief) {
+    // The footprint with its stepped face set back by relief.
+    intersection() {
+        liner_2d();
+        translate([relief, 0]) liner_2d();
+    }
+}
+
+module liner_cap() {
+    // The top piece, its stepped face rounded like the lip along both long
+    // edges so it can be turned over.
+    h = liner_cap_h;
+    r = hangboard_lip_radius;
+    steps = max(6, ceil(render_fn / 4));
+    translate([0, 0, r - 0.01])
+        linear_extrude(height = h - 2 * r + 0.02) liner_2d();
+    for (z_sign = [-1, 1])
+        translate([0, 0, h / 2])
+            mirror([0, 0, z_sign < 0 ? 1 : 0])
+                for (k = [1 : steps])
+                    translate([0, 0, h / 2 - r + (k - 1) * r / steps])
+                        linear_extrude(height = r / steps + (k < steps ? 0.01 : 0))
+                            liner_relieved_2d(r - sqrt(r * r - pow(k * r / steps, 2)));
+}
+
+module liner_piece(i) {
+    // Liner piece i on z = 0, back face on x = 0: a spacer, or the cap.
+    if (i < stopper_count)
+        linear_extrude(height = liner_piece_h(i)) liner_2d();
+    else
+        liner_cap();
+}
+
+module liner_stack(pieces) {
+    // The listed pieces stacked from z = 0, bottom first.
+    for (k = [0 : len(pieces) - 1])
+        translate([0, 0, liner_piece_z(pieces, k)]) liner_piece(pieces[k]);
+}
+
+module edge_liner(hand = "right", stoppers = []) {
+    // The liner against the lip, stacked on the listed stoppers, for the
+    // right or the left hand.
+    assert(hand == "right" || hand == "left", str("Unknown hand: ", hand));
+    translate([hangboard_opening_x_max - liner_clearance, 0,
+               hangboard_pocket_back_z + stoppers_h(stoppers)])
+        mirror([0, hand == "left" ? 1 : 0, 0])
+            liner_stack(liner_pieces_over(stoppers));
 }
 
 // --- Pocket stoppers -----------------------------------------------------
@@ -244,12 +323,10 @@ module stacked_pocket_stoppers(bottom = 0, dz_top = 0) {
 }
 
 module stopper_well_transform() {
-    // From the pocket frame into the storage well, long side along X.
-    translate([stopper_well_center_x, stopper_well_center_y,
+    // From the pocket frame into the storage well.
+    translate([stopper_well_center_x - stopper_center_x, 0,
                stopper_well_z_min - hangboard_pocket_back_z])
-        rotate([0, 0, 90])
-            translate([-stopper_center_x, 0, 0])
-                children();
+        children();
 }
 
 module stored_pocket_stoppers() {
@@ -267,6 +344,82 @@ module stopper_well_cut() {
         stopper_tab_slots(stopper_center_x, hangboard_pocket_back_z,
             hangboard_pocket_back_z + stopper_well_depth_z);
     }
+}
+
+module stopper_leaf_cut() {
+    // Relief behind the leaf and the bridged gap under it, open to the well.
+    x0 = stopper_well_x_max;
+    leaf_z_min = deck_z - stopper_leaf_h_z;
+    translate([0, -stopper_leaf_len_y / 2, 0])
+        difference() {
+            translate([x0 - 0.01, 0, leaf_z_min - stopper_leaf_gap_z])
+                cube([stopper_leaf_t_x + stopper_leaf_relief_x + 0.01, stopper_leaf_len_y,
+                      stopper_leaf_h_z + stopper_leaf_gap_z + 0.1]);
+            translate([x0 - 1, -1, leaf_z_min])
+                cube([stopper_leaf_t_x + 1, stopper_leaf_len_y + 2, stopper_leaf_h_z + 1]);
+        }
+}
+
+module stopper_snap_ridge() {
+    // On the leaf's well face, above the stack: a 45-degree lead-in on top
+    // and a 45-degree catch underneath.
+    x0 = stopper_well_x_max + 0.01;
+    r = stopper_snap_ridge;
+    xz_profile_along_y(stopper_snap_len_y)
+        polygon([[x0, stopper_snap_z], [x0 - r, stopper_snap_z + r],
+                 [x0, stopper_snap_z + 2 * r]]);
+}
+
+module liner_well_transform() {
+    // From the liner's own frame into its storage well, its length along X,
+    // clamped with its thickest step against the outer (-Y) wall.
+    translate([liner_well_center_x, liner_well_y_min + 0.01 + liner_t_max, liner_well_z_min])
+        rotate([0, 0, 90])
+            children();
+}
+
+module stored_liner(pieces = [for (i = [0 : liner_piece_count - 1]) i]) {
+    if (len(pieces) > 0) liner_well_transform() liner_stack(pieces);
+}
+
+module liner_well_cut() {
+    translate([liner_well_x_min, liner_well_y_min, liner_well_z_min])
+        cube([liner_well_x_max - liner_well_x_min, liner_well_y_max - liner_well_y_min,
+              deck_z - liner_well_z_min + 0.1]);
+    liner_well_notches();
+}
+
+module liner_clamp_cut() {
+    // Relief behind the clamp leaf and the bridged gap under it, open to the
+    // well.
+    y0 = liner_well_y_max;
+    translate([liner_well_center_x - liner_clamp_len_x / 2, 0, 0])
+        difference() {
+            translate([0, y0 - 0.01, liner_well_z_min - liner_clamp_gap_z])
+                cube([liner_clamp_len_x, liner_clamp_t_y + liner_clamp_relief_y + 0.01,
+                      deck_z - liner_well_z_min + liner_clamp_gap_z + 0.1]);
+            translate([-1, y0 - 1, liner_well_z_min])
+                cube([liner_clamp_len_x + 2, liner_clamp_t_y + 1, deck_z - liner_well_z_min + 1]);
+        }
+}
+
+module liner_clamp_pad() {
+    // On the leaf's well face, from the well floor to a 45-degree lead-in at
+    // the deck.
+    y0 = liner_well_y_max + 0.01;
+    p = liner_clamp_pad_y;
+    along_x(liner_well_center_x - liner_clamp_pad_len_x / 2,
+            liner_well_center_x + liner_clamp_pad_len_x / 2)
+        polygon([[y0, liner_well_z_min], [y0 - p, liner_well_z_min],
+                 [y0 - p, deck_z - p], [y0, deck_z]]);
+}
+
+module liner_well_notches() {
+    // Finger notches at both ends, open through the side face.
+    for (x0 = [liner_well_x_min - liner_well_notch_x, liner_well_x_max])
+        translate([x0, -base_half_w_y - 1, liner_well_z_min])
+            cube([liner_well_notch_x, liner_well_notch_y_max + base_half_w_y + 1,
+                  deck_z - liner_well_z_min + 0.1]);
 }
 
 // --- Phone slot ----------------------------------------------------------
@@ -315,6 +468,15 @@ module phone_reference(portrait = false, drop = 0) {
 module base_slab() {
     dyno_rounded_prism_xy(base_x_min, base_x_max, -base_half_w_y, base_half_w_y,
         base_z_min, deck_z, base_corner_r);
+    // Joint cheeks, raising the trench side walls across the split.
+    for (y_sign = [-1, 1])
+        dyno_rounded_box_xyz(
+            [(joint_cheek_x_min + joint_cheek_x_max) / 2,
+             y_sign * (base_half_w_y - joint_cheek_w_y / 2),
+             (base_z_min + joint_cheek_top_z) / 2],
+            [joint_cheek_x_max - joint_cheek_x_min, joint_cheek_w_y,
+             joint_cheek_top_z - base_z_min],
+            joint_cheek_r);
 }
 
 module joint_tongue_2d(grow = 0) {
@@ -393,29 +555,47 @@ module rest_channel_cut() {
 
 module base_key_grooves() {
     // Across the channel floor and through both side walls.
-    for (i = [0 : rest_index_count - 1])
+    for (i = [0 : rest_index_count - 1]) {
         key_groove(key_x(rest_offset(i)), base_half_w_y + 1, key_z_min);
+        key_snap_recesses(key_x(rest_offset(i)));
+    }
 }
 
-module brand_text_2d(text, size) {
+module key_snap_recesses(x_pos) {
+    // For the barb of a seated key: in the tunnel floor of the -Y wall, and
+    // in the roof of the +Y wall for a key turned over.
+    half_y = key_snap_barb + key_snap_clearance;
+    depth = key_snap_barb + key_snap_clearance;
+    for (recess = [[key_snap_barb_y, key_z_min - depth, key_z_min + 0.01],
+                   [-key_snap_barb_y, key_z_max + key_fit - 0.01, key_z_max + depth]])
+        translate([x_pos - (key_t_x + key_fit) / 2, recess[0] - half_y, recess[1]])
+            cube([key_t_x + key_fit, 2 * half_y, recess[2] - recess[1]]);
+}
+
+module engraved_text_2d(text, size) {
     text(text, size = size, font = brand_font, halign = "center", valign = "center");
 }
 
-module brand_engravings() {
-    // Top: across the deck, reading from the palm-rest (+X) end.
-    translate([top_brand_x, top_brand_y, deck_z - brand_depth])
-        linear_extrude(height = brand_depth + 0.1)
-            rotate([0, 0, 90])
-                brand_text_2d(top_brand_text, top_brand_size);
-    // Sides: each reading from outside its face, cut from inside the wall
-    // outward so the depth stays controlled.
+module side_engraving(x_pos, z_pos, text, size) {
+    // On both side faces, each reading from outside its face, cut from
+    // inside the wall outward so the depth stays controlled.
     for (angle = [0, 180])
-        translate([side_brand_x, 0, side_brand_z])
+        translate([x_pos, 0, z_pos])
             rotate([0, 0, angle])
                 translate([0, -base_half_w_y + brand_depth, 0])
                     rotate([90, 0, 0])
                         linear_extrude(height = brand_depth + 0.1)
-                            brand_text_2d(side_brand_text, side_brand_size);
+                            engraved_text_2d(text, size);
+}
+
+module brand_engravings() {
+    side_engraving(side_brand_x, side_brand_z, side_brand_text, side_brand_size);
+}
+
+module opening_labels() {
+    for (i = [0 : rest_index_count - 1])
+        side_engraving(key_x(rest_offset(i)), opening_label_z,
+            str(rest_opening(i)), opening_label_size);
 }
 
 module base_front() {
@@ -431,45 +611,49 @@ module base_front() {
         anchor_pocket_cut();
         grip_trench_cut();
         stopper_well_cut();
+        stopper_leaf_cut();
+        liner_well_cut();
+        liner_clamp_cut();
         phone_slot_cut();
         brand_engravings();
     }
+    stopper_snap_ridge();
+    liner_clamp_pad();
 }
 
 module base_rear() {
     difference() {
-        union() {
-            difference() {
-                base_slab();
-                base_split_region();
-            }
-        }
+        base_slab();
+        base_split_region();
         joint_tongues(joint_fit);
+        grip_trench_cut();
         rest_channel_cut();
         base_key_grooves();
+        opening_labels();
     }
 }
 
-module base() {
-    base_front();
-    base_rear();
-}
-
-// --- Palm rest and keys --------------------------------------------------
+// --- Palm rest and key ---------------------------------------------------
 
 module palm_bolster(face_x) {
-    // Full-width bolster with a nearly flat top and rolled long edges. Its
-    // -X face continues the palm face.
+    // Bolster with a nearly flat top and rolled long edges, on the plate's top
+    // and, past the plate, on wings that lie on the deck. Its -X face
+    // continues the palm face.
     x_max = face_x + rest_bolster_depth_x;
+    w = rest_bolster_half_w_y;
     shoulder_z = rest_bolster_z_max - max(rest_bolster_front_r, rest_bolster_rear_r);
-    hull() {
-        dyno_rounded_prism_xy(face_x, x_max, -rest_half_w_y, rest_half_w_y,
-            rest_z_min, shoulder_z, rest_corner_r);
-        for (edge = [[face_x + rest_bolster_front_r, rest_bolster_front_r],
-                     [x_max - rest_bolster_rear_r, rest_bolster_rear_r]])
-            for (y_pos = [-rest_half_w_y + edge[1], rest_half_w_y - edge[1]])
-                translate([edge[0], y_pos, rest_bolster_z_max - edge[1]])
-                    sphere(r = edge[1], $fn = max(render_fn, 32));
+    intersection() {
+        hull() {
+            dyno_rounded_prism_xy(face_x, x_max, -w, w, rest_heel_z, shoulder_z, rest_corner_r);
+            for (edge = [[face_x + rest_bolster_front_r, rest_bolster_front_r],
+                         [x_max - rest_bolster_rear_r, rest_bolster_rear_r]])
+                for (y_pos = [-w + edge[1], w - edge[1]])
+                    translate([edge[0], y_pos, rest_bolster_z_max - edge[1]])
+                        sphere(r = edge[1], $fn = max(render_fn, 32));
+        }
+        // The rounds' lower halves would reach into the channel's walls.
+        translate([face_x, -w, rest_heel_z])
+            cube([rest_bolster_depth_x, 2 * w, rest_bolster_rise]);
     }
 }
 
@@ -487,38 +671,41 @@ module palm_rest(offset = 0) {
             along_x(face_x, face_x + rest_depth_x) rest_plate_2d();
             palm_bolster(face_x);
         }
-        // The keys' groove across the sole, under the bolster.
+        // The key's groove across the sole, under the bolster.
         key_groove(key_x(offset), rest_half_w_y + rest_flare_y + 1, rest_z_min - 0.1);
     }
 }
 
-module index_key(offset = 0) {
-    // Bar from the centreline out through the +Y side of the base, and a
-    // head outside it that extends away from the fingers.
+module index_key(offset = 0, pull = 0) {
+    // Bar across the base with a chamfered tip at the -Y side, and a head
+    // outside the +Y side that extends away from the fingers, and a snap
+    // prong with a barb behind the tip. pull draws it out along +Y.
     x0 = key_x(offset) - key_t_x / 2;
-    translate([x0, key_y_min, key_z_min])
-        cube([key_t_x, key_bar_y_max - key_y_min + 0.01, key_h_z]);
-    translate([x0, key_bar_y_max, key_head_z_min])
-        rotate([-90, 0, 0])
-            translate([0, -key_head_h, 0])
-                dyno_rounded_prism_xy(0, key_head_x, 0, key_head_h, 0, key_head_y, 2);
-}
-
-module index_keys(offset = 0, pull = 0) {
-    // One key from each side; pull draws them out along Y.
-    for (s = [0, 1])
-        mirror([0, s, 0]) translate([0, pull, 0]) index_key(offset);
+    c = key_tip_chamfer;
+    b = key_snap_barb;
+    translate([x0, pull, 0]) {
+        difference() {
+            hull() {
+                translate([0, key_y_min + c, key_z_min])
+                    cube([key_t_x, key_bar_y_max - key_y_min - c + 0.01, key_h_z]);
+                translate([c, key_y_min, key_z_min + c])
+                    cube([key_t_x - 2 * c, c, key_h_z - 2 * c]);
+            }
+            translate([-1, key_y_min - 1, key_z_min + key_snap_prong_t])
+                cube([key_t_x + 2, key_snap_len_y + 1, key_snap_gap_z]);
+        }
+        along_x(0, key_t_x)
+            polygon([[key_snap_barb_y - b, key_z_min + 0.01],
+                     [key_snap_barb_y, key_z_min - b],
+                     [key_snap_barb_y + b, key_z_min + 0.01]]);
+        translate([0, key_bar_y_max, key_head_z_min])
+            rotate([-90, 0, 0])
+                translate([0, -key_head_h, 0])
+                    dyno_rounded_prism_xy(0, key_head_x, 0, key_head_h, 0, key_head_y, 2);
+    }
 }
 
 // --- Print layouts -------------------------------------------------------
-
-module on_side_layout(y_max) {
-    // Lay the part on its +Y face so X and Z, the lug's bending plane, lie
-    // in the layers.
-    translate([0, 0, y_max])
-        rotate([-90, 0, 0])
-            children();
-}
 
 module print_layout(part) {
     if (part == "base_front")
@@ -536,16 +723,23 @@ module print_layout(part) {
             translate([-dyno_eye_x_right, (i - 0.5) * (2 * tongue_r + 8),
                        -loadcell_top_z])
                 eye_clip_right();
-    else if (part == "keys")
-        // On their -X faces, side by side, so the shear plane at the channel
+    else if (part == "key")
+        // On its -X face, lying along X, so the shear plane at the channel
         // floor lies across the layers.
-        for (i = [0, 1])
-            translate([(i - 0.5) * 20, -(key_y_min + key_bar_y_max + key_head_y) / 2, 0])
+        rotate([0, 0, -90])
+            translate([0, -(key_y_min + key_bar_y_max + key_head_y) / 2, 0])
                 rotate([0, -90, 0])
                     translate([-(key_x(0) - key_t_x / 2), 0, -(key_z_min + key_z_max) / 2])
                         index_key();
     else if (part == "rest")
-        translate([-rest_face_x() - rest_depth_x / 2, 0, -rest_z_min]) palm_rest();
+        // Turned so its wide bolster runs along X.
+        rotate([0, 0, 90])
+            translate([-rest_face_x() - rest_depth_x / 2, 0, -rest_z_min]) palm_rest();
+    else if (part == "liner")
+        // On their back faces, steps up, side by side along X.
+        for (i = [0 : liner_piece_count - 1])
+            translate([liner_layout_x(i) - liner_layout_w / 2, 0, 0])
+                rotate([0, 90, 0]) liner_piece(i);
     else if (part == "stoppers")
         // Flat, side by side, long sides along X.
         rotate([0, 0, 90])
@@ -557,6 +751,10 @@ module print_layout(part) {
         assert(false, str("Unknown part: ", part));
 }
 
+liner_layout_gap = 8;
+function liner_layout_x(i) = i == 0 ? 0 : liner_layout_x(i - 1) + liner_piece_h(i - 1) + liner_layout_gap;
+liner_layout_w = liner_layout_x(liner_piece_count - 1) + liner_piece_h(liner_piece_count - 1);
+
 // Minimum X/Y corner of each print layout.
 function print_layout_min(part) =
     part == "base_front" ? [(base_x_min - base_split_x) / 2, -base_half_w_y]
@@ -564,24 +762,27 @@ function print_layout_min(part) =
     : part == "anchor" ? [-(anchor_x_max - anchor_x_min) / 2, -anchor_half_w_y]
     : part == "grip" ? [-(grip_x_max - grip_x_min) / 2, -grip_half_w_y]
     : part == "clips" ? [-clip_tip_x, -2 * tongue_r - 4]
-    : part == "keys" ? [-10 - key_head_h / 2, -(key_bar_y_max + key_head_y - key_y_min) / 2]
+    : part == "key" ? [-(key_bar_y_max + key_head_y - key_y_min) / 2, -key_head_h / 2]
     : part == "stoppers" ? [stopper_tab_y_min(0), -(stopper_x_max - stopper_x_min) - 4]
-    : part == "rest" ? [-rest_depth_x / 2, -(rest_half_w_y + rest_flare_y)]
+    : part == "rest" ? [-max(rest_bolster_half_w_y, rest_half_w_y + rest_flare_y), -rest_depth_x / 2]
+    : part == "liner" ? [-liner_layout_w / 2, liner_y_min]
     : undef;
 
 // Front-left corner of each part on its plate, origin at the front-left bed
-// corner. Plate 1 holds the front base half, the grip, the anchor block, the
-// clips and the keys; plate 2 the stoppers, the rear base half and the palm
-// rest. Shared by the book's plate images and the Bambu Studio project.
+// corner. Plate 1 holds the front base half, the grip, the anchor block and
+// the clips; plate 2 the rear base half, the liner, the palm rest, the
+// stoppers and the key. Shared by the book's plate images and the Bambu
+// Studio project.
 function print_plate_corner(part) =
     part == "base_front" ? [10, 10]
     : part == "grip" ? [10, 150]
-    : part == "anchor" ? [106, 150]
-    : part == "clips" ? [163, 150]
-    : part == "keys" ? [199, 150]
-    : part == "stoppers" ? [10, 10]
-    : part == "base_rear" ? [10, 68]
-    : part == "rest" ? [160, 68]
+    : part == "anchor" ? [118, 150]
+    : part == "clips" ? [172, 150]
+    : part == "base_rear" ? [10, 10]
+    : part == "liner" ? [197, 10]
+    : part == "rest" ? [10, 147]
+    : part == "stoppers" ? [133, 147]
+    : part == "key" ? [10, 227]
     : undef;
 
 module print_plate_placement(part) {
