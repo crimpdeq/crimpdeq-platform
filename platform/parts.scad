@@ -199,8 +199,18 @@ module finger_grip() {
         }
         hangboard_pocket_cut();
         stopper_tab_slots();
+        grip_brand_engraving();
     }
     eye_lug();
+}
+
+module grip_brand_engraving() {
+    // On the lip's outer face, reading from the palm rest, cut from inside the
+    // lip outward so the depth stays controlled.
+    translate([grip_x_max - brand_depth, 0, grip_brand_z])
+        rotate([90, 0, 90])
+            linear_extrude(height = brand_depth + 0.1)
+                engraved_text_2d(grip_brand_text, grip_brand_size);
 }
 
 // --- Edge liner ----------------------------------------------------------

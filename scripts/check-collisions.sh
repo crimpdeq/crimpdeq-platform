@@ -239,6 +239,7 @@ invalid_parameters=(
     'grip_keel_half_w_y=9'
     'anchor_half_w_y=12.5'
     'anchor_outboard_x=-1'
+    'grip_brand_size=12'
     'grip_pull_gap_x=3'
     'stopper_clearance=0.1'
     'stopper_t_list=[3,10]'

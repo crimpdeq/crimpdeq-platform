@@ -483,6 +483,11 @@ side_brand_text = "crimpdeq.com";
 side_brand_size = 5.5;
 side_brand_x = (liner_well_x_max + liner_well_notch_x + base_split_x) / 2;
 side_brand_z = (base_z_min + deck_z) / 2;
+// The name on the finger lip's outer face, above the deck, facing the palm
+// rest.
+grip_brand_text = "Crimpdeq";
+grip_brand_size = 8;
+grip_brand_z = (deck_z + hangboard_front_z) / 2;
 // Conservative Inter Bold extents per unit of text size: advance per
 // character, and ascender to descender.
 brand_char_w = 0.85;
@@ -531,6 +536,10 @@ anchor_bearing_mpa = design_force_n / (2 * anchor_half_w_y * (deck_z - anchor_z_
 // upright, so the lip's root bends across the layers.
 lip_section_modulus_mm3 = hangboard_opening_w_y * pow(hangboard_lip_min_t, 2) / 6;
 lip_design_bending_mpa = design_force_n * hangboard_pocket_depth_z / lip_section_modulus_mm3;
+// The lip through the grip brand, under the moment at the text's foot.
+lip_brand_bending_mpa = design_force_n
+    * (hangboard_front_z - (grip_brand_z - grip_brand_size * brand_line_h / 2))
+    / (hangboard_opening_w_y * pow(hangboard_right_lip_t - brand_depth, 2) / 6);
 // Pocket side walls and back wall carry the lip force back to the lug.
 grip_net_area_mm2 = 2 * hangboard_side_wall_t * (hangboard_front_z - grip_z_min)
     + 2 * grip_half_w_y * hangboard_back_wall_t;
@@ -733,6 +742,11 @@ assert(side_brand_x - (liner_well_x_max + liner_well_notch_x)
     side_brand_size * brand_line_h + 6 <= deck_z - base_z_min &&
     base_half_w_y - trench_half_w_y - brand_depth >= 6,
     "The side brand must fit the base side face beside the trench and keep its wall solid.");
+assert(brand_len(grip_brand_text, grip_brand_size) + 6 <= hangboard_opening_w_y &&
+    grip_brand_z - grip_brand_size * brand_line_h / 2 >= deck_z + 1 &&
+    grip_brand_z + grip_brand_size * brand_line_h / 2 <= hangboard_front_z - hangboard_lip_radius &&
+    lip_brand_bending_mpa <= allowable_printed_tension_mpa,
+    "The grip brand must fit the lip's outer face between the deck and the rim's round, and keep the lip within its stress.");
 assert(opening_label_size * brand_line_h <= min(key_head_z_min, key_z_min) - base_z_min &&
     brand_len(str(rest_opening(rest_index_count - 1)), opening_label_size)
         <= rest_index_pitch - 2,
