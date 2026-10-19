@@ -22,11 +22,11 @@ module fixed_parts() {
 }
 
 module service_probe() {
-    // Finger and cable room in front of the switch and USB openings.
-    z_min = case_switch_z - case_switch_h / 2;
-    z_max = case_usb_z + case_usb_h / 2 + 8;
-    translate([-service_w / 2, case_y_max + 0.01, z_min])
-        cube([service_w, service_y_max - case_y_max, z_max - z_min]);
+    // Finger and cable room in front of each case's switch and USB openings.
+    for (c = [[case2_y_max, case2_switch_z - case2_switch_h / 2, case2_usb_z + case2_usb_h / 2],
+              [case3_y_half, case3_switch_z - case3_switch_h / 2, case3_usb_z + case3_usb_h / 2]])
+        translate([-service_w / 2, c[0] + 0.01, c[1]])
+            cube([service_w, service_y_max - c[0], c[2] + 8 - c[1]]);
 }
 
 // Stoppers fitted under the liner, for each edge depth from 25 to 10 mm.
@@ -55,20 +55,20 @@ module stored_parts() {
 }
 
 if (mode == "anchor_case") {
-    intersection() { anchor_block(); crimpdeq_case_reference(); }
+    intersection() { anchor_block(); crimpdeq_cases_reference(); }
 } else if (mode == "grip_case") {
     intersection() {
         union() { finger_grip(); translate([rated_preview_deflection, 0, 0]) finger_grip(); }
-        crimpdeq_case_reference();
+        crimpdeq_cases_reference();
     }
 } else if (mode == "base_case") {
     // The case floats: even lowered by nearly its gap it clears the base.
     intersection() {
         union() { base_front(); base_rear(); }
-        translate([0, 0, -case_float_gap + 0.1]) crimpdeq_case_reference();
+        translate([0, 0, -case_float_gap + 0.1]) crimpdeq_cases_reference();
     }
 } else if (mode == "clips_case") {
-    intersection() { eye_clips(); crimpdeq_case_reference(); }
+    intersection() { eye_clips(); crimpdeq_cases_reference(); }
 } else if (mode == "case_drop") {
     // The case, with its load cell, lowers onto both lugs from above
     // without touching the tongues or lugs.
@@ -76,7 +76,7 @@ if (mode == "anchor_case") {
         union() { anchor_block(); finger_grip(); }
         for (dz = [0.01, 1, 2, 3, 4, 5, 6, 8, 10, 12, 15, 20])
             translate([0, 0, dz]) {
-                crimpdeq_case_reference();
+                crimpdeq_cases_reference();
                 loadcell_reference();
             }
     }
@@ -166,7 +166,7 @@ if (mode == "anchor_case") {
         }
         difference() {
             union() {
-                crimpdeq_case_reference(); anchor_block(); finger_grip();
+                crimpdeq_cases_reference(); anchor_block(); finger_grip();
                 loadcell_reference();
             }
             translate([x_eye, dyno_eye_y, loadcell_top_z - 0.1])
@@ -195,7 +195,7 @@ if (mode == "anchor_case") {
     o = rest_offset(test_position);
     intersection() {
         lifted() palm_rest(o);
-        union() { fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference(); }
+        union() { fixed_parts(); finger_grip(); eye_clips(); crimpdeq_cases_reference(); }
     }
     intersection() {
         lifted() index_key(o);
@@ -271,7 +271,7 @@ if (mode == "anchor_case") {
             fixed_parts(); finger_grip(); eye_clips();
             if (test_position == 1) { edge_liner("right"); edge_liner("left"); }
             palm_rest(-rest_adjust_range); index_key(-rest_adjust_range);
-            crimpdeq_case_reference();
+            crimpdeq_cases_reference();
         }
     }
 } else if (mode == "pocket_floor") {
@@ -391,7 +391,7 @@ if (mode == "anchor_case") {
     intersection() {
         lifted() stored_pocket_stoppers();
         union() {
-            fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference();
+            fixed_parts(); finger_grip(); eye_clips(); crimpdeq_cases_reference();
             stored_liner();
         }
     }
@@ -407,7 +407,7 @@ if (mode == "anchor_case") {
                     cube([liner_clamp_pad_len_x + 0.02, liner_clamp_pad_y + 0.095,
                           deck_z - liner_well_z_min + 0.2]);
             }
-            base_rear(); anchor_block(); finger_grip(); eye_clips(); crimpdeq_case_reference();
+            base_rear(); anchor_block(); finger_grip(); eye_clips(); crimpdeq_cases_reference();
             palm_rest(-rest_adjust_range); index_key(-rest_adjust_range);
         }
     }
@@ -431,7 +431,7 @@ if (mode == "anchor_case") {
             translate([x0 + 0.01, -base_half_w_y - 5, liner_well_z_min + 0.01])
                 cube([liner_well_notch_x - 0.02, liner_well_notch_y_max + base_half_w_y + 4.99, 40]);
         union() {
-            fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference();
+            fixed_parts(); finger_grip(); eye_clips(); crimpdeq_cases_reference();
             stored_pocket_stoppers(); stored_liner();
         }
     }
@@ -445,7 +445,7 @@ if (mode == "anchor_case") {
             phone_reference(portrait = true, drop = -0.02);
         }
         union() {
-            fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference();
+            fixed_parts(); finger_grip(); eye_clips(); crimpdeq_cases_reference();
             palm_rest(-rest_adjust_range); index_key(-rest_adjust_range);
             stored_parts();
         }

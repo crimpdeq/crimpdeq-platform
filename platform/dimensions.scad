@@ -1,11 +1,10 @@
 //
 // All-printed Crimpdeq finger dynamometer: shared dimensions and screens.
 // Units: mm, N, MPa. Origin: load-cell centre in X/Y, load-cell bottom face
-// at Z = 0, matching the crimpdeq-case assembly coordinates.
+// at loadcell_bottom_z, matching the crimpdeq-case v2.0.0 assembly coordinates.
 //
 
-// Crimpdeq v2 interface snapshot (crimpdeq-case v2.0.0). Keep in step with
-// crimpdeq_reference.scad.
+// Load cell, shared by every supported case.
 lc_L = 80;
 lc_W = 40;
 lc_T = 4;
@@ -20,40 +19,82 @@ eye_bore_d = 15;
 dyno_eye_x_right = lc_L / 2 - eye_center_offset;
 dyno_eye_x_left = -dyno_eye_x_right;
 dyno_eye_y = 0;
-// The case encloses the whole load cell. Each eye is reached through a
-// vertical U-slot: a circle round the eye, open to the case end, through
-// the full height of the case and lid.
-case_x_half = 43.8;
-case_y_min = -35.7;
-case_y_max = 36.9;
-case_z_min = -5;
-case_lid_z = 25;
-case_z_max = 28;
-case_corner_r = 6;
-case_wall_t = 3;
-case_eye_access_d = eye_d + 1;
-case_eye_u_d = case_eye_access_d + 4;
+
+// The platform holds every case below; keep each in step with its module in
+// crimpdeq_reference.scad.
+
+// crimpdeq-case v2.0.0. A rounded box round the whole load cell. Each eye is
+// reached through a vertical U-slot: a circle round the eye, open to the case
+// end, through the full height of the case and lid.
+case2_x_half = 43.8;
+case2_y_min = -35.7;
+case2_y_max = 36.9;
+case2_z_min = -5;
+case2_lid_z = 25;
+case2_z_max = 28;
+case2_corner_r = 6;
+case2_wall_t = 3;
+case2_eye_u_d = eye_d + 5;
 // Lid battery walls hang into the inboard edge of each U-slot above the
 // load cell, and a lid bridge joins each to the U-slot at the top.
-case_battery_wall_x = 18.3;
-case_battery_wall_t = 1.2;
-case_battery_wall_l_y = 24;
-case_battery_wall_z_min = 5.1;
-case_u_bridge_x_min = 13.9;
+case2_battery_wall_x = 18.3;
+case2_battery_wall_t = 1.2;
+case2_battery_wall_l_y = 24;
+case2_battery_wall_z_min = 5.1;
+case2_u_bridge_x_min = 13.9;
 // +Y wall openings; the USB opening runs up to the lid seam.
-case_usb_x = 0;
-case_usb_z = 22.9;
-case_usb_w = 12;
-case_usb_h = 11;
-case_switch_x = 0;
-case_switch_z = 3;
-case_switch_w = 15;
-case_switch_h = 10;
+case2_usb_x = 0;
+case2_usb_z = 22.9;
+case2_usb_w = 12;
+case2_usb_h = 11;
+case2_switch_x = 0;
+case2_switch_z = 3;
+case2_switch_w = 15;
+case2_switch_h = 10;
+
+// crimpdeq-case v3.1.0, which seats the load cell 0.5 mm lower: its own
+// coordinates put the load cell's bottom face at Z = 0. A hexagonal plan
+// with flat front and rear walls and a point at each end. Each eye's U-slot
+// runs out through the point; its inboard edge is a flat over the eye's
+// bore, through the full height of the case and lid, so the slots cut the
+// points off.
+case3_dz = loadcell_bottom_z;
+case3_y_half = 38.7;
+case3_z_min = case3_dz - 4.4;
+case3_lid_z = case3_dz + 23.8;
+case3_z_max = case3_dz + 26.2;
+case3_facet_angle = 60;
+// Facet distance from the centre: the load-cell corners, 0.5 mm clearance
+// and the 2.4 mm wall.
+case3_facet_k = sin(case3_facet_angle) * lc_L / 2 + cos(case3_facet_angle) * lc_W / 2
+    + 0.5 + 2.4;
+case3_tip_x = case3_facet_k / sin(case3_facet_angle);
+case3_corner_x = (case3_facet_k - cos(case3_facet_angle) * case3_y_half)
+    / sin(case3_facet_angle);
+case3_slot_d = eye_d + 5;
+case3_slot_inner_x = 18.7;
+// Where each slot's sides meet the facets.
+case3_x_half = (case3_facet_k - cos(case3_facet_angle) * case3_slot_d / 2)
+    / sin(case3_facet_angle);
+// +Y wall openings: the switch, and the USB cable's overmold pocket.
+case3_usb_x = 4.55;
+case3_usb_z = case3_dz + 17.645;
+case3_usb_w = 13.65;
+case3_usb_h = 7.8;
+case3_switch_x = 0;
+case3_switch_z = case3_dz + 3;
+case3_switch_w = 15;
+case3_switch_h = 10;
+
+// Envelope of every supported case.
+case_x_half = max(case2_x_half, case3_x_half);
+case_y_min = min(case2_y_min, -case3_y_half);
+case_z_min = min(case2_z_min, case3_z_min);
 
 // Platform rating and the printed structure's design target. The Crimpdeq is
-// rated to 1500 N; the printed lugs in its eyes limit the platform to 49 kg.
+// rated to 1500 N; the printed lugs in its eyes limit the platform to 46 kg.
 loadcell_rated_force_n = 1500;
-platform_rated_kg = is_undef(platform_rated_kg) ? 49 : platform_rated_kg;
+platform_rated_kg = is_undef(platform_rated_kg) ? 46 : platform_rated_kg;
 gravity = 9.80665;
 platform_rated_force_n = platform_rated_kg * gravity;
 structural_safety_factor = is_undef(structural_safety_factor) ? 2.0 : structural_safety_factor;
@@ -70,7 +111,7 @@ deck_z = case_z_min - case_float_gap;
 // lug.
 // Above the load cell the lug necks down under a head that holds a clip.
 u_slot_clear = is_undef(u_slot_clear) ? 1.0 : u_slot_clear;
-tongue_r = case_eye_u_d / 2 - u_slot_clear;
+tongue_r = min(case2_eye_u_d, case3_slot_d) / 2 - u_slot_clear;
 lug_fit = is_undef(lug_fit) ? 0.35 : lug_fit;
 lug_r = eye_bore_d / 2 - lug_fit;
 lug_neck_r = is_undef(lug_neck_r) ? 5.25 : lug_neck_r;
@@ -78,9 +119,23 @@ lug_neck_r = is_undef(lug_neck_r) ? 5.25 : lug_neck_r;
 lug_head_flat_w = is_undef(lug_head_flat_w) ? lug_r - lug_neck_r : lug_head_flat_w;
 lug_head_chamfer = lug_r - lug_neck_r - lug_head_flat_w;
 lug_top_chamfer = 1;
-// Above the load cell, the neck and head are cut flat on their inboard side
-// to clear the lid battery walls; the eye only bears on the outboard side.
-lug_upper_flat_x = case_battery_wall_x + case_battery_wall_t / 2 + u_slot_clear;
+// The tongue and the lug are cut flat on their inboard side, through their
+// full height, to clear the v2 lid battery walls and the v3 slot edge that
+// the case lowers past them; the eye only bears on the outboard side.
+lug_flat_x = max(case2_battery_wall_x + case2_battery_wall_t / 2, case3_slot_inner_x)
+    + u_slot_clear;
+// The lug's section, a circle less the segment beyond the flat: its area,
+// centroid shift outboard, and second moment about the centroid for bending
+// along X.
+lug_flat_angle = acos((dyno_eye_x_right - lug_flat_x) / lug_r);
+lug_flat_segment_mm2 = pow(lug_r, 2) * (lug_flat_angle * PI / 180
+    - sin(lug_flat_angle) * cos(lug_flat_angle));
+lug_area_mm2 = PI * pow(lug_r, 2) - lug_flat_segment_mm2;
+lug_centroid_shift = 2 * pow(lug_r * sin(lug_flat_angle), 3) / 3 / lug_area_mm2;
+lug_i_mm4 = pow(lug_r, 4) / 4 * (PI - lug_flat_angle * PI / 180
+        + sin(lug_flat_angle) * cos(lug_flat_angle)
+        - 2 * pow(sin(lug_flat_angle), 3) * cos(lug_flat_angle))
+    - lug_area_mm2 * pow(lug_centroid_shift, 2);
 clip_t = is_undef(clip_t) ? 3 : clip_t;
 clip_head_gap = 0.2;
 lug_head_z_min = loadcell_top_z + clip_t + clip_head_gap;
@@ -333,11 +388,13 @@ phone_stand_x_max = stopper_well_x_min - phone_stand_clear_x;
 phone_slot_x_top = phone_stand_x_max
     - phone_slot_inner_wall_x - phone_slot_depth_z * tan(phone_slot_tilt);
 phone_slot_top_w_x = phone_slot_w / cos(phone_slot_tilt);
-// Lowest viewing elevation, over the case's -X top edge, from which the
+// Lowest viewing elevation, over each case's -X top edge, from which the
 // front edge of the slot floor is still visible.
 phone_view_max_elevation = is_undef(phone_view_max_elevation) ? 20 : phone_view_max_elevation;
-phone_view_elevation = atan(max(0, case_z_max - phone_slot_z_min)
-    / (-case_x_half - (phone_stand_x_max - phone_slot_inner_wall_x)));
+function phone_view_elevation_over(top_z, x_half) = atan(max(0, top_z - phone_slot_z_min)
+    / (-x_half - (phone_stand_x_max - phone_slot_inner_wall_x)));
+phone_view_elevation = max(phone_view_elevation_over(case2_z_max, case2_x_half),
+    phone_view_elevation_over(case3_z_max, case3_x_half));
 // Largest phone, in its case, checked in the slot in either orientation.
 phone_probe_t = 13;
 phone_probe_l = 165;
@@ -471,7 +528,7 @@ joint_catch_travel = joint_fit
 base_front_len = base_split_x + joint_tongue_len_x - base_x_min;
 base_rear_len = base_x_max - base_split_x;
 
-// Service access to the switch and USB through the open +Y side.
+// Service access to each case's switch and USB through the open +Y side.
 service_w = 30;
 service_y_max = base_half_w_y + 20;
 
@@ -508,14 +565,15 @@ allowable_lug_bearing_mpa = is_undef(allowable_lug_bearing_mpa) ? 20 : allowable
 
 // Anchor block and grip print upright, so the lug root and the tongue root
 // are loaded across the layers. The eye bears across the full lug diameter
-// and tab thickness; its resultant acts at the load-cell mid-plane.
+// and tab thickness; its resultant acts at the load-cell mid-plane. The eye
+// pushes the lug inboard, so its outboard side is in tension.
 lug_bearing_mpa = design_force_n / (2 * lug_r * lc_T);
 lug_bending_mpa = design_force_n * (loadcell_center_z - loadcell_bottom_z)
-    / (PI * pow(2 * lug_r, 3) / 32);
-lug_shear_mpa = design_force_n / (PI * lug_r * lug_r);
-// Tongue root at the deck, taken as the tongue's width by its length
-// inside the case.
-tongue_root_len_x = case_x_half - (dyno_eye_x_right - tongue_r);
+    * (lug_r - lug_centroid_shift) / lug_i_mm4;
+lug_shear_mpa = design_force_n / lug_area_mm2;
+// Tongue root at the deck, taken as the tongue's width by its length from
+// the flat to the anchor's outboard end; the grip's tongue is longer.
+tongue_root_len_x = -anchor_x_min - lug_flat_x;
 tongue_bending_mpa = design_force_n * (loadcell_center_z - deck_z)
     / (2 * tongue_r * pow(tongue_root_len_x, 2) / 6);
 
@@ -600,10 +658,8 @@ assert(lug_bending_mpa <= allowable_printed_tension_mpa &&
     lug_shear_mpa <= allowable_printed_tension_mpa / 2 &&
     tongue_bending_mpa <= allowable_printed_tension_mpa,
     "Printed lug or tongue root exceeds configured cross-layer stress.");
-assert(lug_upper_flat_x < dyno_eye_x_right - lug_neck_r + 1 &&
-    lug_upper_flat_x <= dyno_eye_x_right - clip_tip_x &&
-    case_battery_wall_z_min > loadcell_top_z,
-    "The lid battery walls leave too little room for the lug neck or the clip.");
+assert(lug_flat_x <= dyno_eye_x_right - clip_tip_x,
+    "The case's slot edges leave too little room for the clip.");
 assert(lug_neck_r >= 5 && lug_neck_r <= lug_r - 1.5 && lug_head_chamfer >= 0 &&
     clip_seat_r > lug_neck_r && clip_seat_r + 2.5 <= tongue_r,
     "The lug neck must leave a head over the clip and a clip ring round the neck.");
@@ -617,15 +673,19 @@ assert(clip_ring_bearing_mpa <= allowable_printed_bearing_mpa &&
 assert(clip_access_x >= 5 && clip_tail_x >= clip_tip_x + 6 &&
     dyno_eye_x_right + clip_tail_x <= lc_L / 2,
     "Clips need finger room beside the fin, a tail over the load cell, and must end on it.");
-assert(lug_upper_flat_x <= dyno_eye_x_right - lug_neck_r,
-    "The flat that clears the lid walls must not cut the lug neck.");
-assert(clip_fin_top_z < case_z_max - 4 && clip_fin_top_z > lug_top_z + 4,
+assert(lug_flat_x <= dyno_eye_x_right - lug_neck_r,
+    "The flat that clears the case's slot edges must not cut the lug neck.");
+assert(clip_fin_top_z < min(case2_z_max, case3_z_max) - 4 && clip_fin_top_z > lug_top_z + 4,
     "Clip fins must stand clear of the lug and stay below the case top.");
 assert(grip_body_x_min >= case_x_half + 1 + clip_t,
     "The grip body must stay clear of the case end.");
 assert(rest_catch_travel <= 0.6 && joint_catch_travel <= 1,
     "Dovetail flanks are too shallow to hold their parts closely.");
 assert(case_float_gap >= 1, "The case must float at least 1 mm above the deck.");
+assert(max([for (o = [[case2_usb_x, case2_usb_w], [case2_switch_x, case2_switch_w],
+                      [case3_usb_x, case3_usb_w], [case3_switch_x, case3_switch_w]])
+        abs(o[0]) + o[1] / 2]) <= service_w / 2,
+    "The service access must span each case's switch and USB openings.");
 assert(hangboard_pocket_depth_z == 25, "The hangboard pocket must remain 25 mm deep.");
 assert(hangboard_back_wall_t >= 6, "Hangboard pocket back wall must be at least 6 mm thick.");
 assert(hangboard_opening_w_y >= 80, "Four-finger opening must be at least 80 mm wide.");

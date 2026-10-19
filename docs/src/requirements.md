@@ -26,8 +26,8 @@ replaces testing printed parts.
 
 ## Case
 
-- The platform holds the crimpdeq-case `v2.0.0` enclosure and every
-  earlier release.
+- The platform holds the crimpdeq-case `v3.1.0` and `v2.0.0` enclosures and
+  every earlier release.
 - Hand force passes only through the load-cell eyes. The case floats at
   least 1 mm clear of every printed part, and its shell, lid and screws
   never carry load.

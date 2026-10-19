@@ -55,10 +55,16 @@ module xz_profile_along_y(length) {
 
 module tongue_2d(x_end) {
     // Round the right eye and out to x_end, u_slot_clear inside the case's
-    // U-slot.
-    translate([dyno_eye_x_right, dyno_eye_y]) circle(r = tongue_r);
-    translate([dyno_eye_x_right, dyno_eye_y - tongue_r])
-        square([x_end - dyno_eye_x_right, 2 * tongue_r]);
+    // U-slot, cut flat inboard.
+    intersection() {
+        union() {
+            translate([dyno_eye_x_right, dyno_eye_y]) circle(r = tongue_r);
+            translate([dyno_eye_x_right, dyno_eye_y - tongue_r])
+                square([x_end - dyno_eye_x_right, 2 * tongue_r]);
+        }
+        translate([lug_flat_x, dyno_eye_y - tongue_r])
+            square([x_end - lug_flat_x, 2 * tongue_r]);
+    }
 }
 
 module tongue(x_end) {
@@ -70,12 +76,12 @@ module tongue(x_end) {
 
 module eye_lug() {
     // Round lug filling the right eye, then a neck for the clip and a head
-    // with a flat underside ring, a printable chamfer and a lead-in on top.
-    // Above the load cell both are cut flat inboard.
-    translate([dyno_eye_x_right, dyno_eye_y, loadcell_bottom_z - 1])
-        cylinder(r = lug_r, h = loadcell_top_z - loadcell_bottom_z + 1);
+    // with a flat underside ring, a printable chamfer and a lead-in on top,
+    // all cut flat inboard.
     intersection() {
         translate([dyno_eye_x_right, dyno_eye_y, 0]) {
+            translate([0, 0, loadcell_bottom_z - 1])
+                cylinder(r = lug_r, h = loadcell_top_z - loadcell_bottom_z + 1);
             translate([0, 0, loadcell_top_z - 0.01])
                 cylinder(r = lug_neck_r, h = lug_head_z_min - loadcell_top_z + 0.02);
             translate([0, 0, lug_head_z_min])
@@ -86,8 +92,8 @@ module eye_lug() {
             translate([0, 0, lug_top_z - lug_top_chamfer])
                 cylinder(r1 = lug_r, r2 = lug_r - lug_top_chamfer, h = lug_top_chamfer);
         }
-        translate([lug_upper_flat_x, -lug_r - 1, loadcell_top_z - 1])
-            cube([2 * lug_r + 2, 2 * lug_r + 2, lug_top_z - loadcell_top_z + 2]);
+        translate([lug_flat_x, -lug_r - 1, loadcell_bottom_z - 2])
+            cube([2 * lug_r + 2, 2 * lug_r + 2, lug_top_z - loadcell_bottom_z + 3]);
     }
 }
 

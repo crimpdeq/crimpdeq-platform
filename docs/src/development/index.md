@@ -5,8 +5,8 @@ The model in `platform/` is plain OpenSCAD with no library dependencies:
 - `dimensions.scad`: parameters and structural assertions.
 - `parts.scad`: the printable parts.
 - `assembly.scad`: preview and export entry point.
-- `crimpdeq_reference.scad`: a simplified snapshot of the Crimpdeq case
-  (crimpdeq-case v2.0.0) used for fit and collision checks.
+- `crimpdeq_reference.scad`: simplified snapshots of the supported Crimpdeq
+  cases (crimpdeq-case v2.0.0 and v3.1.0) used for fit and collision checks.
 
 The export and validation scripts are in `scripts/`.
 
@@ -32,8 +32,9 @@ CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash scripts/check-collisions.sh
 It checks the parts for collisions and required contacts, confirms that each
 exported STL has the expected number of bodies, and that unsafe parameters
 are rejected. `scripts/check-real-case.sh` runs the same fit checks against the real
-[crimpdeq-case](https://github.com/crimpdeq/crimpdeq-case) source. CI runs
-both on every pull request.
+[crimpdeq-case](https://github.com/crimpdeq/crimpdeq-case) source of any
+release; set `CRIMPDEQ_CASE_DIR` to its `case/` directory. CI runs both on
+every pull request, the real-case check against each supported release.
 
 ## Book
 
