@@ -103,7 +103,7 @@ def main(argv: list[str]) -> int:
         expected = int(args[1])
         args = args[2:]
     if not args or expected < 1:
-        print("usage: check-stl-components.py [--expect N] FILE.stl [...]")
+        print("usage: scripts/check-stl-components.py [--expect N] FILE.stl [...]")
         return 2
 
     failed = False

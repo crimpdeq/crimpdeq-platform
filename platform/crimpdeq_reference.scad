@@ -3,7 +3,7 @@
 // This is a fit/collision model, not a replacement for crimpdeq-case.
 //
 
-include <dynamometer_dimensions.scad>
+include <dimensions.scad>
 
 render_fn = is_undef(render_fn) ? 96 : render_fn;
 $fn = render_fn;

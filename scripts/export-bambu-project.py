@@ -6,7 +6,7 @@ ON_PLATE=true), checks the plate layout, lets the Bambu Studio CLI assemble
 the two plates with the print settings from docs/src/build/printing.md, and
 slices the project to confirm that every plate is printable.
 
-Usage: python3 export-bambu-project.py [--output FILE.3mf] [--skip-slice]
+Usage: python3 scripts/export-bambu-project.py [--output FILE.3mf] [--skip-slice]
 BAMBU_STUDIO names the Bambu Studio executable (default: bambu-studio on PATH,
 then the macOS application); BAMBU_STUDIO_PROFILES its profiles directory.
 OPENSCAD_RENDER_FN and EXPORT_JOBS are passed to export-parts.sh.
@@ -25,7 +25,7 @@ import tempfile
 import zipfile
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MACOS_APP = Path("/Applications/BambuStudio.app/Contents/MacOS/BambuStudio")
 
 PRINTER = "Bambu Lab A1 0.4 nozzle"
@@ -41,23 +41,28 @@ PROCESS_OVERRIDES = {
     "top_shell_layers": "6",
     "bottom_shell_layers": "6",
     "sparse_infill_density": "20%",
-    # No part needs support; the joint sockets, the key tunnels and the rest's
-    # key groove are bridged, and support in them would scar a bearing face.
+    # Only the palm rest's wings need support (REST); the joint sockets, the
+    # key tunnels and the rest's key groove are bridged, and support in them
+    # would scar a bearing face.
     "enable_support": "0",
     "brim_type": "outer_only",
     "brim_width": "5",
 }
 SOLID = {"sparse_infill_density": "100%"}
-REST = {"sparse_infill_density": "50%"}
-BASE = {"top_shell_layers": "4", "bottom_shell_layers": "4"}
+# Support from the bed under the bolster's wings only; the key groove across
+# the sole stays a bridge. Tree support ignores bridge_no_support and fills it.
+REST = {"sparse_infill_density": "50%", "enable_support": "1", "support_type": "normal(auto)",
+        "support_on_build_plate_only": "1", "bridge_no_support": "1"}
+# The base halves carry low stress, so they print lighter than the load path.
+BASE = {"wall_loops": "4", "top_shell_layers": "4", "bottom_shell_layers": "4",
+        "sparse_infill_density": "15%"}
 # Height ranges that print parts of an object sparser, as (min Z, max Z,
-# settings) with the heights as dynamometer_dimensions.scad expressions in the
+# settings) with the heights as platform/dimensions.scad expressions in the
 # part's print Z. Bambu Studio reads the layer height of every height range.
 RANGE_BASE = {"layer_height": PROCESS_OVERRIDES["layer_height"]}
 HEIGHT_RANGES = {
-    # The phone stand's cheeks, the only part of the front half above the
-    # deck, carry only the phone.
-    "base_front": [("deck_z - base_z_min", "phone_stand_top_z - base_z_min",
+    # The phone stand's cheeks, above the joint cheeks, carry only the phone.
+    "base_front": [("joint_cheek_top_z - base_z_min", "phone_stand_top_z - base_z_min",
                     {**RANGE_BASE, "sparse_infill_density": "10%"})],
     # The bolster, above the heel plate.
     "rest": [("rest_heel_z - rest_z_min", "rest_bolster_z_max - rest_z_min",
@@ -72,10 +77,10 @@ HEIGHT_RANGES = {
 PLATES = [
     ("Front base and small parts", [
         ("base_front", BASE), ("grip", SOLID), ("anchor", SOLID), ("clips", SOLID),
-        ("keys", SOLID),
     ]),
-    ("Rear base, palm rest and stoppers", [
-        ("stoppers", {}), ("base_rear", BASE), ("rest", REST),
+    ("Rear base, liner, palm rest, stoppers and key", [
+        ("base_rear", BASE), ("liner", SOLID), ("rest", REST), ("stoppers", {}),
+        ("key", SOLID),
     ]),
 ]
 ILLEGAL_NAME_CHARS = '<>:/\\|?*"'
@@ -85,7 +90,7 @@ MIN_PART_GAP = 15.0
 
 def load_stl_reader():
     spec = importlib.util.spec_from_file_location(
-        "check_stl_components", PROJECT_ROOT / "check-stl-components.py"
+        "check_stl_components", PROJECT_ROOT / "scripts" / "check-stl-components.py"
     )
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -201,7 +206,7 @@ def height_ranges(work: Path) -> dict[str, list[dict]]:
                    for min_z, max_z, _ in ranges for z in (min_z, max_z)]
     probe = work / "height_ranges.scad"
     probe.write_text(
-        f"include <{PROJECT_ROOT / 'dynamometer_dimensions.scad'}>\n"
+        f"include <{PROJECT_ROOT / 'platform' / 'dimensions.scad'}>\n"
         f"echo(height_ranges = [{', '.join(expressions)}]);\n",
         encoding="utf-8",
     )
@@ -220,7 +225,8 @@ def height_ranges(work: Path) -> dict[str, list[dict]]:
 def export_parts(stl_dir: Path) -> None:
     env = dict(os.environ, EXPORT_DIR=str(stl_dir), ON_PLATE="true")
     parts = [part for _, objects in PLATES for part, _ in objects]
-    subprocess.run(["bash", str(PROJECT_ROOT / "export-parts.sh"), *parts], env=env, check=True)
+    subprocess.run(["bash", str(PROJECT_ROOT / "scripts" / "export-parts.sh"), *parts],
+                   env=env, check=True)
 
 
 def stl_path(stl_dir: Path, part: str) -> Path:

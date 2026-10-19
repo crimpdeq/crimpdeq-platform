@@ -4,9 +4,9 @@
 // Every part comes from the project modules, so the pictures follow the design.
 //
 
-include <../../dynamometer_dimensions.scad>
-use <../../dynamometer_parts.scad>
-use <../../crimpdeq_reference.scad>
+include <../../platform/dimensions.scad>
+use <../../platform/parts.scad>
+use <../../platform/crimpdeq_reference.scad>
 
 render_fn = is_undef(render_fn) ? 48 : render_fn;
 $fn = render_fn;
@@ -22,6 +22,7 @@ c_loadcell = [0.75, 0.75, 0.78];
 c_clip = [0.92, 0.76, 0.20];
 c_key = [0.45, 0.80, 0.45];
 c_stopper = [0.20, 0.62, 0.58];
+c_liner = [0.80, 0.35, 0.60];
 c_phone = [0.10, 0.10, 0.12, 0.75];
 c_arrow = [0.90, 0.10, 0.10];
 c_plate = [0.66, 0.67, 0.70];
@@ -59,8 +60,9 @@ module anchor(dz = 0) { color(c_anchor) translate([0, 0, dz]) render() anchor_bl
 module grip(dx = 0, dz = 0, c = c_grip) { color(c) translate([dx, 0, dz]) render() finger_grip(); }
 module clips() { color(c_clip) render() eye_clips(); }
 module rest(offset = 0, dx = 0) { color(c_rest) translate([dx, 0, 0]) render() palm_rest(offset); }
-module keys(offset = 0, pull = 0) { color(c_key) index_keys(offset, pull); }
+module key(offset = 0, pull = 0) { color(c_key) index_key(offset, pull); }
 module stored_stoppers() { color(c_stopper) stored_pocket_stoppers(); }
+module liner(stoppers = []) { color(c_liner) edge_liner("right", stoppers); }
 
 module full_assembly(offset = 0) {
     base_halves();
@@ -69,8 +71,9 @@ module full_assembly(offset = 0) {
     clips();
     case_model();
     rest(offset);
-    keys(offset);
+    key(offset);
     stored_stoppers();
+    liner();
 }
 
 module build_plate(label) {
@@ -92,12 +95,13 @@ if (view == "overview") {
     plate_part("grip", c_grip);
     plate_part("anchor", c_anchor);
     plate_part("clips", c_clip);
-    plate_part("keys", c_key);
 } else if (view == "plate2") {
-    build_plate("Plate 2: rear base half, palm rest and stoppers");
-    plate_part("stoppers", c_stopper);
+    build_plate("Plate 2: rear base half, liner, palm rest, stoppers and key");
     plate_part("base_rear", c_base_b);
+    plate_part("liner", c_liner);
     plate_part("rest", c_rest);
+    plate_part("stoppers", c_stopper);
+    plate_part("key", c_key);
 } else if (view == "join_base") {
     // The rear half is lowered onto the front half's dovetail tongues.
     color(c_base) render() base_front();
@@ -133,21 +137,42 @@ if (view == "overview") {
     arrow([x_drop, 0, 75], [x_drop, 0, 58], 3);
     arrow([x_drop + 6, 0, 45], [dyno_eye_x_right + clip_tail_x / 2 + 2, 0, 45], 3);
 } else if (view == "rest_on") {
-    // The palm rest slides into its channel from the rear end, then a key
-    // slides in under it from each side.
+    // The palm rest slides into its channel from the rear end, then the key
+    // slides in under it from the +Y side.
     base_halves();
     anchor();
     grip();
     clips();
     case_model();
     rest(0, 70);
-    keys(0, 40);
+    key(0, 40);
     arrow([rest_face_x() + rest_depth_x + 90, 0, 45],
           [rest_face_x() + rest_depth_x + 40, 0, 45], 4);
     key_z = (key_z_min + key_z_max) / 2;
-    for (s = [-1, 1])
-        arrow([key_x(0), s * (base_half_w_y + 85), key_z],
-              [key_x(0), s * (base_half_w_y + 60), key_z], 3);
+    arrow([key_x(0), base_half_w_y + 85, key_z],
+          [key_x(0), base_half_w_y + 60, key_z], 3);
+} else if (view == "liner") {
+    // From the palm rest: for a 20 mm unlevel edge, right hand, the 10 mm
+    // spacer stands on the 5 mm stopper against the finger lip and the cap
+    // is lowered onto it.
+    base_halves();
+    anchor();
+    grip();
+    clips();
+    case_model();
+    color(c_stopper) pocket_stopper(0);
+    cap_z = hangboard_front_z - liner_cap_h;
+    color(c_liner) {
+        intersection() {
+            edge_liner("right", [0]);
+            translate([-500, -500, cap_z - 1000]) cube(1000);
+        }
+        translate([0, 0, 35]) intersection() {
+            edge_liner("right", [0]);
+            translate([-500, -500, cap_z]) cube(1000);
+        }
+    }
+    arrow([hangboard_opening_x_max + 15, 0, 80], [hangboard_opening_x_max + 15, 0, 50], 4);
 } else if (view == "stoppers") {
     // The 5 mm stopper in the pocket, the 10 mm one lowered onto it.
     base_halves();
@@ -160,6 +185,18 @@ if (view == "overview") {
         translate([0, 0, 45]) pocket_stopper(1);
     }
     arrow([stopper_center_x + 32, 0, 80], [stopper_center_x + 32, 0, 50], 4);
+} else if (view == "storage") {
+    // Level edge: the liner stacked in its well beside the case and the
+    // stoppers in theirs beyond the anchor block.
+    base_halves();
+    anchor();
+    grip();
+    clips();
+    case_model();
+    rest(0);
+    key(0);
+    stored_stoppers();
+    color(c_liner) stored_liner();
 } else if (view == "phone") {
     full_assembly(0);
     color(c_phone) phone_reference();

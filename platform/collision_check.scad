@@ -2,9 +2,9 @@
 // Seating faces are backed off 0.01 mm where contact is intended, so face
 // contact is not reported as an overlap.
 
-use <dynamometer_parts.scad>
+use <parts.scad>
 use <crimpdeq_reference.scad>
-include <dynamometer_dimensions.scad>
+include <dimensions.scad>
 
 render_fn = is_undef(render_fn) ? 24 : render_fn;
 $fn = render_fn;
@@ -29,8 +29,29 @@ module service_probe() {
         cube([service_w, service_y_max - case_y_max, z_max - z_min]);
 }
 
+// Stoppers fitted under the liner, for each edge depth from 25 to 10 mm.
+liner_configs = [[], [0], [1], [0, 1]];
+
 module stopper_in_pocket(i, dx = 0, dy = 0, dz = 0) {
     translate([dx, dy, dz]) pocket_stopper(i);
+}
+
+module key_turned_over(offset = 0, pull = 0) {
+    // Fitted from the -Y side: turned over about its length, head still
+    // away from the grip.
+    z_mid = (key_z_min + key_z_max) / 2;
+    translate([0, 0, z_mid]) rotate([180, 0, 0]) translate([0, 0, -z_mid])
+        index_key(offset, pull);
+}
+
+module stoppers_fitted(stoppers) {
+    for (i = stoppers) translate([0, 0, stoppers_h([for (j = stoppers) if (j < i) j])])
+        pocket_stopper(i);
+}
+
+module stored_parts() {
+    stored_pocket_stoppers();
+    stored_liner();
 }
 
 if (mode == "anchor_case") {
@@ -157,8 +178,8 @@ if (mode == "anchor_case") {
         service_probe();
         union() {
             fixed_parts(); finger_grip(); eye_clips();
-            palm_rest(-rest_adjust_range); index_keys(-rest_adjust_range);
-            stored_pocket_stoppers();
+            palm_rest(-rest_adjust_range); index_key(-rest_adjust_range);
+            stored_parts();
         }
     }
 } else if (mode == "base_halves_overlap") {
@@ -170,24 +191,43 @@ if (mode == "anchor_case") {
     // Pushed together, the halves bear on their butt faces.
     intersection() { base_front(); translate([-0.02, 0, 0.01]) base_rear(); }
 } else if (mode == "rest_position") {
-    // The rest and both keys at each of the seven positions.
+    // The rest and the key at each of the seven positions.
     o = rest_offset(test_position);
     intersection() {
         lifted() palm_rest(o);
         union() { fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference(); }
     }
     intersection() {
-        lifted() index_keys(o);
+        lifted() index_key(o);
         union() { fixed_parts(); palm_rest(o); finger_grip(); }
     }
 } else if (mode == "rest_locked") {
-    // At both travel ends, each key catches its floor groove and the plate's
+    // At both travel ends, the key catches its floor groove and the plate's
     // groove in X.
     assert(test_position < 4, "Lock index must be 0-3.");
     o = test_position < 2 ? -rest_adjust_range : rest_adjust_range;
     shift = (test_position % 2 == 0 ? -1 : 1) * (key_fit / 2 + 0.05);
-    intersection() { translate([shift, 0, 0.02]) index_keys(o); base_rear(); }
-    intersection() { translate([shift, 0, 0.02]) index_keys(o); palm_rest(o); }
+    intersection() { translate([shift, 0, 0.02]) index_key(o); base_rear(); }
+    intersection() { translate([shift, 0, 0.02]) index_key(o); palm_rest(o); }
+} else if (mode == "key_turned_over") {
+    o = rest_offset(test_position);
+    intersection() {
+        lifted() key_turned_over(o);
+        union() { fixed_parts(); palm_rest(o); finger_grip(); }
+    }
+} else if (mode == "key_retained") {
+    // Pulled until its barb's apex reaches the recess edge, the key catches
+    // the far wall even with the bar shifted across its fit: fitted from +Y
+    // and lifted (0), or turned over from -Y and resting on the floor (1).
+    assert(test_position < 2, "Key index must be 0-1.");
+    pull = key_snap_barb + key_snap_clearance;
+    intersection() {
+        if (test_position == 0)
+            lifted(key_fit - 0.01) index_key(0, pull);
+        else
+            lifted() key_turned_over(0, pull);
+        base_rear();
+    }
 } else if (mode == "rest_retained") {
     // Lifted off the channel floor at its least-engaged position, the
     // plate's flanks catch the channel's lips.
@@ -195,8 +235,16 @@ if (mode == "anchor_case") {
         translate([0, 0, rest_catch_travel + 0.05]) palm_rest(rest_adjust_range);
         base_rear();
     }
+} else if (mode == "rest_wings_seated") {
+    // Pressed down, the bolster's wings bear on the deck beside the channel.
+    intersection() {
+        lifted(-0.02) palm_rest(rest_adjust_range);
+        base_rear();
+        translate([rest_channel_x_min, rest_channel_half_w_y, rest_heel_z - 1])
+            cube([base_x_max - rest_channel_x_min, base_half_w_y, 2]);
+    }
 } else if (mode == "rest_slide_on") {
-    // Without keys, the rest slides on from the rear end to its first position.
+    // Without the key, the rest slides on from the rear end to its first position.
     start = base_x_max + 1 - rest_face_x(0);
     steps = ceil((start + rest_adjust_range) / rest_index_pitch);
     intersection() {
@@ -205,11 +253,15 @@ if (mode == "anchor_case") {
             lifted() palm_rest(max(-rest_adjust_range, start - i * rest_index_pitch));
     }
 } else if (mode == "finger_entry") {
-    // Minimum drafted pocket envelope and its unobstructed +Z approach.
+    // The pocket without the liner (0), and the finger room beside it for
+    // either hand (1), drafted at the end walls, with an unobstructed +Z
+    // approach.
+    assert(test_position < 2, "Finger entry index must be 0-1.");
+    x_max = test_position == 0 ? hangboard_opening_x_max
+        : hangboard_opening_x_min + hangboard_finger_room_x;
     intersection() {
         dyno_rounded_prism_xy(
-            hangboard_opening_x_min + hangboard_draft + 0.01,
-            hangboard_opening_x_max - hangboard_draft - 0.01,
+            hangboard_opening_x_min + 0.01, x_max - 0.01,
             hangboard_opening_y_min + hangboard_draft + 0.01,
             hangboard_opening_y_max - hangboard_draft - 0.01,
             hangboard_pocket_back_z + 0.01, hangboard_front_z + 40,
@@ -217,7 +269,8 @@ if (mode == "anchor_case") {
         );
         union() {
             fixed_parts(); finger_grip(); eye_clips();
-            palm_rest(-rest_adjust_range); index_keys(-rest_adjust_range);
+            if (test_position == 1) { edge_liner("right"); edge_liner("left"); }
+            palm_rest(-rest_adjust_range); index_key(-rest_adjust_range);
             crimpdeq_case_reference();
         }
     }
@@ -266,14 +319,14 @@ if (mode == "anchor_case") {
             pocket_stopper(1 - test_position);
     }
 } else if (mode == "stopper_stack_located") {
-    // The drafted pocket walls still stop the top stopper in X and Y.
+    // The pocket walls stop the top stopper in X, the drafted end walls in Y.
     assert(test_position < 4, "Stack index must be 0-3.");
     bottom = test_position % 2;
-    shift = stopper_clearance + 0.1
-        + hangboard_draft * stopper_t_list[bottom] / hangboard_pocket_depth_z;
+    shift_x = stopper_clearance + 0.1;
+    shift_y = shift_x + hangboard_draft * stopper_t_list[bottom] / hangboard_pocket_depth_z;
     intersection() {
         finger_grip();
-        translate([test_position < 2 ? shift : 0, test_position < 2 ? 0 : shift,
+        translate([test_position < 2 ? shift_x : 0, test_position < 2 ? 0 : shift_y,
                    stopper_t_list[bottom] + 0.01])
             pocket_stopper(1 - bottom);
     }
@@ -297,13 +350,93 @@ if (mode == "anchor_case") {
         translate([-500, -500, hangboard_front_z + stopper_tab_rise - 1])
             cube([1000, 1000, 0.5]);
     }
+} else if (mode == "liner_pocket") {
+    // For each edge depth, the liner for either hand stacks on the fitted
+    // stoppers clear of them and of the grip, its top flush with the grip
+    // top.
+    assert(test_position < len(liner_configs), "Liner config index must be 0-3.");
+    stoppers = liner_configs[test_position];
+    for (hand = ["right", "left"]) {
+        intersection() {
+            union() { finger_grip(); stoppers_fitted(stoppers); }
+            lifted() edge_liner(hand, stoppers);
+        }
+        intersection() {
+            edge_liner(hand, stoppers);
+            translate([-500, -500, hangboard_front_z + 0.01]) cube(1000);
+        }
+    }
+} else if (mode == "liner_seated") {
+    // The bottom piece rests on the floor or the top stopper.
+    assert(test_position < len(liner_configs), "Liner config index must be 0-3.");
+    stoppers = liner_configs[test_position];
+    intersection() {
+        union() { finger_grip(); stoppers_fitted(stoppers); }
+        lifted(-0.02) edge_liner("right", stoppers);
+    }
+} else if (mode == "liner_located") {
+    // On the floor (0, 2) and on both stoppers (1, 3), the liner bears on
+    // the lip (0-1) and the end wall at its thick end stops it in Y (2-3).
+    // Its thin end sits in the pocket's rounded corner.
+    assert(test_position < 4, "Liner index must be 0-3.");
+    stoppers = test_position % 2 == 0 ? [] : [0, 1];
+    shift = liner_clearance + 0.1;
+    shift_y = shift + hangboard_draft * stoppers_h(stoppers) / hangboard_pocket_depth_z;
+    intersection() {
+        finger_grip();
+        translate([test_position < 2 ? shift : 0, test_position < 2 ? 0 : -shift_y, 0.01])
+            edge_liner("right", stoppers);
+    }
 } else if (mode == "stopper_stored") {
     intersection() {
         lifted() stored_pocket_stoppers();
         union() {
             fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference();
+            stored_liner();
         }
     }
+} else if (mode == "liner_stored") {
+    // Clear of everything but the clamp pad, which presses on it.
+    intersection() {
+        lifted() stored_liner();
+        union() {
+            difference() {
+                base_front();
+                translate([liner_well_center_x - liner_clamp_pad_len_x / 2 - 0.01,
+                           liner_well_y_max - liner_clamp_pad_y - 0.1, liner_well_z_min - 0.1])
+                    cube([liner_clamp_pad_len_x + 0.02, liner_clamp_pad_y + 0.095,
+                          deck_z - liner_well_z_min + 0.2]);
+            }
+            base_rear(); anchor_block(); finger_grip(); eye_clips(); crimpdeq_case_reference();
+            palm_rest(-rest_adjust_range); index_key(-rest_adjust_range);
+        }
+    }
+} else if (mode == "liner_clamped") {
+    // The pad presses on every stored piece: each one alone on the well
+    // floor (0-2), and the top piece of the full stack (3).
+    assert(test_position < liner_piece_count + 1, "Liner clamp index must be 0-3.");
+    intersection() {
+        liner_clamp_pad();
+        if (test_position < liner_piece_count)
+            stored_liner([test_position]);
+        else
+            liner_well_transform()
+                translate([0, 0, liner_piece_z([0, 1, 2], 2)]) liner_piece(2);
+    }
+} else if (mode == "liner_reach") {
+    // A fingertip in each end notch reaches down to the well floor, beside
+    // the end faces of any stored piece.
+    intersection() {
+        for (x0 = [liner_well_x_min - liner_well_notch_x, liner_well_x_max])
+            translate([x0 + 0.01, -base_half_w_y - 5, liner_well_z_min + 0.01])
+                cube([liner_well_notch_x - 0.02, liner_well_notch_y_max + base_half_w_y + 4.99, 40]);
+        union() {
+            fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference();
+            stored_pocket_stoppers(); stored_liner();
+        }
+    }
+} else if (mode == "liner_stored_seated") {
+    intersection() { base_front(); lifted(-0.02) stored_liner(); }
 } else if (mode == "phone_slot") {
     // The largest phone clears everything in either orientation.
     intersection() {
@@ -313,14 +446,22 @@ if (mode == "anchor_case") {
         }
         union() {
             fixed_parts(); finger_grip(); eye_clips(); crimpdeq_case_reference();
-            palm_rest(-rest_adjust_range); index_keys(-rest_adjust_range);
-            stored_pocket_stoppers();
+            palm_rest(-rest_adjust_range); index_key(-rest_adjust_range);
+            stored_parts();
         }
     }
 } else if (mode == "phone_seated") {
     intersection() { base_front(); phone_reference(drop = 0.02); }
 } else if (mode == "stopper_stored_seated") {
     intersection() { base_front(); lifted(-0.02) stored_pocket_stoppers(); }
+} else if (mode == "stopper_stored_retained") {
+    // Pushed against the well's far (-X) wall and lifted until its top edge
+    // meets the ridge's apex, the stack still overlaps the ridge.
+    intersection() {
+        translate([-(stopper_well_clearance - 0.01), 0, stopper_snap_gap_z + stopper_snap_ridge])
+            stored_pocket_stoppers();
+        base_front();
+    }
 } else {
     assert(false, str("Unknown collision mode: ", mode));
 }

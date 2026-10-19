@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Export printable parts as crimpdeq-platform-<part>.stl.
-# Usage: bash export-parts.sh [part ...]   (default: every part)
+# Usage: bash scripts/export-parts.sh [part ...]   (default: every part)
 # EXPORT_DIR sets the output directory (default: exports/).
 # ON_PLATE=true places each part where it sits on its print plate.
 set -euo pipefail
 
-project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 out_dir="${EXPORT_DIR:-$project_root/exports}"
 render_fn="${OPENSCAD_RENDER_FN:-96}"
 export_jobs="${EXPORT_JOBS:-4}"
@@ -30,7 +30,7 @@ fi
 
 parts=("$@")
 if (( ${#parts[@]} == 0 )); then
-    parts=(base_front base_rear anchor grip clips keys rest stoppers)
+    parts=(base_front base_rear anchor grip clips key rest stoppers liner)
 fi
 
 mkdir -p "$out_dir"
@@ -40,7 +40,7 @@ export_part() {
     local stl="$out_dir/crimpdeq-platform-${part}.stl"
     local log_file="$stl.log"
     if ! openscad -D "render_fn=${render_fn}" -D "part=\"${part}\"" -D "on_plate=${on_plate}" \
-        -o "$stl" "$project_root/dynamometer_assembly.scad" >"$log_file" 2>&1 ||
+        -o "$stl" "$project_root/platform/assembly.scad" >"$log_file" 2>&1 ||
         grep -Eq 'ERROR:|WARNING:' "$log_file"; then
         printf 'Export failed: %s\n' "$part" >&2
         while IFS= read -r line; do printf '%s\n' "$line" >&2; done <"$log_file"

@@ -20,4 +20,4 @@ jobs:
                   sudo apt-get install -y openscad
                   openscad --version
             - name: Run collision checks
-              run: CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash check-collisions.sh
+              run: CHECK_JOBS=4 OPENSCAD_RENDER_FN=24 bash scripts/check-collisions.sh

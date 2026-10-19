@@ -13,9 +13,9 @@ Take all the parts from the same release, or they may not fit together.
 
 ## Plates
 
-![Plate 1: front base half, grip, anchor block, clips and keys](../images/plate1.png)
+![Plate 1: front base half, grip, anchor block and clips](../images/plate1.png)
 
-![Plate 2: rear base half, palm rest and stoppers](../images/plate2.png)
+![Plate 2: rear base half, liner, palm rest, stoppers and key](../images/plate2.png)
 
 The parts are exported already oriented for printing, so don't rotate them.
 If you lay out the plates yourself, keep the parts at least 15 mm apart.
@@ -28,28 +28,30 @@ If you lay out the plates yourself, keep the parts at least 15 mm apart.
 | Walls | 6 |
 | Top/bottom layers | 6 |
 | Infill | 20% |
-| Supports | **Off** |
+| Supports | **Off**, except on `rest` |
 | Brim | Outer brim only, 5 mm |
 
 Per-object overrides:
 
 | Object | Override |
 |---|---|
-| `grip`, `anchor`, `clips`, `keys` | 100% infill |
-| `rest` | 50% infill |
-| `base_front`, `base_rear` | 4 top and 4 bottom layers |
+| `grip`, `anchor`, `clips`, `key`, `liner` | 100% infill |
+| `rest` | 50% infill; normal supports, on the build plate only, not under bridges |
+| `base_front`, `base_rear` | 4 walls, 4 top and 4 bottom layers, 15% infill |
 
 To save filament, the project also prints these lightly loaded zones
 sparser, using height range modifiers:
 
 | Object | Range | Infill |
 |---|---|---|
-| `base_front` | 22.6–59.6 mm | 10% |
+| `base_front` | 40.1–56.6 mm | 10% |
 | `rest` | 6–18 mm | 15% |
 | `anchor` | 0–11.5 mm | 40% |
 
-No part needs supports. Keep them off: they would scar the faces that the
-load-cell eyes and the palm rest bear on.
+Only the palm rest needs supports, under the bolster's wings. Keep them off
+everywhere else, including the rest's key groove: they would scar the faces
+that the load-cell eyes, the palm rest and the key bear on.
 
-After printing, remove the brims and trim any flared first layer on the base
-halves' joint faces and on the palm rest's sole.
+After printing, remove the brims and the supports, and trim any flared first
+layer on the base halves' joint faces and on the palm rest's sole. Sand the
+wings' undersides smooth so they slide on the deck.
