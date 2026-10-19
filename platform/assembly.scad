@@ -89,8 +89,8 @@ module dynamometer_complete() {
 
     if (show_case)
         translate([grip_preview_offset / 2, 0, 60 * explode]) {
-            color([0.12, 0.18, 0.25, 0.9]) crimpdeq_main_reference();
-            color([0.18, 0.28, 0.38, 0.85]) crimpdeq_lid_reference();
+            color([0.12, 0.18, 0.25, 0.9]) crimpdeq_main_reference(3);
+            color([0.18, 0.28, 0.38, 0.85]) crimpdeq_lid_reference(3);
             if (show_internals) %crimpdeq_internals_reference();
         }
 

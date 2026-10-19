@@ -6,7 +6,7 @@ set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 case_dir="${CRIMPDEQ_CASE_DIR:-$root/../crimpdeq-case/case}"
-for file in case_main.scad case_lid.scad; do
+for file in case_main.scad case_lid.scad placement.scad; do
     if [[ ! -f "$case_dir/$file" ]]; then
         echo "Missing $case_dir/$file (set CRIMPDEQ_CASE_DIR to the case source directory)" >&2
         exit 1
@@ -15,6 +15,17 @@ done
 
 tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
+
+# Case releases seat the load cell at different heights in their own
+# coordinates; read it so the case can be moved onto the platform's.
+printf 'include <%s/placement.scad>\necho(loadcell_bottom_z);\n' "$case_dir" \
+    >"$tmp_dir/case-frame.scad"
+openscad -o "$tmp_dir/case-frame.echo" "$tmp_dir/case-frame.scad" >/dev/null 2>&1
+case_loadcell_bottom_z="$(sed -n 's/^ECHO: //p' "$tmp_dir/case-frame.echo")"
+if [[ ! "$case_loadcell_bottom_z" =~ ^-?[0-9.]+$ ]]; then
+    echo "Could not read loadcell_bottom_z from $case_dir/placement.scad" >&2
+    exit 1
+fi
 # Include the platform's own parameters. `use` imports only modules from the
 # case repository so same-name variables/modules cannot shadow platform data.
 scad="$tmp_dir/actual-case-check.scad"
@@ -28,7 +39,9 @@ $fn = render_fn;
 mode = is_undef(mode) ? "base" : mode;
 index = is_undef(index) ? 0 : index;
 assert(index >= 0 && index < rest_index_count && index == floor(index));
-module real_case() { main_part(); lid_part(); }
+module real_case() {
+    translate([0, 0, loadcell_bottom_z - case_loadcell_bottom_z]) { main_part(); lid_part(); }
+}
 if (mode == "drop") {
     // The real case lowers onto both lugs without touching them.
     intersection() {
@@ -76,6 +89,7 @@ for mode in base anchor grip clips stoppers phone drop clip_path rest; do
         log="$tmp_dir/$mode-$index.log"
         code=0
         openscad -D "render_fn=$render_fn" -D "mode=\"$mode\"" -D "index=$index" \
+            -D "case_loadcell_bottom_z=$case_loadcell_bottom_z" \
             -o "$tmp_dir/$mode-$index.stl" "$scad" >"$log" 2>&1 || code=$?
         if grep -Eq 'ERROR:|WARNING:' "$log" ||
            (( code == 0 )) ||

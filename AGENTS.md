@@ -7,8 +7,8 @@
   `scripts/check-real-case.sh` is the only optional integration check
   against it.
 - `platform/crimpdeq_reference.scad` is a local fit/collision reference of
-  crimpdeq-case `v2.0.0`, not a replacement enclosure design; run
-  `scripts/check-real-case.sh` against that tag.
+  crimpdeq-case `v2.0.0` and `v3.1.0`, not a replacement enclosure design;
+  run `scripts/check-real-case.sh` against both tags.
 - Keep all dimensions in millimetres and forces in newtons.
 
 ## Design requirements
@@ -26,8 +26,8 @@
 - `parts.scad`: printable base, anchor, grip, clip, rest, key, liner and
   stopper modules, and the phone stand, without top-level geometry.
 - `assembly.scad`: preview and STL export entry point.
-- `crimpdeq_reference.scad`: self-contained crimpdeq-case `v2.0.0`
-  interface snapshot.
+- `crimpdeq_reference.scad`: self-contained crimpdeq-case `v2.0.0` and
+  `v3.1.0` interface snapshots; collision probes clear both at once.
 - `collision_check.scad`: individual intersection probes selected by `mode`.
 - `fonts/`: the bundled Inter Bold used by the brand engraving, with its
   OFL license.
