@@ -39,14 +39,19 @@ Per-object overrides:
 | `rest` | 50% infill; normal supports, on the build plate only, not under bridges |
 | `base_front`, `base_rear` | 4 walls, 4 top and 4 bottom layers, 15% infill |
 
-To save filament, the project also prints these lightly loaded zones
-sparser, using height range modifiers:
+The project also prints these zones differently, using height range
+modifiers. The lightly loaded ones print sparser to save filament, and the
+palm rest's bolster prints with fuzzy skin, a rough, sandpaper-like outer wall
+that keeps the palm from sliding:
 
-| Object | Range | Infill |
+| Object | Range | Override |
 |---|---|---|
-| `base_front` | 40.1–56.6 mm | 10% |
-| `rest` | 6–18 mm | 15% |
-| `anchor` | 0–11.5 mm | 40% |
+| `base_front` | 40.1–56.6 mm | 10% infill |
+| `rest` | 6–18 mm | 15% infill; fuzzy skin on the outer walls (0.3 mm thick, 0.8 mm point distance) |
+| `anchor` | 0–11.5 mm | 40% infill |
+
+In another slicer, apply fuzzy skin only to that range of the rest: on the
+heel plate's flanks below it, it would jam the rest in its channel.
 
 Only the palm rest needs supports, under the bolster's wings. Keep them off
 everywhere else, including the rest's key groove: they would scar the faces
