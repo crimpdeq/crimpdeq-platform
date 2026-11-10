@@ -449,6 +449,16 @@ rest_bolster_z_max = rest_heel_z + rest_bolster_rise;
 // As wide as an adult palm: wings past the heel plate lie on the deck beside
 // the channel. Their undersides print on support.
 rest_bolster_half_w_y = is_undef(rest_bolster_half_w_y) ? 54 : rest_bolster_half_w_y;
+// Round-bottomed grooves along Y over the bolster's rounds and top, so the
+// palm does not slide over it. They stop before the bolster's rounded ends.
+rest_groove_r = is_undef(rest_groove_r) ? 0.6 : rest_groove_r;
+rest_groove_pitch = is_undef(rest_groove_pitch) ? 3 : rest_groove_pitch;
+rest_groove_half_l_y = rest_bolster_half_w_y - rest_corner_r;
+// Bolster XZ profile from the bottom of the front round to the bottom of the
+// rear round.
+rest_bolster_profile_l = PI * (rest_bolster_front_r + rest_bolster_rear_r) / 2
+    + rest_bolster_depth_x - rest_bolster_front_r - rest_bolster_rear_r;
+rest_groove_count = floor(rest_bolster_profile_l / rest_groove_pitch);
 
 // Printed index key: a square bar pushed in from the +Y side across the full
 // width of the base, half in a groove across the channel floor and half in a
@@ -776,6 +786,9 @@ assert(2 * rest_half_w_y >= hangboard_opening_w_y &&
     rest_bolster_z_max - max(rest_bolster_front_r, rest_bolster_rear_r) >= rest_heel_z &&
     rest_corner_r <= rest_bolster_depth_x / 2,
     "The palm bolster must span the finger pocket and keep its rounds above the deck.");
+assert(rest_groove_r >= 0.3 && rest_groove_r <= 1 && rest_groove_pitch >= 4 * rest_groove_r
+    && rest_groove_half_l_y <= rest_bolster_half_w_y - max(rest_bolster_front_r, rest_bolster_rear_r),
+    "Palm grooves must be 0.3-1 mm deep, leave lands as wide as they are, and stop before the bolster's ends.");
 assert(rest_bolster_half_w_y >= rest_half_w_y + rest_side_gap_y + 3 &&
     rest_bolster_half_w_y <= base_half_w_y,
     "The bolster wings must lie at least 3 mm onto the deck and stay within the base.");

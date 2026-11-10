@@ -48,7 +48,7 @@ replaces testing printed parts.
   25 mm edges (Z = −10 mm), so the heel and the fingers pull in line.
 - A raised stop gives the palm a face to push against during a pull. It is
   at least as wide as the finger pocket and rounded where the palm touches
-  it.
+  it, with shallow grooves so the palm does not slide over it.
 - The rest has seven positively locked positions, for hand openings of 25 to
   85 mm, adjustable without tools.
 

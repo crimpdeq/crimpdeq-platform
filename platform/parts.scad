@@ -663,6 +663,29 @@ module palm_bolster(face_x) {
     }
 }
 
+// Point at arc length s along the bolster's XZ profile, from the bottom of
+// its front round over the top to the bottom of its rear round, relative to
+// [face_x, rest_bolster_z_max].
+function bolster_profile_point(s) =
+    let(rf = rest_bolster_front_r, rr = rest_bolster_rear_r,
+        front_l = PI * rf / 2, top_l = rest_bolster_depth_x - rf - rr,
+        a_front = 180 - (s / rf) * 180 / PI,
+        a_rear = 90 - ((s - front_l - top_l) / rr) * 180 / PI)
+    s < front_l ? [rf + rf * cos(a_front), -rf + rf * sin(a_front)]
+    : s < front_l + top_l ? [s - front_l + rf, 0]
+    : [rest_bolster_depth_x - rr + rr * cos(a_rear), -rr + rr * sin(a_rear)];
+
+module palm_grooves(face_x) {
+    // Evenly spaced along the profile, centred on it.
+    s0 = (rest_bolster_profile_l - (rest_groove_count - 1) * rest_groove_pitch) / 2;
+    for (i = [0 : rest_groove_count - 1]) {
+        p = bolster_profile_point(s0 + i * rest_groove_pitch);
+        translate([face_x + p[0], 0, rest_bolster_z_max + p[1]])
+            rotate([90, 0, 0])
+                cylinder(r = rest_groove_r, h = 2 * rest_groove_half_l_y, center = true, $fn = 12);
+    }
+}
+
 module key_groove(x_pos, half_w_y, z_min) {
     // Across the full width, with key_fit over the bar.
     translate([x_pos - (key_t_x + key_fit) / 2, -half_w_y, z_min])
@@ -677,6 +700,7 @@ module palm_rest(offset = 0) {
             along_x(face_x, face_x + rest_depth_x) rest_plate_2d();
             palm_bolster(face_x);
         }
+        palm_grooves(face_x);
         // The key's groove across the sole, under the bolster.
         key_groove(key_x(offset), rest_half_w_y + rest_flare_y + 1, rest_z_min - 0.1);
     }
