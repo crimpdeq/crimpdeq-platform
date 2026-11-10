@@ -24,7 +24,8 @@ module fixed_parts() {
 module service_probe() {
     // Finger and cable room in front of each case's switch and USB openings.
     for (c = [[case2_y_max, case2_switch_z - case2_switch_h / 2, case2_usb_z + case2_usb_h / 2],
-              [case3_y_half, case3_switch_z - case3_switch_h / 2, case3_usb_z + case3_usb_h / 2]])
+              [case3_y_half, case3_switch_z - case3_switch_h / 2, case31_usb_z + case3_usb_h / 2],
+              [case3_y_half, case3_switch_z - case3_switch_h / 2, case32_usb_z + case3_usb_h / 2]])
         translate([-service_w / 2, c[0] + 0.01, c[1]])
             cube([service_w, service_y_max - c[0], c[2] + 8 - c[1]]);
 }

@@ -52,33 +52,38 @@ case2_switch_z = 3;
 case2_switch_w = 15;
 case2_switch_h = 10;
 
-// crimpdeq-case v3.1.0, which seats the load cell 0.5 mm lower: its own
-// coordinates put the load cell's bottom face at Z = 0. A hexagonal plan
-// with flat front and rear walls and a point at each end. Each eye's U-slot
-// runs out through the point; its inboard edge is a flat over the eye's
-// bore, through the full height of the case and lid, so the slots cut the
-// points off.
+// crimpdeq-case v3.1.0 and v3.2.0, which seat the load cell 0.5 mm lower:
+// their own coordinates put the load cell's bottom face at Z = 0. A
+// hexagonal plan with flat front and rear walls and a point at each end.
+// Each eye's U-slot runs out through the point; its inboard edge is a flat
+// over the eye's bore, through the full height of the case and lid, so the
+// slots cut the points off.
 case3_dz = loadcell_bottom_z;
 case3_y_half = 38.7;
 case3_z_min = case3_dz - 4.4;
-case3_lid_z = case3_dz + 23.8;
-case3_z_max = case3_dz + 26.2;
-case3_facet_angle = 60;
-// Facet distance from the centre: the load-cell corners, 0.5 mm clearance
-// and the 2.4 mm wall.
-case3_facet_k = sin(case3_facet_angle) * lc_L / 2 + cos(case3_facet_angle) * lc_W / 2
-    + 0.5 + 2.4;
-case3_tip_x = case3_facet_k / sin(case3_facet_angle);
-case3_corner_x = (case3_facet_k - cos(case3_facet_angle) * case3_y_half)
-    / sin(case3_facet_angle);
 case3_slot_d = eye_d + 5;
 case3_slot_inner_x = 18.7;
+// The releases differ in facet angle and height. v3.2.0 steepens the
+// facets to shorten the case and lowers the lid and USB for its thinner
+// battery.
+case31_facet_angle = 60;
+case31_lid_z = case3_dz + 23.8;
+case31_z_max = case3_dz + 26.2;
+case31_usb_z = case3_dz + 17.645;
+case32_facet_angle = 67;
+case32_lid_z = case3_dz + 18.655;
+case32_z_max = case3_dz + 21.055;
+case32_usb_z = case3_dz + 12.5;
+// Facet distance from the centre: the load-cell corners, 0.5 mm clearance
+// and the 2.4 mm wall.
+function case3_facet_k(angle) = sin(angle) * lc_L / 2 + cos(angle) * lc_W / 2 + 0.5 + 2.4;
+// X of the +X/+Y facet at a given Y.
+function case3_facet_x(angle, y) = (case3_facet_k(angle) - cos(angle) * y) / sin(angle);
 // Where each slot's sides meet the facets.
-case3_x_half = (case3_facet_k - cos(case3_facet_angle) * case3_slot_d / 2)
-    / sin(case3_facet_angle);
+case3_x_half = max(case3_facet_x(case31_facet_angle, case3_slot_d / 2),
+    case3_facet_x(case32_facet_angle, case3_slot_d / 2));
 // +Y wall openings: the switch, and the USB cable's overmold pocket.
 case3_usb_x = 4.55;
-case3_usb_z = case3_dz + 17.645;
 case3_usb_w = 13.65;
 case3_usb_h = 7.8;
 case3_switch_x = 0;
@@ -153,7 +158,7 @@ clip_tip_x = 4;
 clip_tail_x = is_undef(clip_tail_x) ? 12 : clip_tail_x;
 clip_fin_t = 3;
 clip_fin_w_y = 16;
-clip_fin_top_z = is_undef(clip_fin_top_z) ? 20 : clip_fin_top_z;
+clip_fin_top_z = is_undef(clip_fin_top_z) ? 17 : clip_fin_top_z;
 // Slide from the fitting position, fork tip clear of the lug head, to the
 // seat.
 clip_install_travel = lug_r + 0.5 + clip_tip_x;
@@ -394,7 +399,8 @@ phone_view_max_elevation = is_undef(phone_view_max_elevation) ? 20 : phone_view_
 function phone_view_elevation_over(top_z, x_half) = atan(max(0, top_z - phone_slot_z_min)
     / (-x_half - (phone_stand_x_max - phone_slot_inner_wall_x)));
 phone_view_elevation = max(phone_view_elevation_over(case2_z_max, case2_x_half),
-    phone_view_elevation_over(case3_z_max, case3_x_half));
+    phone_view_elevation_over(case31_z_max, case3_facet_x(case31_facet_angle, case3_slot_d / 2)),
+    phone_view_elevation_over(case32_z_max, case3_facet_x(case32_facet_angle, case3_slot_d / 2)));
 // Largest phone, in its case, checked in the slot in either orientation.
 phone_probe_t = 13;
 phone_probe_l = 165;
@@ -675,7 +681,7 @@ assert(clip_access_x >= 5 && clip_tail_x >= clip_tip_x + 6 &&
     "Clips need finger room beside the fin, a tail over the load cell, and must end on it.");
 assert(lug_flat_x <= dyno_eye_x_right - lug_neck_r,
     "The flat that clears the case's slot edges must not cut the lug neck.");
-assert(clip_fin_top_z < min(case2_z_max, case3_z_max) - 4 && clip_fin_top_z > lug_top_z + 4,
+assert(clip_fin_top_z < min(case2_z_max, case31_z_max, case32_z_max) - 4 && clip_fin_top_z > lug_top_z + 4,
     "Clip fins must stand clear of the lug and stay below the case top.");
 assert(grip_body_x_min >= case_x_half + 1 + clip_t,
     "The grip body must stay clear of the case end.");

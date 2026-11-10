@@ -22,7 +22,7 @@ entirely in plastic with no hardware to buy.
 - **Printing:** no hardware, and supports only under the palm rest's wings;
   the base splits into two halves for a 256 mm bed; about 570 g of PETG.
 - **Compatibility:** [crimpdeq-case](https://github.com/crimpdeq/crimpdeq-case)
-  v3.1.0, v2.0.0 and earlier.
+  v3.2.0, v3.1.0, v2.0.0 and earlier.
 
 ## Documentation
 

@@ -46,7 +46,7 @@ module arrow(from, to, d = 3) {
 }
 
 module case_model(ghost = false) {
-    color(ghost ? c_ghost : c_case) crimpdeq_case_reference(3);
+    color(ghost ? c_ghost : c_case) crimpdeq_case_reference("v3.1.0");
     if (!ghost) color(c_loadcell) loadcell_reference();
 }
 

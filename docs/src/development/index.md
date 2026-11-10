@@ -6,7 +6,8 @@ The model in `platform/` is plain OpenSCAD with no library dependencies:
 - `parts.scad`: the printable parts.
 - `assembly.scad`: preview and export entry point.
 - `crimpdeq_reference.scad`: simplified snapshots of the supported Crimpdeq
-  cases (crimpdeq-case v2.0.0 and v3.1.0) used for fit and collision checks.
+  cases (crimpdeq-case v2.0.0, v3.1.0 and v3.2.0) used for fit and collision
+  checks.
 
 The export and validation scripts are in `scripts/`.
 
