@@ -1,6 +1,6 @@
 //
 // Self-contained interface references of the supported Crimpdeq cases:
-// crimpdeq-case v2.0.0 and v3.1.0. These are fit/collision models, not
+// crimpdeq-case v2.0.0, v3.1.0 and v3.2.0. These are fit/collision models, not
 // replacements for crimpdeq-case.
 //
 
@@ -112,61 +112,67 @@ module case2_lid_reference() {
     }
 }
 
-// --- crimpdeq-case v3.1.0 ------------------------------------------------
+// --- crimpdeq-case v3.1.0 and v3.2.0 -------------------------------------
 // Modelled solid: nothing of the platform enters the case but through its
 // slots, whose walls run the full height except where the load cell lies.
 
-module case3_slots_2d() {
+module case3_slots_2d(tip_x) {
     // Round each eye and out through the point, inboard only to the flat.
     for (side = [-1, 1])
         intersection() {
             hull() {
                 translate([side * dyno_eye_x_right, dyno_eye_y])
                     circle(d = case3_slot_d);
-                translate([side * (case3_tip_x + 1), dyno_eye_y])
+                translate([side * (tip_x + 1), dyno_eye_y])
                     square([0.01, case3_slot_d], center = true);
             }
-            translate([side * (case3_slot_inner_x + case3_tip_x + 2) / 2, dyno_eye_y])
-                square([case3_tip_x + 2 - case3_slot_inner_x, case3_slot_d + 1], center = true);
+            translate([side * (case3_slot_inner_x + tip_x + 2) / 2, dyno_eye_y])
+                square([tip_x + 2 - case3_slot_inner_x, case3_slot_d + 1], center = true);
         }
 }
 
-module case3_shell_reference(z_min, z_max) {
+module case3_shell_reference(facet_angle, z_min, z_max) {
+    tip_x = case3_facet_x(facet_angle, 0);
+    corner_x = case3_facet_x(facet_angle, case3_y_half);
     translate([0, 0, z_min])
         linear_extrude(height = z_max - z_min)
             difference() {
                 polygon([
-                    [case3_tip_x, 0], [case3_corner_x, case3_y_half],
-                    [-case3_corner_x, case3_y_half], [-case3_tip_x, 0],
-                    [-case3_corner_x, -case3_y_half], [case3_corner_x, -case3_y_half]
+                    [tip_x, 0], [corner_x, case3_y_half],
+                    [-corner_x, case3_y_half], [-tip_x, 0],
+                    [-corner_x, -case3_y_half], [corner_x, -case3_y_half]
                 ]);
-                case3_slots_2d();
+                case3_slots_2d(tip_x);
             }
 }
 
-module case3_main_reference() {
+module case3_main_reference(facet_angle, lid_z, usb_z) {
     difference() {
-        case3_shell_reference(case3_z_min, case3_lid_z);
+        case3_shell_reference(facet_angle, case3_z_min, lid_z);
         case_service_openings_reference(case3_y_half, 2.4, [
             [case3_switch_x, case3_switch_z, case3_switch_w, case3_switch_h],
-            [case3_usb_x, case3_usb_z, case3_usb_w, case3_usb_h]]);
+            [case3_usb_x, usb_z, case3_usb_w, case3_usb_h]]);
     }
 }
 
-module case3_lid_reference() {
-    case3_shell_reference(case3_lid_z, case3_z_max);
+module case3_lid_reference(facet_angle, lid_z, z_max) {
+    case3_shell_reference(facet_angle, lid_z, z_max);
 }
 
 // --- Selection -----------------------------------------------------------
 
 module crimpdeq_main_reference(version) {
-    assert(version == 2 || version == 3, str("Unknown case version: ", version));
-    if (version == 2) case2_main_reference(); else case3_main_reference();
+    if (version == "v2.0.0") case2_main_reference();
+    else if (version == "v3.1.0") case3_main_reference(case31_facet_angle, case31_lid_z, case31_usb_z);
+    else if (version == "v3.2.0") case3_main_reference(case32_facet_angle, case32_lid_z, case32_usb_z);
+    else assert(false, str("Unknown case version: ", version));
 }
 
 module crimpdeq_lid_reference(version) {
-    assert(version == 2 || version == 3, str("Unknown case version: ", version));
-    if (version == 2) case2_lid_reference(); else case3_lid_reference();
+    if (version == "v2.0.0") case2_lid_reference();
+    else if (version == "v3.1.0") case3_lid_reference(case31_facet_angle, case31_lid_z, case31_z_max);
+    else if (version == "v3.2.0") case3_lid_reference(case32_facet_angle, case32_lid_z, case32_z_max);
+    else assert(false, str("Unknown case version: ", version));
 }
 
 module crimpdeq_case_reference(version) {
@@ -176,8 +182,7 @@ module crimpdeq_case_reference(version) {
 
 // Every supported case at once: a part clear of this is clear of each.
 module crimpdeq_cases_reference() {
-    crimpdeq_case_reference(2);
-    crimpdeq_case_reference(3);
+    for (version = ["v2.0.0", "v3.1.0", "v3.2.0"]) crimpdeq_case_reference(version);
 }
 
 module crimpdeq_internals_reference() {

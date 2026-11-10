@@ -25,7 +25,7 @@ jobs:
         strategy:
             matrix:
                 # The case releases crimpdeq_reference.scad snapshots.
-                case: [v2.0.0, v3.1.0]
+                case: [v2.0.0, v3.1.0, v3.2.0]
         steps:
             - name: Checkout
               uses: actions/checkout@v6
