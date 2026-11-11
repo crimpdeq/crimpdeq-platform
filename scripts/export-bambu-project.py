@@ -56,7 +56,7 @@ REST = {"sparse_infill_density": "50%", "enable_support": "1", "support_type": "
 # The base halves carry low stress, so they print lighter than the load path.
 BASE = {"wall_loops": "4", "top_shell_layers": "4", "bottom_shell_layers": "4",
         "sparse_infill_density": "15%"}
-# Height ranges that print parts of an object sparser, as (min Z, max Z,
+# Height ranges that print parts of an object differently, as (min Z, max Z,
 # settings) with the heights as platform/dimensions.scad expressions in the
 # part's print Z. Bambu Studio reads the layer height of every height range.
 RANGE_BASE = {"layer_height": PROCESS_OVERRIDES["layer_height"]}
@@ -64,9 +64,12 @@ HEIGHT_RANGES = {
     # The phone stand's cheeks, above the joint cheeks, carry only the phone.
     "base_front": [("joint_cheek_top_z - base_z_min", "phone_stand_top_z - base_z_min",
                     {**RANGE_BASE, "sparse_infill_density": "10%"})],
-    # The bolster, above the heel plate.
+    # The bolster, above the heel plate, sparser and with a rough fuzzy skin
+    # so the palm does not slide on it. The plate's flanks below stay smooth
+    # to slide in their channel.
     "rest": [("rest_heel_z - rest_z_min", "rest_bolster_z_max - rest_z_min",
-              {**RANGE_BASE, "sparse_infill_density": "15%"})],
+              {**RANGE_BASE, "sparse_infill_density": "15%", "fuzzy_skin": "external",
+               "fuzzy_skin_thickness": "0.3", "fuzzy_skin_point_distance": "0.8"})],
     # The anchor block's lower body only bears on its pocket; its top 5 mm
     # stays solid under the tongue root.
     "anchor": [("0", "deck_z - 5 - anchor_z_min",
