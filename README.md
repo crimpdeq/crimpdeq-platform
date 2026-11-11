@@ -17,10 +17,11 @@ entirely in plastic with no hardware to buy.
   the 20 and 25 mm edges.
 - **Phone slot:** phones up to about 13 mm thick in their case, portrait or
   landscape, leaned back 15°.
-- **Size:** 369 × 122 mm base (130 mm wide with the key fitted), 57 mm tall
+- **Size:** 431 × 122 mm base (136 mm wide with the keys fitted), 57 mm tall
   at the phone stand.
-- **Printing:** no hardware, and supports only under the palm rest's wings;
-  the base splits into two halves for a 256 mm bed; about 570 g of PETG.
+- **Printing:** no hardware, and supports only under the grip's and the
+  anchor block's lugs and the palm rest's wings; the base splits into two
+  halves for a 256 mm bed; about 670 g of PETG.
 - **Compatibility:** [crimpdeq-case](https://github.com/crimpdeq/crimpdeq-case)
   v3.2.0, v3.1.0, v2.0.0 and earlier.
 

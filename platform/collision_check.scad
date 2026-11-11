@@ -19,6 +19,13 @@ module fixed_parts() {
     base_front();
     base_rear();
     anchor_block();
+    anchor_key();
+}
+
+module tilted_by_key(angle = chain_tilt) {
+    // Turned about the anchor pocket wall's top edge, +X end down.
+    translate([anchor_pocket_x_max, 0, deck_z]) rotate([0, angle, 0])
+        translate([-anchor_pocket_x_max, 0, -deck_z]) children();
 }
 
 module service_probe() {
@@ -56,7 +63,7 @@ module stored_parts() {
 }
 
 if (mode == "anchor_case") {
-    intersection() { anchor_block(); crimpdeq_cases_reference(); }
+    intersection() { union() { anchor_block(); anchor_key(); } crimpdeq_cases_reference(); }
 } else if (mode == "grip_case") {
     intersection() {
         union() { finger_grip(); translate([rated_preview_deflection, 0, 0]) finger_grip(); }
@@ -90,6 +97,35 @@ if (mode == "anchor_case") {
     intersection() {
         translate([anchor_play_x + 0.05, 0, 0.01]) anchor_block();
         base_front();
+    }
+} else if (mode == "anchor_key_clear") {
+    // Drawn out along its tunnels, the key clears everything; seated, it
+    // touches only the tunnels' roof and the block's tunnel floor.
+    intersection() {
+        for (pull = [2, 10, 25, 50, anchor_key_bar_y_max - anchor_key_tip_y + 1])
+            lifted(-0.02) anchor_key(pull);
+        union() {
+            base_front(); base_rear(); anchor_block(); finger_grip(); eye_clips();
+            crimpdeq_cases_reference();
+        }
+    }
+} else if (mode == "anchor_key_clamps") {
+    // Pushed in past its seat, the key's taper presses on the block.
+    intersection() { anchor_key(-1); anchor_block(); }
+} else if (mode == "anchor_key_seated") {
+    // Lifted, the key bears on the base's tunnel roofs.
+    intersection() { lifted(0.02) anchor_key(); base_front(); }
+} else if (mode == "anchor_held") {
+    // Lifted, the block's tunnel floor catches the key.
+    intersection() { lifted(0.05) anchor_block(); anchor_key(); }
+} else if (mode == "chain_tilt") {
+    // Tilted by the key's bending at the rating, the grip, the clips, the
+    // case and the load cell stay clear of the base.
+    intersection() {
+        tilted_by_key() {
+            finger_grip(); eye_clips(); crimpdeq_cases_reference(); loadcell_reference();
+        }
+        union() { base_front(); base_rear(); anchor_key(); }
     }
 } else if (mode == "grip_base") {
     intersection() {
@@ -367,6 +403,13 @@ if (mode == "anchor_case") {
             translate([-500, -500, hangboard_front_z + 0.01]) cube(1000);
         }
     }
+} else if (mode == "liner_retained") {
+    // Lifted, the cap's ridge catches the lip's groove, for either hand.
+    assert(test_position < 2, "Hand index must be 0-1.");
+    intersection() {
+        finger_grip();
+        lifted(0.3) edge_liner(test_position == 0 ? "right" : "left");
+    }
 } else if (mode == "liner_seated") {
     // The bottom piece rests on the floor or the top stopper.
     assert(test_position < len(liner_configs), "Liner config index must be 0-3.");
@@ -413,16 +456,17 @@ if (mode == "anchor_case") {
         }
     }
 } else if (mode == "liner_clamped") {
-    // The pad presses on every stored piece: each one alone on the well
-    // floor (0-2), and the top piece of the full stack (3).
-    assert(test_position < liner_piece_count + 1, "Liner clamp index must be 0-3.");
+    // The pad presses on the top piece of every stack that is stored: each
+    // spacer alone (0-1), both spacers (2), and all three pieces (3). The cap
+    // is only stored on the spacers, its ridge above the deck.
+    stored_sets = [[0], [1], [0, 1], [0, 1, 2]];
+    assert(test_position < len(stored_sets), "Liner clamp index must be 0-3.");
+    pieces = stored_sets[test_position];
+    top = len(pieces) - 1;
     intersection() {
         liner_clamp_pad();
-        if (test_position < liner_piece_count)
-            stored_liner([test_position]);
-        else
-            liner_well_transform()
-                translate([0, 0, liner_piece_z([0, 1, 2], 2)]) liner_piece(2);
+        liner_well_transform()
+            translate([0, 0, liner_piece_z(pieces, top)]) liner_piece(pieces[top]);
     }
 } else if (mode == "liner_reach") {
     // A fingertip in each end notch reaches down to the well floor, beside

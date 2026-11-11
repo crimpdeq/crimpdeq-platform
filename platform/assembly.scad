@@ -6,7 +6,8 @@
 //   openscad -D 'part="base_front"' -o /tmp/dyno-base-front.stl platform/assembly.scad
 //   openscad -D 'part="grip"' -D on_plate=true -o /tmp/dyno-grip.stl platform/assembly.scad
 //
-// Parts: base_front, base_rear, anchor, grip, clips, key, rest, stoppers, liner.
+// Parts: base_front, base_rear, anchor, anchor_key, grip, clips, key, rest, stoppers,
+// liner.
 // The view options below are literals so that OpenSCAD's Customizer
 // (Window > Customizer) lists them; -D still overrides them.
 //
@@ -17,16 +18,18 @@ include <dimensions.scad>
 
 /* [View] */
 // Part to preview or export
-part = "assembly"; // [assembly, base_front, base_rear, anchor, grip, clips, key, rest, stoppers, liner]
+part = "assembly"; // [assembly, base_front, base_rear, anchor, anchor_key, grip, clips, key, rest, stoppers, liner]
 // Preview pose; rated exaggerates the grip displacement
 pose = "unloaded"; // [unloaded, rated, exploded]
 // Export the part at its place on the print plate instead of the origin
 on_plate = false;
-// Palm rest position, from the smallest (-1) to the largest (1) opening
-rest_position = 0; // [-1:0.25:1]
+// Hand opening set by the palm rest, mm
+opening = 55; // [25:10:85]
 
 /* [Show] */
 show_case = true;
+// Crimpdeq case release
+case_version = "v3.2.0"; // [v3.2.0, v3.1.0, v2.0.0]
 show_internals = true;
 show_rest = true;
 // Pocket stoppers; any not in the pocket stay in their storage well
@@ -44,12 +47,13 @@ $fn = render_fn;
 
 grip_preview_offset = pose == "rated" ? rated_preview_deflection : 0;
 explode = pose == "exploded" ? 1 : 0;
-rest_x_offset = round(rest_position * rest_adjust_range / rest_index_pitch) * rest_index_pitch;
+rest_x_offset = opening - hand_opening;
 
 assert(pose == "unloaded" || pose == "rated" || pose == "exploded",
     str("Unknown pose: ", pose));
-assert(rest_position >= -1 && rest_position <= 1,
-    "rest_position must be between -1 and +1.");
+assert(len([for (i = [0 : rest_index_count - 1]) if (rest_opening(i) == opening) i]) == 1,
+    str("opening must be one of the rest's positions, ", hand_opening_min, "-", hand_opening_max,
+        " mm in ", rest_index_pitch, " mm steps."));
 
 // Stopper indices in the pocket (bottom first) and in the storage well.
 stoppers_in_pocket = [for (i = [0 : stopper_count - 1])
@@ -78,6 +82,7 @@ module dynamometer_complete() {
     color([0.40, 0.42, 0.46]) base_front();
     color([0.58, 0.60, 0.64]) translate([30 * explode, 0, 0]) base_rear();
     color([0.85, 0.35, 0.20]) translate([0, 0, 30 * explode]) anchor_block();
+    color([0.45, 0.80, 0.45]) anchor_key(30 * explode);
     color([0.20, 0.45, 0.78]) translate([grip_preview_offset, 0, 30 * explode]) finger_grip();
     color([0.95, 0.80, 0.25]) translate([0, 0, 90 * explode]) eye_clips();
     color([0.85, 0.30, 0.55]) {
@@ -89,9 +94,9 @@ module dynamometer_complete() {
 
     if (show_case)
         translate([grip_preview_offset / 2, 0, 60 * explode]) {
-            color([0.12, 0.18, 0.25, 0.9]) crimpdeq_main_reference("v3.1.0");
-            color([0.18, 0.28, 0.38, 0.85]) crimpdeq_lid_reference("v3.1.0");
-            if (show_internals) %crimpdeq_internals_reference();
+            color([0.12, 0.18, 0.25, 0.9]) crimpdeq_main_reference(case_version);
+            color([0.18, 0.28, 0.38, 0.85]) crimpdeq_lid_reference(case_version);
+            if (show_internals) %crimpdeq_internals_reference(case_version);
         }
 
     if (show_rest)

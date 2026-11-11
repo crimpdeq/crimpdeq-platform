@@ -62,7 +62,7 @@ if (mode == "drop") {
     }
 } else intersection() {
     if (mode == "base") { base_front(); base_rear(); }
-    else if (mode == "anchor") anchor_block();
+    else if (mode == "anchor") { anchor_block(); anchor_key(); }
     else if (mode == "grip") {
         finger_grip();
         translate([rated_preview_deflection, 0, 0]) finger_grip();
