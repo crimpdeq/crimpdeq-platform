@@ -119,6 +119,9 @@ the fingers loads the grip's guides and makes the Crimpdeq read low.
 Before trusting the readings, check them once on each edge depth. Take the
 palm rest off, set the base on a table with its rear end at the table's
 edge and a stop against its phone end, and hook a strap over the finger
-edge. Lead the strap level over the rear of the base and down over the
-rounded table edge to a known weight of 10 to 40 kg, then compare the
-Crimpdeq's reading with the weight.
+edge. Lead the strap level over the rear of the base to a free-running
+pulley, such as a ball-bearing one, clamped at the table's edge, and down
+from it to a known weight of 10 to 40 kg. Then compare the Crimpdeq's
+reading with the weight. Don't run the strap over the table edge itself:
+friction there takes part of the weight, so the check could not tell a low
+reading from a lost load.
