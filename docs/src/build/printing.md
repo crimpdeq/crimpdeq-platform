@@ -40,7 +40,11 @@ Per-object overrides:
 | `grip`, `anchor` | 100% infill; normal supports, on the build plate only, not under bridges |
 | `anchor_key`, `clips`, `key`, `liner` | 100% infill |
 | `rest` | 50% infill; normal supports, on the build plate only, not under bridges |
-| `base_front`, `base_rear` | 4 walls, 4 top and 4 bottom layers, 15% infill |
+| `base_front`, `base_rear` | 4 walls, 4 top and 4 bottom layers, 15% adaptive cubic infill |
+
+Adaptive cubic infill keeps its density next to the walls and the top and
+bottom layers and grows sparser deep inside the base halves, where it carries
+no load. In a slicer without it, use 15% of another infill pattern.
 
 The project also prints these zones differently, using height range
 modifiers. The lightly loaded ones print sparser to save filament, and the
