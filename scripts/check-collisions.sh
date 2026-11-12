@@ -31,6 +31,11 @@ checks=(
     "anchor_base empty"
     "anchor_seated nonempty"
     "anchor_bears nonempty"
+    "anchor_key_clear empty"
+    "anchor_key_clamps nonempty"
+    "anchor_key_seated nonempty"
+    "anchor_held nonempty"
+    "chain_tilt empty"
     "grip_base empty"
     "grip_guide_support_0 nonempty"
     "grip_guide_support_1 nonempty"
@@ -87,6 +92,7 @@ for index in {0..3}; do
 done
 for index in {0..1}; do
     checks+=("finger_entry_${index} empty")
+    checks+=("liner_retained_${index} nonempty")
 done
 for index in {0..3}; do
     checks+=("liner_clamped_${index} nonempty")
@@ -113,7 +119,7 @@ check_mode() {
     local status_file="$tmp_dir/${mode}.status"
     local error_file="$tmp_dir/${mode}.error"
     local result log_text exit_code=0 scad_mode="$mode" test_position=0
-    if [[ "$mode" =~ ^(grip_guide_support|tab_seated|lug_bearing|clip_clamp|clip_retained|clip_path|rest_position|rest_locked|key_turned_over|key_retained|stopper_pocket|stopper_seated|stopper_located|stopper_stack_pocket|stopper_stack_contact|stopper_stack_located|stopper_tab_proud|stopper_finger_width|finger_entry|liner_clamped|liner_pocket|liner_seated|liner_located)_([0-8])$ ]]; then
+    if [[ "$mode" =~ ^(grip_guide_support|tab_seated|lug_bearing|clip_clamp|clip_retained|clip_path|rest_position|rest_locked|key_turned_over|key_retained|stopper_pocket|stopper_seated|stopper_located|stopper_stack_pocket|stopper_stack_contact|stopper_stack_located|stopper_tab_proud|stopper_finger_width|finger_entry|liner_clamped|liner_retained|liner_pocket|liner_seated|liner_located)_([0-8])$ ]]; then
         scad_mode="${BASH_REMATCH[1]}"
         test_position="${BASH_REMATCH[2]}"
     fi
@@ -190,7 +196,7 @@ echo "Collision checks passed."
 
 # Each single part must be one body; the paired parts export as two bodies
 # and the liner as its three pieces.
-single_parts=(base_front base_rear anchor grip key rest)
+single_parts=(base_front base_rear anchor anchor_key grip key rest)
 paired_parts=(clips stoppers)
 for part in "${single_parts[@]}" "${paired_parts[@]}" liner; do
     log_file="$tmp_dir/export_${part}.log"
@@ -218,10 +224,12 @@ echo "STL connectivity checks passed."
 invalid_parameters=(
     'platform_rated_kg=44'
     'platform_rated_kg=60'
-    'platform_rated_kg=160 allowable_printed_bending_mpa=1000 allowable_printed_tension_mpa=1000 allowable_printed_bearing_mpa=1000 allowable_lug_bearing_mpa=1000'
+    'platform_rated_kg=160 allowable_printed_in_layer_mpa=1000 allowable_printed_cross_layer_mpa=1000 allowable_printed_bearing_mpa=1000 allowable_lug_bearing_mpa=1000'
     'structural_safety_factor=1.5'
     'u_slot_clear=0.5'
     'lug_fit=0.5'
+    'lug_fit=0.35'
+    'lug_support_relief=0'
     'lug_neck_r=7.5'
     'allowable_lug_bearing_mpa=12'
     'clip_snap=0.8'
@@ -233,10 +241,12 @@ invalid_parameters=(
     'hangboard_lip_radius=3'
     'grip_guide_gap_z=0.3'
     'grip_guide_gap_z=1.5'
-    'lug_head_flat_w=1'
     'clip_access_x=1'
     'hangboard_right_lip_t=9'
-    'grip_keel_half_w_y=9'
+    'anchor_key_h=4'
+    'anchor_key_taper=0.1'
+    'heel_press_n=40'
+    'liner_catch=0.4'
     'anchor_half_w_y=12.5'
     'anchor_outboard_x=-1'
     'grip_brand_size=12'

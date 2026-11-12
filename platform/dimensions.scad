@@ -114,33 +114,40 @@ deck_z = case_z_min - case_float_gap;
 // load cell rests on its top. A round lug on the tongue fills the eye's
 // bore; pulling the grip (+X) presses the outer rim of each eye against a
 // lug.
-// Above the load cell the lug necks down under a head that holds a clip.
+// Above the load cell the lug necks down under a flat-bottomed head that
+// holds a clip.
 u_slot_clear = is_undef(u_slot_clear) ? 1.0 : u_slot_clear;
 tongue_r = min(case2_eye_u_d, case3_slot_d) / 2 - u_slot_clear;
-lug_fit = is_undef(lug_fit) ? 0.35 : lug_fit;
+lug_fit = is_undef(lug_fit) ? 0.2 : lug_fit;
 lug_r = eye_bore_d / 2 - lug_fit;
 lug_neck_r = is_undef(lug_neck_r) ? 5.25 : lug_neck_r;
-// Flat ring under the head that the clip bears on, out to the head's rim.
-lug_head_flat_w = is_undef(lug_head_flat_w) ? lug_r - lug_neck_r : lug_head_flat_w;
-lug_head_chamfer = lug_r - lug_neck_r - lug_head_flat_w;
 lug_top_chamfer = 1;
+// The anchor block and the grip print on their -Y side faces, so each lug
+// prints lying down. Flats on its top and bottom, lug_support_relief inside
+// its round, keep the layer steps and the support's scars off the bore; the
+// eye bears on the lug's outboard side.
+lug_support_relief = is_undef(lug_support_relief) ? 0.5 : lug_support_relief;
+lug_half_w_y = lug_r - lug_support_relief;
 // The tongue and the lug are cut flat on their inboard side, through their
 // full height, to clear the v2 lid battery walls and the v3 slot edge that
 // the case lowers past them; the eye only bears on the outboard side.
 lug_flat_x = max(case2_battery_wall_x + case2_battery_wall_t / 2, case3_slot_inner_x)
     + u_slot_clear;
-// The lug's section, a circle less the segment beyond the flat: its area,
-// centroid shift outboard, and second moment about the centroid for bending
-// along X.
-lug_flat_angle = acos((dyno_eye_x_right - lug_flat_x) / lug_r);
-lug_flat_segment_mm2 = pow(lug_r, 2) * (lug_flat_angle * PI / 180
-    - sin(lug_flat_angle) * cos(lug_flat_angle));
-lug_area_mm2 = PI * pow(lug_r, 2) - lug_flat_segment_mm2;
-lug_centroid_shift = 2 * pow(lug_r * sin(lug_flat_angle), 3) / 3 / lug_area_mm2;
-lug_i_mm4 = pow(lug_r, 4) / 4 * (PI - lug_flat_angle * PI / 180
-        + sin(lug_flat_angle) * cos(lug_flat_angle)
-        - 2 * pow(sin(lug_flat_angle), 3) * cos(lug_flat_angle))
-    - lug_area_mm2 * pow(lug_centroid_shift, 2);
+// The lug's section, summed in strips across X (u from the eye's centre,
+// outboard positive) from the inboard flat: its area, centroid, second
+// moment about the centroid for bending along X, and the first moment of the
+// area outboard of the centroid, which sets the peak shear there.
+function lug_width_y(u) = 2 * min(lug_half_w_y, sqrt(max(0, lug_r * lug_r - u * u)));
+lug_strip_n = 200;
+lug_u_min = lug_flat_x - dyno_eye_x_right;
+lug_du = (lug_r - lug_u_min) / lug_strip_n;
+lug_strip_u = [for (i = [0 : lug_strip_n - 1]) lug_u_min + (i + 0.5) * lug_du];
+lug_area_mm2 = sum_list([for (u = lug_strip_u) lug_width_y(u)]) * lug_du;
+lug_centroid_u = sum_list([for (u = lug_strip_u) u * lug_width_y(u)]) * lug_du / lug_area_mm2;
+lug_i_mm4 = sum_list([for (u = lug_strip_u) pow(u - lug_centroid_u, 2) * lug_width_y(u)])
+    * lug_du;
+lug_q_mm3 = sum_list([for (u = lug_strip_u) if (u > lug_centroid_u)
+    (u - lug_centroid_u) * lug_width_y(u)]) * lug_du;
 clip_t = is_undef(clip_t) ? 3 : clip_t;
 clip_head_gap = 0.2;
 lug_head_z_min = loadcell_top_z + clip_t + clip_head_gap;
@@ -172,8 +179,8 @@ clip_access_x = is_undef(clip_access_x) ? 6 : clip_access_x;
 grip_x_min = dyno_eye_x_right - tongue_r;
 // The grip's upper body starts beyond the case, leaving room to fit a clip.
 grip_body_x_min = dyno_eye_x_right + clip_tail_x + clip_install_travel + clip_access_x;
-// Under the case, a keel narrower than the body carries the tongue to it.
-grip_keel_half_w_y = is_undef(grip_keel_half_w_y) ? 15 : grip_keel_half_w_y;
+// Under the case, a keel as wide as the body carries the tongue to it, so
+// the grip prints on its side with only the tongue and the lug on support.
 grip_spine_t = is_undef(grip_spine_t) ? 8 : grip_spine_t;
 hangboard_finger_room_x = is_undef(hangboard_finger_room_x) ? 18.5 : hangboard_finger_room_x;
 hangboard_opening_w_y = is_undef(hangboard_opening_w_y) ? 80 : hangboard_opening_w_y;
@@ -193,6 +200,14 @@ liner_band_x = liner_t_max + liner_clearance;
 liner_finger_w_y = hangboard_opening_w_y / len(liner_finger_steps);
 function liner_finger_y(i) = (i - (len(liner_finger_steps) - 1) / 2) * liner_finger_w_y;
 liner_step_r = 2.5;
+// A ridge along the cap's back face, at its mid-height, sits in a groove in
+// the lip, so fingers sliding up the liner cannot drag the stack out. The
+// cap goes in clear of the lip and is pushed onto it; the pull keeps it
+// there. Both are 45-degree V profiles; the groove clears the ridge by
+// liner_catch_clear.
+liner_catch = is_undef(liner_catch) ? 0.8 : liner_catch;
+liner_catch_clear = 0.2;
+liner_catch_groove_depth = liner_catch - liner_clearance + liner_catch_clear;
 hangboard_opening_w_x = hangboard_finger_room_x + liner_band_x;
 hangboard_side_wall_t = 4;
 hangboard_right_lip_t = is_undef(hangboard_right_lip_t) ? 14.5 : hangboard_right_lip_t;
@@ -246,6 +261,38 @@ anchor_z_min = is_undef(anchor_z_min) ? deck_z - 16.5 : anchor_z_min;
 anchor_pocket_x_min = anchor_x_min - anchor_fit;
 anchor_pocket_x_max = anchor_x_max + anchor_play_x;
 anchor_pocket_half_w_y = anchor_half_w_y + anchor_fit;
+
+// Anchor key. The pull runs above the pocket's +X wall, so it would tip the
+// block about the wall's top edge, and the load cell and the grip with it,
+// until the grip rested on its guide ledges, whose friction would take part
+// of the pull. A printed bar, pushed in from the +Y side under the deck,
+// runs through a tunnel in the base and one across the block near its -X
+// end, and holds that end down. Its underside tapers, thicker toward the
+// head, so pushing it in clamps the block on the pocket floor without play;
+// the taper is shallow enough to lock by friction. The block's tunnel is
+// longer toward -X by the block's play, so the pocket wall, not the key,
+// takes the pull.
+anchor_key_w_x = 12;
+anchor_key_fit = 0.3;
+// Height at the block's -Y face, and the gain per mm toward the head.
+anchor_key_h = is_undef(anchor_key_h) ? 8 : anchor_key_h;
+anchor_key_taper = is_undef(anchor_key_taper) ? 1 / 40 : anchor_key_taper;
+anchor_key_top_z = deck_z - 3;
+anchor_key_clear_z = 0.5;
+anchor_key_end_wall_x = 5;
+anchor_key_tunnel_w_x = anchor_key_w_x + anchor_key_fit + anchor_play_x + 0.1;
+anchor_key_x = anchor_x_min + anchor_key_end_wall_x + anchor_key_tunnel_w_x
+    - (anchor_key_w_x + anchor_key_fit) / 2;
+// The tip reaches into the far wall; the key may go anchor_key_travel_y
+// further where the print runs loose, and its head stops that far from the
+// base.
+anchor_key_tip_engage_y = 10;
+anchor_key_travel_y = 6;
+anchor_key_tip_y = -anchor_pocket_half_w_y - anchor_key_tip_engage_y;
+anchor_key_bar_y_max = base_half_w_y + anchor_key_travel_y;
+anchor_key_tip_chamfer = 1;
+function anchor_key_bottom_z(y) = anchor_key_top_z - anchor_key_h
+    - (y + anchor_half_w_y) * anchor_key_taper;
 
 // Two drop-in pocket stoppers raise the floor for shallower edges: each on
 // its own, or both stacked. They span the pocket, so the unlevel liner
@@ -501,12 +548,13 @@ opening_label_z = (base_z_min + key_head_z_min) / 2;
 
 // Two-piece base for a 256 mm bed (Bambu Lab A1), split beside the grip.
 // Two vertical dovetail tongues on the front half drop into sockets under
-// the rear half's trench floor. The pull crosses the joint as compression
-// along the finger line, above the deck, so the trench side walls rise into
-// cheeks across the joint; with the line inside their butt faces, the joint
-// stays shut without tension and the halves cannot rock up off the table.
-// The cheeks stand beside the grip's upper body, no higher than its top,
-// clear of the hand.
+// the rear half's trench floor. The anchor key passes the grip's tipping
+// moment into the front half, which stays balanced only if the pull crosses
+// the joint as compression along the finger line, above the deck. The
+// trench side walls rise into cheeks across the joint; with the line inside
+// their butt faces, the joint stays shut without tension and the halves
+// cannot rock up off the table. The cheeks stand beside the grip's upper
+// body, no higher than its top, clear of the hand.
 base_split_x = is_undef(base_split_x) ? (grip_body_x_min + grip_x_max) / 2 : base_split_x;
 joint_cheek_x_min = grip_body_x_min;
 joint_cheek_x_max = grip_x_max;
@@ -518,8 +566,17 @@ joint_pull_z = loadcell_center_z + max(edge_pull_offsets);
 base_split_bed_max = is_undef(base_split_bed_max) ? 240 : base_split_bed_max;
 print_bed_size = is_undef(print_bed_size) ? 256 : print_bed_size;
 base_x_min = phone_slot_x_top - phone_slot_top_w_x - phone_slot_outer_wall_x;
-// The base carries the whole heel plate at the largest opening.
-base_x_max = rest_face_x(rest_adjust_range) + rest_depth_x;
+// The finger pull and the palm's push on the bolster, at its mid-rise, form
+// a couple that would lift the base's -X end about its +X end. The hand
+// balances it by pressing its heel on the heel deck behind the bolster, so
+// the base runs on behind the heel plate until heel_press_n holds it flat at
+// the largest opening. The base carries the whole heel plate.
+heel_press_n = is_undef(heel_press_n) ? 60 : heel_press_n;
+palm_push_z = rest_heel_z + rest_bolster_rise / 2;
+hand_couple_nmm = platform_rated_force_n * (joint_pull_z - palm_push_z);
+function heel_x(offset = 0) = rest_face_x(offset) + (rest_bolster_depth_x + rest_depth_x) / 2;
+base_x_max = max(rest_face_x(rest_adjust_range) + rest_depth_x,
+    heel_x(rest_adjust_range) + hand_couple_nmm / heel_press_n);
 joint_tongue_y = 30;
 joint_tongue_len_x = 12;
 joint_tongue_neck_w = 12;
@@ -559,24 +616,38 @@ function brand_len(text, size) = len(text) * size * brand_char_w;
 
 // --- Structural screens at the design target -------------------------------
 // Nominal screens, not a strength qualification. Printed-material limits are
-// assumptions that need coupon tests in the actual print orientation:
-// bending within the layers, and tension across them.
-allowable_printed_bending_mpa = is_undef(allowable_printed_bending_mpa) ? 30 : allowable_printed_bending_mpa;
-allowable_printed_tension_mpa = is_undef(allowable_printed_tension_mpa) ? 12 : allowable_printed_tension_mpa;
+// assumptions that need coupon tests in the actual print orientation: stress
+// within the layers (tension and bending, and shear at half of it), and
+// tension across them.
+allowable_printed_in_layer_mpa = is_undef(allowable_printed_in_layer_mpa)
+    ? 30 : allowable_printed_in_layer_mpa;
+allowable_printed_cross_layer_mpa = is_undef(allowable_printed_cross_layer_mpa)
+    ? 12 : allowable_printed_cross_layer_mpa;
 allowable_printed_bearing_mpa = is_undef(allowable_printed_bearing_mpa) ? 12 : allowable_printed_bearing_mpa;
-// Conformal contact of the metal eye on a solid printed lug, about 40 % of
-// PETG's compressive yield. The governing assumption of the all-printed
+// Peak contact pressure of the eye's metal ring on a solid printed lug, half
+// of PETG's compressive yield. The governing assumption of the all-printed
 // load path.
-allowable_lug_bearing_mpa = is_undef(allowable_lug_bearing_mpa) ? 20 : allowable_lug_bearing_mpa;
+allowable_lug_bearing_mpa = is_undef(allowable_lug_bearing_mpa) ? 25 : allowable_lug_bearing_mpa;
+// Printed PETG's stiffness, for the contact and the anchor key's deflection.
+printed_modulus_mpa = 2000;
+printed_poisson = 0.38;
 
-// Anchor block and grip print upright, so the lug root and the tongue root
-// are loaded across the layers. The eye bears across the full lug diameter
-// and tab thickness; its resultant acts at the load-cell mid-plane. The eye
-// pushes the lug inboard, so its outboard side is in tension.
-lug_bearing_mpa = design_force_n / (2 * lug_r * lc_T);
+// The anchor block and the grip print on their -Y side faces, so the eye's
+// load runs within their layers through the lug, the tongue root and the
+// finger lip. The eye's ring bears on the lug's outboard side, a cylinder in
+// a bore larger by the fit: the peak pressure of their line contact, the
+// ring taken as rigid, over the load cell's thickness.
+lug_contact_r = lug_r * (eye_bore_d / 2) / lug_fit;
+lug_contact_half_w = sqrt(4 * design_force_n * lug_contact_r
+    / (PI * printed_modulus_mpa / (1 - pow(printed_poisson, 2)) * lc_T));
+lug_bearing_mpa = 2 * design_force_n / (PI * lug_contact_half_w * lc_T);
+// Lug root at the tongue, a sharp corner: the eye's resultant at the
+// load-cell mid-plane bends it, with the farther fibre governing, and shears
+// it, peaking at the centroid; their von Mises combination screens it.
 lug_bending_mpa = design_force_n * (loadcell_center_z - loadcell_bottom_z)
-    * (lug_r - lug_centroid_shift) / lug_i_mm4;
-lug_shear_mpa = design_force_n / lug_area_mm2;
+    * max(lug_r - lug_centroid_u, lug_centroid_u - lug_u_min) / lug_i_mm4;
+lug_shear_mpa = design_force_n * lug_q_mm3 / (lug_i_mm4 * lug_width_y(lug_centroid_u));
+lug_combined_mpa = sqrt(pow(lug_bending_mpa, 2) + 3 * pow(lug_shear_mpa, 2));
 // Tongue root at the deck, taken as the tongue's width by its length from
 // the flat to the anchor's outboard end; the grip's tongue is longer.
 tongue_root_len_x = -anchor_x_min - lug_flat_x;
@@ -586,32 +657,62 @@ tongue_bending_mpa = design_force_n * (loadcell_center_z - deck_z)
 // The largest finger-pull offset tilts the grip. The clip reacts it against
 // the tongue seat, taken conservatively at tongue_r from the eye, bearing on
 // the outboard half of the flat ring under the lug head; the head then pulls
-// on the neck across the layers.
+// on the neck.
 clip_tilt_moment_nmm = design_force_n * max([for (o = edge_pull_offsets) abs(o)]);
 clip_tilt_force_n = clip_tilt_moment_nmm / tongue_r;
-clip_ring_area_mm2 = PI * (pow(lug_neck_r + lug_head_flat_w, 2) - pow(clip_seat_r, 2)) / 2;
+clip_ring_area_mm2 = sum_list([for (i = [0 : lug_strip_n - 1])
+        let(u = (i + 0.5) * lug_r / lug_strip_n)
+        lug_width_y(u) - 2 * sqrt(max(0, clip_seat_r * clip_seat_r - u * u))])
+    * lug_r / lug_strip_n;
 clip_ring_bearing_mpa = clip_tilt_force_n / clip_ring_area_mm2;
 lug_neck_tension_mpa = clip_tilt_force_n / (PI * lug_neck_r * lug_neck_r);
 
 // Anchor block bearing on the pocket's +X wall below the case.
 anchor_bearing_mpa = design_force_n / (2 * anchor_half_w_y * (deck_z - anchor_z_min));
+// The pull's tipping moment about the pocket wall's top edge lifts the
+// block's -X end onto the anchor key, which spans the pocket between the
+// base's tunnels. The strip of block under the key bridges its tunnel, held
+// at both sides; the key's tip bears up on the far tunnel's roof.
+anchor_tip_lever_x = anchor_pocket_x_max - anchor_key_x;
+function anchor_uplift_n(force) = force * (joint_pull_z - deck_z) / anchor_tip_lever_x;
+anchor_key_span_y = 2 * anchor_pocket_half_w_y;
+anchor_key_i_mm4 = anchor_key_w_x * pow(anchor_key_h, 3) / 12;
+anchor_key_bending_mpa = anchor_uplift_n(design_force_n) * anchor_key_span_y / 8
+    * anchor_key_h / 2 / anchor_key_i_mm4;
+anchor_strip_t = anchor_key_bottom_z(anchor_half_w_y) - anchor_z_min;
+anchor_strip_bending_mpa = anchor_uplift_n(design_force_n) / (2 * anchor_half_w_y)
+    * anchor_key_tunnel_w_x / 12 * 6 / pow(anchor_strip_t, 2);
+anchor_key_roof_bearing_mpa = anchor_uplift_n(design_force_n) / 2
+    / (anchor_key_w_x * anchor_key_tip_engage_y);
+// At the rating, the key's bending tilts the anchor, the load cell, the case
+// and the grip about the wall's top edge; the grip and the case must keep
+// most of their gaps to the base.
+anchor_key_deflection = 5 * anchor_uplift_n(platform_rated_force_n) * pow(anchor_key_span_y, 3)
+    / (384 * printed_modulus_mpa * anchor_key_i_mm4);
+chain_tilt = atan(anchor_key_deflection / anchor_tip_lever_x);
+grip_tilt_drop = (grip_x_max - anchor_pocket_x_max) * tan(chain_tilt);
+case_tilt_drop = (case_x_half - anchor_pocket_x_max) * tan(chain_tilt);
 
-// Full force at the pocket rim, over its usable width. The grip prints
-// upright, so the lip's root bends across the layers.
+// Full force at the pocket rim, over its usable width, bending the lip's
+// root within the layers.
 lip_section_modulus_mm3 = hangboard_opening_w_y * pow(hangboard_lip_min_t, 2) / 6;
 lip_design_bending_mpa = design_force_n * hangboard_pocket_depth_z / lip_section_modulus_mm3;
 // The lip through the grip brand, under the moment at the text's foot.
 lip_brand_bending_mpa = design_force_n
     * (hangboard_front_z - (grip_brand_z - grip_brand_size * brand_line_h / 2))
     / (hangboard_opening_w_y * pow(hangboard_right_lip_t - brand_depth, 2) / 6);
+// The lip also spans between the pocket's end walls, across the layers:
+// the whole force on it as a beam fixed at both ends.
+lip_span_bending_mpa = design_force_n * hangboard_opening_w_y / 12
+    / (hangboard_pocket_depth_z * pow(hangboard_lip_min_t, 2) / 6);
 // Pocket side walls and back wall carry the lip force back to the lug.
 grip_net_area_mm2 = 2 * hangboard_side_wall_t * (hangboard_front_z - grip_z_min)
     + 2 * grip_half_w_y * hangboard_back_wall_t;
 grip_net_tension_mpa = design_force_n / grip_net_area_mm2;
 // The keel and the tongue on it carry the pull below the finger line, in
-// tension and bending along X, within the layers.
+// tension and bending along X.
 grip_keel_h = deck_z - grip_z_min;
-grip_keel_area_mm2 = 2 * grip_keel_half_w_y * grip_keel_h;
+grip_keel_area_mm2 = 2 * grip_half_w_y * grip_keel_h;
 grip_keel_tongue_h = loadcell_bottom_z - deck_z;
 grip_keel_tongue_area_mm2 = 2 * tongue_r * grip_keel_tongue_h;
 grip_keel_section_area_mm2 = grip_keel_area_mm2 + grip_keel_tongue_area_mm2;
@@ -629,21 +730,23 @@ grip_keel_mpa = design_force_n / grip_keel_section_area_mm2
 
 // The key takes the whole palm force over its length in the plate:
 // shear at the channel floor, bearing on the plate's and the floor's grooves,
-// and shear through the rib between neighbouring floor grooves.
+// and shear and bending, across the base's layers, of the rib between
+// neighbouring floor grooves.
 key_shear_mpa = design_force_n / (key_t_x * key_engage_y);
 key_plate_bearing_mpa = design_force_n / (key_plate_engage_z * key_engage_y);
-key_slot_bearing_mpa = design_force_n
-    / (key_floor_depth * (key_engage_y - key_snap_under_plate_y));
+key_floor_bearing_y = key_engage_y - key_snap_under_plate_y;
+key_slot_bearing_mpa = design_force_n / (key_floor_depth * key_floor_bearing_y);
 key_ligament_x = rest_index_pitch - key_t_x - key_fit;
 key_ligament_shear_mpa = design_force_n / (key_ligament_x * key_engage_y);
+key_ligament_bending_mpa = design_force_n * key_floor_depth / 2
+    / (key_floor_bearing_y * pow(key_ligament_x, 2) / 6);
 // Palm bolster root, with the force at mid-rise; stress across the layers.
 rest_bolster_bending_mpa = design_force_n * rest_bolster_rise / 2
     / (2 * rest_half_w_y * pow(rest_bolster_depth_x, 2) / 6);
 // Tipping the rest about its front edge lifts its tail; the channel's two
-// overhanging lips hold it over the shortest engaged length.
-rest_min_engaged_x = base_x_max - rest_face_x(rest_adjust_range);
+// overhanging lips hold it along the plate.
 rest_uplift_n = design_force_n * (rest_bolster_z_max - rest_z_min) / rest_depth_x;
-rest_flank_shear_mpa = rest_uplift_n / (2 * rest_min_engaged_x * rest_plate_t / 2);
+rest_flank_shear_mpa = rest_uplift_n / (2 * rest_depth_x * rest_plate_t / 2);
 // Each joint cheek takes half the pull at the finger line and passes it to
 // the base through its root at the deck, across the layers; the shorter
 // half's root governs.
@@ -660,13 +763,15 @@ assert(eye_bore_d < eye_d, "The eye ring's bore must be smaller than the eye.");
 assert(lug_fit >= 0.15 && lug_fit <= 0.4, "Lugs need a 0.15-0.4 mm radial fit in the eye.");
 assert(lug_bearing_mpa <= allowable_lug_bearing_mpa,
     "Eye bearing on the printed lug exceeds the configured limit.");
-assert(lug_bending_mpa <= allowable_printed_tension_mpa &&
-    lug_shear_mpa <= allowable_printed_tension_mpa / 2 &&
-    tongue_bending_mpa <= allowable_printed_tension_mpa,
-    "Printed lug or tongue root exceeds configured cross-layer stress.");
+assert(lug_combined_mpa <= allowable_printed_in_layer_mpa &&
+    lug_shear_mpa <= allowable_printed_in_layer_mpa / 2 &&
+    tongue_bending_mpa <= allowable_printed_in_layer_mpa,
+    "Printed lug or tongue root exceeds configured stress.");
+assert(lug_support_relief >= 0.3 && lug_half_w_y > lug_neck_r + 1,
+    "The lug's print flats must clear the bore and leave a head ring over the clip.");
 assert(lug_flat_x <= dyno_eye_x_right - clip_tip_x,
     "The case's slot edges leave too little room for the clip.");
-assert(lug_neck_r >= 5 && lug_neck_r <= lug_r - 1.5 && lug_head_chamfer >= 0 &&
+assert(lug_neck_r >= 5 && lug_neck_r <= lug_r - 1.5 &&
     clip_seat_r > lug_neck_r && clip_seat_r + 2.5 <= tongue_r,
     "The lug neck must leave a head over the clip and a clip ring round the neck.");
 assert(clip_snap >= 0.2 && clip_snap <= 0.5 && clip_t >= 2.5 &&
@@ -674,7 +779,7 @@ assert(clip_snap >= 0.2 && clip_snap <= 0.5 && clip_t >= 2.5 &&
     sqrt(pow(lug_neck_r, 2) - pow(clip_tip_x, 2)) < clip_mouth_w / 2,
     "Clips need a light snap and fork tips clear of the seated neck.");
 assert(clip_ring_bearing_mpa <= allowable_printed_bearing_mpa &&
-    lug_neck_tension_mpa <= allowable_printed_tension_mpa,
+    lug_neck_tension_mpa <= allowable_printed_in_layer_mpa,
     "The clip ring or lug neck exceeds configured stress under the grip's tilt.");
 assert(clip_access_x >= 5 && clip_tail_x >= clip_tip_x + 6 &&
     dyno_eye_x_right + clip_tail_x <= lc_L / 2,
@@ -726,12 +831,12 @@ assert(grip_guide_gap_z >= 0.8 && grip_guide_gap_z <= 1.2 && grip_guide_bearing_
 assert(anchor_z_min > base_z_min + 5 && anchor_half_w_y >= tongue_r + 3 &&
     anchor_outboard_x >= 0 && anchor_bearing_mpa <= allowable_printed_bearing_mpa,
     "The anchor block must carry its tongue out of the case, and its pocket needs a solid floor and bearing area.");
-assert(lip_design_bending_mpa <= allowable_printed_tension_mpa &&
-    grip_net_tension_mpa <= allowable_printed_tension_mpa,
+assert(lip_design_bending_mpa <= allowable_printed_in_layer_mpa &&
+    lip_span_bending_mpa <= allowable_printed_cross_layer_mpa &&
+    grip_net_tension_mpa <= allowable_printed_in_layer_mpa,
     "Finger lip or grip body exceeds configured nominal stress.");
-assert(grip_keel_half_w_y >= tongue_r && grip_keel_half_w_y <= grip_half_w_y &&
-    grip_keel_mpa <= allowable_printed_bending_mpa,
-    "The grip keel must carry the tongue and stay within its bending stress.");
+assert(grip_keel_mpa <= allowable_printed_in_layer_mpa,
+    "The grip keel must stay within its bending stress.");
 assert(hand_opening_min == 25 && hand_opening_max == 85 && rest_index_count == 7,
     "Preserve seven 25-85 mm hand openings.");
 assert(abs(2 * rest_adjust_range
@@ -751,7 +856,7 @@ assert(joint_cheek_top_z >= joint_pull_z + 4 && joint_cheek_top_z <= hangboard_f
 assert(base_split_x - joint_tongue_len_x >= joint_cheek_x_min &&
     base_split_x + joint_tongue_len_x <= joint_cheek_x_max,
     "The base joint and its tongues must lie between the cheeks.");
-assert(joint_cheek_bending_mpa <= allowable_printed_tension_mpa,
+assert(joint_cheek_bending_mpa <= allowable_printed_cross_layer_mpa,
     "Joint cheek roots exceed configured cross-layer stress.");
 assert(base_half_w_y - rest_channel_half_w_y >= 6,
     "The rest channel needs a 6 mm side wall in the base.");
@@ -780,15 +885,16 @@ assert(rest_bolster_half_w_y >= rest_half_w_y + rest_side_gap_y + 3 &&
     rest_bolster_half_w_y <= base_half_w_y,
     "The bolster wings must lie at least 3 mm onto the deck and stay within the base.");
 assert(key_ligament_x >= 3 &&
-    key_shear_mpa <= allowable_printed_tension_mpa &&
+    key_shear_mpa <= allowable_printed_cross_layer_mpa &&
     key_plate_bearing_mpa <= allowable_printed_bearing_mpa &&
     key_slot_bearing_mpa <= allowable_printed_bearing_mpa &&
-    key_ligament_shear_mpa <= allowable_printed_tension_mpa,
+    key_ligament_shear_mpa <= allowable_printed_cross_layer_mpa &&
+    key_ligament_bending_mpa <= allowable_printed_cross_layer_mpa,
     "The index key, its grooves or the ribs between them exceed configured stress.");
-assert(rest_bolster_bending_mpa <= allowable_printed_tension_mpa,
+assert(rest_bolster_bending_mpa <= allowable_printed_cross_layer_mpa,
     "Palm bolster exceeds configured cross-layer stress.");
-assert(rest_min_engaged_x >= rest_depth_x &&
-    rest_flank_shear_mpa <= allowable_printed_tension_mpa / 2,
+assert(base_x_max - rest_face_x(rest_adjust_range) >= rest_depth_x &&
+    rest_flank_shear_mpa <= allowable_printed_cross_layer_mpa / 2,
     "The base must carry the whole heel plate and the channel lips their strength.");
 assert(base_front_len <= base_split_bed_max && base_rear_len <= base_split_bed_max,
     "Each base half must fit the printable length.");
@@ -811,7 +917,7 @@ assert(side_brand_x - (liner_well_x_max + liner_well_notch_x)
 assert(brand_len(grip_brand_text, grip_brand_size) + 6 <= hangboard_opening_w_y &&
     grip_brand_z - grip_brand_size * brand_line_h / 2 >= deck_z + 1 &&
     grip_brand_z + grip_brand_size * brand_line_h / 2 <= hangboard_front_z - hangboard_lip_radius &&
-    lip_brand_bending_mpa <= allowable_printed_tension_mpa,
+    lip_brand_bending_mpa <= allowable_printed_in_layer_mpa,
     "The grip brand must fit the lip's outer face between the deck and the rim's round, and keep the lip within its stress.");
 assert(opening_label_size * brand_line_h <= min(key_head_z_min, key_z_min) - base_z_min &&
     brand_len(str(rest_opening(rest_index_count - 1)), opening_label_size)
@@ -846,3 +952,24 @@ assert(liner_well_notch_x >= 12 && liner_well_notch_y_max - (-base_half_w_y) >= 
     liner_well_notch_y_max <= stopper_tab_slot_y_min - 3 &&
     liner_well_notch_y_max <= -phone_stand_half_w_y - 3,
     "The liner well's finger notches must take a fingertip and stay clear of the stopper well and the phone stand.");
+assert(anchor_key_taper > 0 && anchor_key_taper <= 1 / 20 &&
+    anchor_key_travel_y * anchor_key_taper >= 0.1 &&
+    anchor_key_travel_y * anchor_key_taper < anchor_key_clear_z,
+    "The anchor key's taper must lock by friction and take up 0.1 mm of print tolerance within its tunnels' clearance.");
+assert(anchor_key_bending_mpa <= allowable_printed_in_layer_mpa &&
+    anchor_strip_bending_mpa <= allowable_printed_in_layer_mpa &&
+    anchor_key_roof_bearing_mpa <= allowable_printed_bearing_mpa &&
+    anchor_strip_t >= 3 && anchor_key_end_wall_x >= 4,
+    "The anchor key, the block round its tunnel or the tunnel roof exceeds configured stress.");
+assert(grip_tilt_drop <= grip_guide_gap_z / 2 && case_tilt_drop <= case_float_gap / 2,
+    "At the rating the anchor key must keep the grip off its guide ledges and the case off the deck.");
+assert(anchor_key_x - anchor_key_w_x / 2 + key_head_x < -service_w / 2 &&
+    anchor_key_tip_y - anchor_key_travel_y - 1 > liner_well_y_max + liner_clamp_t_y
+        + liner_clamp_relief_y + 3 &&
+    anchor_key_bottom_z(anchor_key_bar_y_max) - anchor_key_clear_z > base_z_min + 3,
+    "The anchor key must stay clear of the service access and the liner well, and keep a floor under its tunnel.");
+assert(heel_press_n >= 40 && heel_press_n <= 100,
+    "The heel press that holds the base flat must be 40-100 N.");
+assert(liner_catch >= liner_clearance + 0.4 && liner_catch <= 1.2 &&
+    liner_well_proud_z - liner_cap_h / 2 - liner_catch >= 0.1,
+    "The liner cap's ridge must reach well into the lip's groove and stand above the deck when stored.");

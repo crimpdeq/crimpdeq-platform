@@ -41,18 +41,23 @@ PROCESS_OVERRIDES = {
     "top_shell_layers": "6",
     "bottom_shell_layers": "6",
     "sparse_infill_density": "20%",
-    # Only the palm rest's wings need support (REST); the joint sockets, the
-    # key tunnels and the rest's key groove are bridged, and support in them
+    # Only the grip's and the anchor block's tongue and lug and the palm
+    # rest's wings need support (SUPPORTED); the joint sockets, the key
+    # tunnels and the rest's key groove are bridged, and support in them
     # would scar a bearing face.
     "enable_support": "0",
     "brim_type": "outer_only",
     "brim_width": "5",
 }
 SOLID = {"sparse_infill_density": "100%"}
-# Support from the bed under the bolster's wings only; the key groove across
-# the sole stays a bridge. Tree support ignores bridge_no_support and fills it.
-REST = {"sparse_infill_density": "50%", "enable_support": "1", "support_type": "normal(auto)",
-        "support_on_build_plate_only": "1", "bridge_no_support": "1"}
+# Support from the bed only, under overhangs that stand over it: the grip's
+# and the anchor block's tongue and lug, printed on their sides, and the
+# palm rest's wings. Bridges, such as the grip's pocket wall and the rest's
+# key groove, stay unsupported. Tree support ignores bridge_no_support and
+# fills them.
+SUPPORTED = {"enable_support": "1", "support_type": "normal(auto)",
+             "support_on_build_plate_only": "1", "bridge_no_support": "1"}
+REST = {"sparse_infill_density": "50%", **SUPPORTED}
 # The base halves carry low stress, so they print lighter than the load path.
 BASE = {"wall_loops": "4", "top_shell_layers": "4", "bottom_shell_layers": "4",
         "sparse_infill_density": "15%"}
@@ -70,20 +75,17 @@ HEIGHT_RANGES = {
     "rest": [("rest_heel_z - rest_z_min", "rest_bolster_z_max - rest_z_min",
               {**RANGE_BASE, "sparse_infill_density": "15%", "fuzzy_skin": "external",
                "fuzzy_skin_thickness": "0.3", "fuzzy_skin_point_distance": "0.8"})],
-    # The anchor block's lower body only bears on its pocket; its top 5 mm
-    # stays solid under the tongue root.
-    "anchor": [("0", "deck_z - 5 - anchor_z_min",
-                {**RANGE_BASE, "sparse_infill_density": "40%"})],
 }
 
 # Bambu Studio drops plate names containing any of ILLEGAL_NAME_CHARS.
 PLATES = [
     ("Front base and small parts", [
-        ("base_front", BASE), ("grip", SOLID), ("anchor", SOLID), ("clips", SOLID),
+        ("base_front", BASE), ("grip", {**SOLID, **SUPPORTED}),
+        ("anchor", {**SOLID, **SUPPORTED}), ("anchor_key", SOLID), ("clips", SOLID),
+        ("liner", SOLID),
     ]),
-    ("Rear base, liner, palm rest, stoppers and key", [
-        ("base_rear", BASE), ("liner", SOLID), ("rest", REST), ("stoppers", {}),
-        ("key", SOLID),
+    ("Rear base, palm rest, stoppers and key", [
+        ("base_rear", BASE), ("rest", REST), ("stoppers", {}), ("key", SOLID),
     ]),
 ]
 ILLEGAL_NAME_CHARS = '<>:/\\|?*"'

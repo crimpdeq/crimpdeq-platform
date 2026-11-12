@@ -9,10 +9,14 @@ tongues until both halves stand flat on the table.
 
 ## 2. Fit the anchor block
 
-![Dropping the anchor block into its pocket](../images/anchor_in.png)
+![Dropping the anchor block into its pocket and fitting its key](../images/anchor_in.png)
 
 Drop the anchor block into its pocket at the outer end of the front half,
-lug toward the middle.
+lug toward the middle. Push the anchor key, tip first, into the hole in the
+open side of the base beside the block, through the block, until it is
+tight. Its underside tapers, so it clamps the block down on the pocket
+floor; its head stops a few millimetres short of the base. Without it, the
+pull tips the block and lets the grip drag on its guides.
 
 ## 3. Fit the grip and the case
 
@@ -30,7 +34,8 @@ rests on the lugs.
 
 The grip must hang free on the load cell: a strip of paper slides between
 each guide ledge and the grip's side walls. If the grip rests on a ledge,
-friction there takes part of the pull and the Crimpdeq reads low.
+friction there takes part of the pull and the Crimpdeq reads low. Check the
+anchor key if it does.
 
 ## 4. Fit the clips
 
@@ -53,9 +58,11 @@ bolster, until it clicks and its head meets the base. It fits from either
 side, with its head pointing away from the grip; from the far side, turn it
 over.
 
-The seven key holes along each side set the opening between the finger lip
-and the palm face: 25 to 85 mm in 10 mm steps, engraved under each hole and
-read below the key's head. To change it, pull the key out firmly by its head, slide
+The seven key holes along each side set the opening between the outside of
+the finger lip and the palm face: 25 to 85 mm in 10 mm steps, engraved under
+each hole and read below the key's head. With the liner fitted, each
+finger's edge sits 3 to 10 mm farther from the palm than on the level edge,
+so compare measurements taken with the same edge. To change it, pull the key out firmly by its head, slide
 the rest until its groove lines up with the new hole, and push the key in
 again.
 
@@ -70,7 +77,10 @@ pull tab in the end slot, for a shallower edge.
 
 For an unlevel edge, stack the liner on the stoppers against the finger lip,
 flat face to the lip and thickest step under your middle finger: a spacer
-for each stopper left out, then the cap, with its rounded edges, on top. Its
+for each stopper left out, then the cap, with its rounded edges, on top.
+Lower the cap clear of the lip and push it against the lip until the ridge
+along its back drops into the lip's groove; the ridge stops your fingers
+dragging the liner up. To take it out, pull it away from the lip first. Its
 steps set the index, ring and little fingers' edges 3, 2 and 7 mm nearer
 the palm than the middle finger's, so each finger bends about as much as
 the others. Turn every piece end over end to switch hands.
@@ -98,4 +108,20 @@ their ends through the finger notches at both ends of the well.
 Stand your phone in the slot at the far end of the base, in portrait or
 landscape. It takes phones up to about 13 mm thick in their case.
 
-Tare the Crimpdeq unloaded before measuring.
+## 7. Measure
+
+Tare the Crimpdeq unloaded before measuring. Pull the edge straight toward
+the palm, with the heel of your hand pressed on the heel deck behind the
+bolster: the pull and the palm's push act at different heights and would
+otherwise lift the phone end of the base. Pressing down on the edge with
+the fingers loads the grip's guides and makes the Crimpdeq read low.
+
+Before trusting the readings, check them once on each edge depth. Take the
+palm rest off, set the base on a table with its rear end at the table's
+edge and a stop against its phone end, and hook a strap over the finger
+edge. Lead the strap level over the rear of the base to a free-running
+pulley, such as a ball-bearing one, clamped at the table's edge, and down
+from it to a known weight of 10 to 40 kg. Then compare the Crimpdeq's
+reading with the weight. Don't run the strap over the table edge itself:
+friction there takes part of the weight, so the check could not tell a low
+reading from a lost load.

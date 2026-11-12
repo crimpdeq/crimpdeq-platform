@@ -185,9 +185,14 @@ module crimpdeq_cases_reference() {
     for (version = ["v2.0.0", "v3.1.0", "v3.2.0"]) crimpdeq_case_reference(version);
 }
 
-module crimpdeq_internals_reference() {
-    // Battery, PCB and switch envelopes of the v3.1.0 case.
+module crimpdeq_internals_reference(version) {
+    // The load cell, and the battery, PCB and switch envelopes of the v3.1.0
+    // case; the other releases' internals are not modelled.
     loadcell_reference();
+    if (version == "v3.1.0") internals_v31_reference();
+}
+
+module internals_v31_reference() {
     color([0.1, 0.45, 0.8, 0.7])
         translate([0, -5, case3_dz + 12])
             cube([34, 50, 10], center = true);

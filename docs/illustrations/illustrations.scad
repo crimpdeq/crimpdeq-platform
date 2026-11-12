@@ -57,6 +57,7 @@ module base_halves(gap = 0) {
 }
 
 module anchor(dz = 0) { color(c_anchor) translate([0, 0, dz]) render() anchor_block(); }
+module anchor_lock(pull = 0) { color(c_key) anchor_key(pull); }
 module grip(dx = 0, dz = 0, c = c_grip) { color(c) translate([dx, 0, dz]) render() finger_grip(); }
 module clips() { color(c_clip) render() eye_clips(); }
 module rest(offset = 0, dx = 0) { color(c_rest) translate([dx, 0, 0]) render() palm_rest(offset); }
@@ -67,6 +68,7 @@ module liner(stoppers = []) { color(c_liner) edge_liner("right", stoppers); }
 module full_assembly(offset = 0) {
     base_halves();
     anchor();
+    anchor_lock();
     grip();
     clips();
     case_model();
@@ -94,11 +96,12 @@ if (view == "overview") {
     plate_part("base_front", c_base);
     plate_part("grip", c_grip);
     plate_part("anchor", c_anchor);
+    plate_part("anchor_key", c_key);
     plate_part("clips", c_clip);
-} else if (view == "plate2") {
-    build_plate("Plate 2: rear base half, liner, palm rest, stoppers and key");
-    plate_part("base_rear", c_base_b);
     plate_part("liner", c_liner);
+} else if (view == "plate2") {
+    build_plate("Plate 2: rear base half, palm rest, stoppers and key");
+    plate_part("base_rear", c_base_b);
     plate_part("rest", c_rest);
     plate_part("stoppers", c_stopper);
     plate_part("key", c_key);
@@ -109,14 +112,21 @@ if (view == "overview") {
     for (y_pos = [-joint_tongue_y, joint_tongue_y])
         arrow([base_split_x + 20, y_pos, 60], [base_split_x + 20, y_pos, 30], 3);
 } else if (view == "anchor_in") {
+    // The anchor block drops into its pocket, then its key slides in under
+    // the deck from the open side.
     base_halves();
     anchor(40);
     arrow([anchor_x_min - 12, 0, 60], [anchor_x_min - 12, 0, 25], 3);
     color(c_ghost) render() anchor_block();
+    anchor_lock(50);
+    key_z = (anchor_key_top_z + anchor_key_bottom_z(base_half_w_y)) / 2;
+    arrow([anchor_key_x, base_half_w_y + 100, key_z],
+          [anchor_key_x, base_half_w_y + 75, key_z], 3);
 } else if (view == "case_in") {
     // The case is lowered so both load-cell eyes drop over their lugs.
     base_halves();
     anchor();
+    anchor_lock();
     grip();
     translate([0, 0, 45]) case_model();
     for (x_pos = [dyno_eye_x_left, dyno_eye_x_right])
@@ -127,6 +137,7 @@ if (view == "overview") {
     // it snaps round the neck.
     base_halves();
     anchor();
+    anchor_lock();
     grip();
     case_model();
     color(c_clip) {
@@ -141,6 +152,7 @@ if (view == "overview") {
     // slides in under it from the +Y side.
     base_halves();
     anchor();
+    anchor_lock();
     grip();
     clips();
     case_model();
@@ -157,6 +169,7 @@ if (view == "overview") {
     // is lowered onto it.
     base_halves();
     anchor();
+    anchor_lock();
     grip();
     clips();
     case_model();
@@ -177,6 +190,7 @@ if (view == "overview") {
     // The 5 mm stopper in the pocket, the 10 mm one lowered onto it.
     base_halves();
     anchor();
+    anchor_lock();
     grip();
     clips();
     case_model();
@@ -190,6 +204,7 @@ if (view == "overview") {
     // stoppers in theirs beyond the anchor block.
     base_halves();
     anchor();
+    anchor_lock();
     grip();
     clips();
     case_model();
