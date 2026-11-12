@@ -59,8 +59,10 @@ SUPPORTED = {"enable_support": "1", "support_type": "normal(auto)",
              "support_on_build_plate_only": "1", "bridge_no_support": "1"}
 REST = {"sparse_infill_density": "50%", **SUPPORTED}
 # The base halves carry low stress, so they print lighter than the load path.
+# Adaptive cubic keeps the density next to their walls and skins and thins
+# their deep core, which carries nothing.
 BASE = {"wall_loops": "4", "top_shell_layers": "4", "bottom_shell_layers": "4",
-        "sparse_infill_density": "15%"}
+        "sparse_infill_density": "15%", "sparse_infill_pattern": "adaptivecubic"}
 # Height ranges that print parts of an object differently, as (min Z, max Z,
 # settings) with the heights as platform/dimensions.scad expressions in the
 # part's print Z. Bambu Studio reads the layer height of every height range.
