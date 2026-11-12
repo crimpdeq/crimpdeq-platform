@@ -13,9 +13,10 @@ loadcell_top_z = loadcell_bottom_z + lc_T;
 loadcell_center_z = loadcell_bottom_z + lc_T / 2;
 eye_d = 17;
 eye_center_offset = 6 + eye_d / 2;
-// A ring pressed into each eye narrows its bore; the case is sized round
-// eye_d, the lugs round the bore.
-eye_bore_d = 15;
+// A ring pressed into each eye narrows its bore, measured at 13.8-13.9 mm on
+// assembled load cells; the case is sized round eye_d, the lugs round the
+// bore.
+eye_bore_d = 13.9;
 dyno_eye_x_right = lc_L / 2 - eye_center_offset;
 dyno_eye_x_left = -dyno_eye_x_right;
 dyno_eye_y = 0;
@@ -118,9 +119,11 @@ deck_z = case_z_min - case_float_gap;
 // holds a clip.
 u_slot_clear = is_undef(u_slot_clear) ? 1.0 : u_slot_clear;
 tongue_r = min(case2_eye_u_d, case3_slot_d) / 2 - u_slot_clear;
-lug_fit = is_undef(lug_fit) ? 0.2 : lug_fit;
+// The eye slips over the lug; a wider fit raises the eye's contact pressure.
+lug_fit = is_undef(lug_fit) ? 0.15 : lug_fit;
 lug_r = eye_bore_d / 2 - lug_fit;
-lug_neck_r = is_undef(lug_neck_r) ? 5.25 : lug_neck_r;
+// A thin neck leaves a wide head ring over the clip within the narrow bore.
+lug_neck_r = is_undef(lug_neck_r) ? 4.5 : lug_neck_r;
 lug_top_chamfer = 1;
 // The anchor block and the grip print on their -Y side faces, so each lug
 // prints lying down. Flats on its top and bottom, lug_support_relief inside
@@ -771,7 +774,7 @@ assert(lug_support_relief >= 0.3 && lug_half_w_y > lug_neck_r + 1,
     "The lug's print flats must clear the bore and leave a head ring over the clip.");
 assert(lug_flat_x <= dyno_eye_x_right - clip_tip_x,
     "The case's slot edges leave too little room for the clip.");
-assert(lug_neck_r >= 5 && lug_neck_r <= lug_r - 1.5 &&
+assert(lug_neck_r >= 4.5 && lug_neck_r <= lug_r - 1.5 &&
     clip_seat_r > lug_neck_r && clip_seat_r + 2.5 <= tongue_r,
     "The lug neck must leave a head over the clip and a clip ring round the neck.");
 assert(clip_snap >= 0.2 && clip_snap <= 0.5 && clip_t >= 2.5 &&

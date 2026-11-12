@@ -29,6 +29,10 @@ pull tips the block and lets the grip drag on its guides.
    end. Slide the grip until its lug lines up with the right end, then let
    the case down.
 
+The eyes slip over the lugs without force; the clips, not the fit, hold the
+load cell down. If an eye binds, sand the lug's round outboard face, where
+the eye bears, until it drops on.
+
 The case must not touch the deck or any printed part; only the load cell
 rests on the lugs.
 
